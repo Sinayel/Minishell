@@ -36,6 +36,7 @@ Lancer le Minishell
   ./Minishell [instruction]
 ```
 ![Logo]([https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png](https://imgur.com/a/EiOtzJJ))
+<img src="[https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTdtZHJ1a3BtNWtkejRlODVyN3oya3AwaDNud3ZjanRtcjE3cTZzMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/cSYlL2WhkgJjZvL6Qt/giphy.gif](https://imgur.com/Ki3iNMf)" alt="Map 2D">
 
 
 ## Authors
