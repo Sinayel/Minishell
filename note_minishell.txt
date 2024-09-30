@@ -1,0 +1,57 @@
+minishell notes
+
+shell :
+	les commandes sont dans /bin
+	interactive mode :
+		accepte les inputs tapes depuis le clavier
+	non interactive :
+		le shell execute une commande depuis un fichier qu'il lit
+	
+	le shell attend que les commandes synchronisees soient totalement executes avant d'accepter d'autres inputs
+
+builtin : 
+	Une commande qui est implementee en interne par le shell lui meme plutot qu'un executable dans le fichier systeme
+
+control operator :
+	A token that performs a control function. It is a newline or one of the following: ‘||’, ‘&&’, ‘&’, ‘;’, ‘;;’, ‘;&’, ‘;;&’, ‘|’, ‘|&’, ‘(’, or ‘)’.
+
+exit status : 
+	The value returned by a command to its caller. The value is restricted to eight bits, so the maximum value is 255.
+
+special builtin :
+	A shell builtin command that has been classified as special by the POSIX standard.
+
+Syntaxe du Shell :
+	quand le shell reconnait un '#', il l'ignore ainsi que le reste de la ligne
+
+	le shell lit l'input et le divise en mots et en operateurs, en utilisant les regles de quotation pour assimiler les differents mots et caracteres
+	Ensuite, le shell decoupe ces infos en commandes et autres operateurs, en enlevant la signification de certains mots et caracteres, puis 
+	redirige l'input/output si necessaire, execute la commande specifiee et attends son 'exit status' en le rendant (l'exit status) discornible pour 	
+	une future inspection ou un traitement plus approfondi :
+
+	1) lit l'input depuis un fichier, depuis une chaine fournie en argument ou depuis le terminal de l'utilisateur
+	2) separe l'input en mots et oprateurs en obeissant aux regles de quotations, ces tokens sont separes par des metacaracteres, les alias sont 	traites par cette etape
+	3) parse ces "tokens" en commandes simples et composees
+	4) effectue les differentes extensions du shell, en divisant les tokens developpes en listes de filenames et en commandes et arguments
+	5) effectue les redirections eventuelles et supprime les opperateurs de redirection et leurs operandes de la liste des arguments
+	6) execute la/les commande.s
+	7) attend la fin de la commande et collecte son exit status
+
+quotation :
+	elle est utilisee pour retirer la signification de certains caracteres ou mots au shell, par exemple il permet de retirer le traitement special au caracteres speciaux
+		backslash `\` -> bash escape caractere, il preserve la valeur litterale du prochain caractere a l'exception d'une newline
+
+		single quotes `'` -> preserve la valeur litterale de tous les caracteres a l'interieur des quotes, une single quote ne peut pas etre a
+			l'interieur d'autres (meme precede d'un blackslash)
+
+		double quotes `"` -> preserve la valeur litterale de tous les caracteres a 'interieur des quotes a l'excepetion de ‘$’, ‘`’, ‘\’. Le '!' n'a pas de signification particuliere
+            une double quote peut etre inseree a l'interieur d'autres seulement si elle est precedee d'un backslash
+
+        ANSI-C quoting :
+            les sequences de caracteres sous la forme $'string' sont traites comme une forme speciale de simple quote
+            
+
+
+
+
+
