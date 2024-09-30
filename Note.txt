@@ -1,22 +1,32 @@
 MINISHELL
 
 Qu'est-ce au'un shell : 
-Un shell est essentiellement un processeur de macros qui exécute des commandes. Un processeur de macros permet de développer du texte et des symboles pour créer des expressions plus complexes. ( |, <, >, &...)
 
-Un shell Unix est à la fois un interpréteur de commandes et un langage de programmation, On peut créer des fichiers contenant des commandes, qui deviennent eux-mêmes des commandes, au même titre que celles du système, et permettent d’automatiser des tâches courantes
+Un shell est essentiellement un processeur de macros qui exécute des commandes.
+Un processeur de macros permet de développer du texte et des symboles pour créer des expressions plus complexes ( |, <, >, & ...).
 
-Les shells peuvent être utilisés en mode interactif (en tapant des commandes via le clavier) ou non-interactif (en exécutant des commandes à partir d'un fichier).
+Un shell Unix est à la fois un interpréteur de commandes et un langage de programmation,
+On peut créer des fichiers contenant des commandes, qui deviennent eux-mêmes des commandes,
+au même titre que celles du système, et permettent d’automatiser des tâches courantes,
+Les shells peuvent être utilisés en mode interactif (en tapant des commandes via le clavier),
+ou non-interactif (en exécutant des commandes à partir d'un fichier).
 
-Ils permettent d’exécuter des commandes GNU de manière synchrone (le shell attend la fin de l'exécution avant d’accepter d'autres entrées) ou asynchrone (les commandes s'exécutent en parallèle avec le shell).
+Ils permettent d’exécuter des commandes GNU de manière synchrone (le shell attend la fin de l'exécution avant d’accepter d'autres entrées),
+ou asynchrone (les commandes s'exécutent en parallèle avec le shell).
 
 Le shell permet aussi de manipuler l’environnement des commandes.
 
-Les shells disposent également de commandes internes (builtins) qui ne peuvent pas être exécutées par des utilitaires externes, comme cd, break, ou exec, car elles modifient directement le shell.
+Les shells disposent également de commandes internes (builtins) qui ne peuvent pas être exécutées par des utilitaires externes,
+comme cd, break, ou exec, car elles modifient directement le shell.
 
 Resumer :
-Enfin, bien que l'exécution de commandes soit essentielle, la véritable puissance des shells vient de leurs langages de programmation intégrés, avec des variables, des structures de contrôle, des fonctions, etc. Ils offrent aussi des fonctionnalités spécifiques à l'usage interactif, comme le contrôle des jobs, l'édition des lignes de commande, l'historique et les alias.
+
+Enfin, bien que l'exécution de commandes soit essentielle, la véritable puissance des shells vient de leurs langages de programmation intégrés,
+avec des variables, des structures de contrôle, des fonctions, etc. Ils offrent aussi des fonctionnalités spécifiques à l'usage interactif, comme le contrôle des jobs,
+l'édition des lignes de commande, l'historique et les alias.
 
 Definitions :
+
 - POSIX : Normes de systèmes ouverts basées sur Unix. Bash se concentre sur la partie Shell et Utilitaires du standard POSIX 1003.1.
 - Blank : Caractère d'espace ou de tabulation.
 - Builtin : Commande interne au shell, non présente sous forme d'exécutable dans le système de fichiers.
@@ -36,4 +46,26 @@ Definitions :
 - Signal : Mécanisme pour notifier un processus d'un événement système.
 - Spécial builtin : Commande interne classée comme spéciale par POSIX.
 - Token : Séquence de caractères considérée comme une unité par le shell (mot ou opérateur).
-- Word : Séquence de caractères traitée comme une unité par le shell.
+
+Shell Syntax :
+
+Si l'entrée indique le début d'un commentaire, l'interpréteur de commandes ignore le symbole de commentaire ('#') et le reste de la ligne.
+Sinon il lit son entrée et la divise en mots et en opérateurs.
+L'interpréteur de commandes analyse ensuite ces jetons en commandes et autres constructions, supprime la signification spéciale de certains mots,
+redirige l'entrée et la sortie si nécessaire, exécute la commande spécifiée, attend l'état de sortie de la commande et rend cet état de sortie disponible pour une inspection ou un traitement ultérieur.
+
+Shell Operation :
+
+Il execute les operation dans cette ordre : 
+
+0) Inputs ->
+1) Décompose Input en mots/opérateurs ->
+2) Parses les tokens en commandes simples et composées ->
+3) Décompose les éléments expansés en plusieurs fd de commandes ->
+4) Effectue les redirections nécessaires et supprime les opérateurs de redirection et leurs opérandes de la liste des arguments ->
+5) Execute les commandes ->
+6) attend la commande de fin.
+
+Quoting :
+
+La citation est utilisée pour supprimer la signification spéciale de certains caractères ou mots pour l'interpréteur de commandes.
