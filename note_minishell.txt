@@ -48,10 +48,26 @@ quotation :
             une double quote peut etre inseree a l'interieur d'autres seulement si elle est precedee d'un backslash
 
         ANSI-C quoting :
-            les sequences de caracteres sous la forme $'string' sont traites comme une forme speciale de simple quote
-            
+            les sequences de caracteres sous la forme $'string' sont traites comme une forme speciale de simple quote :
 
+            - \a -> alert (bell)
+            - \b -> backspace
+            - \e = \E -> an escape charactere
+            - \f -> form feed
+            - \n -> newline
+            - \r -> carriage return  (machine a ecrire katching)
+            - \t -> tab
+            - \v -> vertical tab
+            - \\ -> backslash
+            - \' -> single quote
+            - \" -> double   //
+            - \? -> question mark
+            - \nnn -> ?
+            - \xHH -> ?
+            - uHHHH -> ?
+            - \UHHHHHHHH -> ?
+            - \cx -> ?
 
-
-
-
+Comments :
+    dans un shell non-interactif, un mot commancant par '#' fait que le mot et tous les caracterees restants sont ignores
+    dans un shell interactif, les commentaires sont actives par defaut (interactive_comments)
