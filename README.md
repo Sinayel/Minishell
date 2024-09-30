@@ -33,7 +33,7 @@ Make le Minishell
 ```
 Lancer le Minishell
 ```bash
-  ./Minishell [instruction]
+  ./Minishell
 ```
 ![img](https://i.imgur.com/Ki3iNMf.gif)
 
