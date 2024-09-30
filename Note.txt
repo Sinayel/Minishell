@@ -1,0 +1,39 @@
+MINISHELL
+
+Qu'est-ce au'un shell : 
+Un shell est essentiellement un processeur de macros qui exécute des commandes. Un processeur de macros permet de développer du texte et des symboles pour créer des expressions plus complexes. ( |, <, >, &...)
+
+Un shell Unix est à la fois un interpréteur de commandes et un langage de programmation, On peut créer des fichiers contenant des commandes, qui deviennent eux-mêmes des commandes, au même titre que celles du système, et permettent d’automatiser des tâches courantes
+
+Les shells peuvent être utilisés en mode interactif (en tapant des commandes via le clavier) ou non-interactif (en exécutant des commandes à partir d'un fichier).
+
+Ils permettent d’exécuter des commandes GNU de manière synchrone (le shell attend la fin de l'exécution avant d’accepter d'autres entrées) ou asynchrone (les commandes s'exécutent en parallèle avec le shell).
+
+Le shell permet aussi de manipuler l’environnement des commandes.
+
+Les shells disposent également de commandes internes (builtins) qui ne peuvent pas être exécutées par des utilitaires externes, comme cd, break, ou exec, car elles modifient directement le shell.
+
+Resumer :
+Enfin, bien que l'exécution de commandes soit essentielle, la véritable puissance des shells vient de leurs langages de programmation intégrés, avec des variables, des structures de contrôle, des fonctions, etc. Ils offrent aussi des fonctionnalités spécifiques à l'usage interactif, comme le contrôle des jobs, l'édition des lignes de commande, l'historique et les alias.
+
+Definitions :
+- POSIX : Normes de systèmes ouverts basées sur Unix. Bash se concentre sur la partie Shell et Utilitaires du standard POSIX 1003.1.
+- Blank : Caractère d'espace ou de tabulation.
+- Builtin : Commande interne au shell, non présente sous forme d'exécutable dans le système de fichiers.
+- Control operator : Jeton effectuant une fonction de contrôle, comme ‘||’, ‘&&’, ‘&’, ‘;’, etc.
+- Exit status : Valeur retournée par une commande à son appelant (max 255).
+- Field : Texte résultant d'une expansion dans le shell, utilisé comme nom de commande ou argument.
+- Filename : Chaîne de caractères identifiant un fichier.
+- Job : Ensemble de processus liés dans un même groupe de processus.
+- Job Contrôle : Mécanisme pour suspendre ou reprendre des processus.
+- Métacaractère : Caractère non cité qui sépare des mots (comme ‘|’, ‘&’, ‘;’, etc.).
+- Name : Mot constitué de lettres, chiffres, et underscores, servant de nom de variable ou de fonction.
+- Operator : Opérateur de contrôle ou de redirection.
+- Process group : Ensemble de processus partageant le même identifiant de groupe.
+- Process group ID : Identifiant unique d'un groupe de processus.
+- Reserved word : Mot ayant une signification spéciale pour le shell, comme for ou while.
+- Return status : Synonyme de statut de sortie.
+- Signal : Mécanisme pour notifier un processus d'un événement système.
+- Spécial builtin : Commande interne classée comme spéciale par POSIX.
+- Token : Séquence de caractères considérée comme une unité par le shell (mot ou opérateur).
+- Word : Séquence de caractères traitée comme une unité par le shell.
