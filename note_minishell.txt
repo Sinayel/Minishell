@@ -62,7 +62,7 @@ quotation :
             - \' -> single quote
             - \" -> double   //
             - \? -> question mark
-            - \nnn -> ?
+            - \nnn -> affiche le caractere correspondant a la valeur de n
             - \xHH -> ?
             - uHHHH -> ?
             - \UHHHHHHHH -> ?
@@ -71,3 +71,10 @@ quotation :
 Comments :
     dans un shell non-interactif, un mot commancant par '#' fait que le mot et tous les caracterees restants sont ignores
     dans un shell interactif, les commentaires sont actives par defaut (interactive_comments)
+
+Commands :
+	le type decommande rencontre le plus souvent est juste une serie de motes separes par des blancs et termine par un control operator
+	le premier mot correspond generalement a la commande a executer et le reste des mots des arguments a cette commande 
+	l'exit status d'une commande simple est apporte par la fonction waitpid() ou 128+n si la commande est terminee par un signal n
+
+Pipes :
