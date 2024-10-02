@@ -31,7 +31,6 @@ Definitions :
 - Builtin : Commande interne au shell, non présente sous forme d'exécutable dans le système de fichiers.
 - Control operator : Jeton effectuant une fonction de contrôle, comme ‘||’, ‘&&’, ‘&’, ‘;’, etc.
 - Exit status : Valeur retournée par une commande à son appelant (max 255).
-- Field : Texte résultant d'une expansion dans le shell, utilisé comme nom de commande ou argument.
 - Filename : Chaîne de caractères identifiant un fichier.
 - Job : Ensemble de processus liés dans un même groupe de processus.
 - Job Contrôle : Mécanisme pour suspendre ou reprendre des processus.
@@ -40,7 +39,6 @@ Definitions :
 - Process group : Ensemble de processus partageant le même identifiant de groupe.
 - Process group ID : Identifiant unique d'un groupe de processus.
 - Reserved word : Mot ayant une signification spéciale pour le shell, comme for ou while.
-- Return status : Synonyme de statut de sortie.
 - Signal : Mécanisme pour notifier un processus d'un événement système.
 - Spécial builtin : Commande interne classée comme spéciale par POSIX.
 - Token : Séquence de caractères considérée comme une unité par le shell (mot ou opérateur).
@@ -86,21 +84,6 @@ ANSI-C Quoting :
 
 Voir manuel a 3.1.2.4
 
-Reserved Words :
-
-Les mots réservés sont des mots-clés que le shell reconnaît et traite de manière spéciale, mais seulement lorsqu'ils ne sont pas entourés de guillemets et qu'ils sont le premier mot d'une commande (sauf exceptions). Les principaux mots réservés sont :
-
-if, then, elif, else, fi (pour les conditions),
-for, in, until, while, do, done (pour les boucles),
-case, esac, coproc, select, function (pour les structures de contrôle),
-{, }, [[, ]], ! (pour des blocs de code ou tests).
-Il y a des exceptions spécifiques :
-
-IN est réservé lorsqu'il est le troisième mot d'une commande CASE ou SELECT.
-IN et DO sont réservés lorsqu'ils sont le troisième mot d'une commande FOR.
-
-Essentiellement, ces mots déclenchent des comportements particuliers du shell lorsqu'ils apparaissent à des endroits précis dans les commandes.
-
 Simple Commands :
 
 C'est une commande envoyer dans le shell séparer par des espace et terminer pas un opérateur de contrôle du shell.
@@ -109,4 +92,29 @@ L'état de retour d'une commande simple est son état de sortie tel qu'il est fo
 
 Pipelines :
 
-3.2.3 a lire...
+Une pipeline est une sequence d'une ou de plusieurs commandes séparées par un | ou |&.
+Le format d'une pipeline ressemble a ça :
+[time [-p]] [!] command1 [ | or |& command2 ] …
+chaque commande lit la sortie de la commande précédente.
+Si |& est utilise alors l'erreur standard de la commande 1 vers la commande 2
+
+Liste :
+
+&& = commande 1 ET commande 2
+|| = commande 1 OU commande 2
+; = 
+commande 1;
+commande 2;
+; = une commande indépendante chacune comme si on revenais a la ligner et on commencer une nouvelle commande donc si la premier crash il va faire la deuxième(si celle la ne crash pas nn plus).
+
+Variable :
+
+Declarer une variable = nom=[valeur].
+Si la variable creer n'est assigner a aucune valeur alors sa valeur de base sera NULL,
+Pour supprimer une variable il faut utiliser la commande unset.
+Le signe ~ est utiliser pour représenter un chemins (comme ~ pour le répertoire de l'utilisateur),
+Si la variable est marquée comme un nombre (attribut integer), sa valeur sera traitée comme un calcul mathématique, même sans utiliser la syntaxe spéciale pour cela comme " $((...)) ".
+$@ = une variable spéciale dans les scripts shell représentant tous les arguments passés à un script.
+
+
+
