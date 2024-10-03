@@ -78,3 +78,41 @@ Commands :
 	l'exit status d'une commande simple est apporte par la fonction waitpid() ou 128+n si la commande est terminee par un signal n
 
 Pipes :
+	bah pipex quoi
+
+Lists of commands : (a gere si bonus)
+	An AND list has the form
+		$>"command1 && command2"
+	command2 is executed if, and only if, command1 returns an exit status of zero (success).
+
+	An OR list has the form
+		$>"command1 || command2"
+	command2 is executed if, and only if, command1 returns a non-zero exit status.
+
+	The return status of AND and OR lists is the exit status of the last command executed in the list
+
+			(expression )
+                Returns the value of expression.  This may be used
+                to override the normal precedence of operators.
+            ! expression
+                True if expression is false.
+            expression1 && expression2
+                True if both expression1 and expression2 are true.
+            expression1 || expression2
+                True if either expression1 or expression2 is true.
+
+Expressions combinées
+	Les expressions peuvent être combinées en utilisant les opérateurs suivants, décrits par ordre de priorité décroissante :
+
+	( expression )
+		Renvoie la valeur de l'expression. Cela peut être utilisé pour surpasser la priorité normale des opérateurs.
+	! expression
+		Vrai si expression est fausse.
+	expression1 && expression2
+		Vrai si expression1 et expression2 sont toutes les deux vraies.
+	expression1 || expression2
+		Vrai si expression1 ou expression2 est vraie.
+	Les opérateurs && et || n'évaluent pas expression2 si la valeur de expression1 suffit à déterminer la valeur renvoyée par la condition tout entière.
+
+Brace expansion :
+	
