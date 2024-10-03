@@ -43,6 +43,6 @@ Lancer le Minishell
 - [@chkbardebz](https://github.com/chkbardebz)
 - [@Sinayel](https://github.com/Sinayel)
 
-## License
+## Licence
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[LICENCE](https://github.com/Sinayel/Minishell/blob/main/LICENSE)
