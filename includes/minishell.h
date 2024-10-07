@@ -13,4 +13,6 @@ typedef struct {
     char some_string[100];
 } GlobalData;
 
+
+
 #endif

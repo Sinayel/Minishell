@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/07 17:19:04 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/07 20:01:08 by ylouvel          ###   ########.fr       */
+/*   Created: 2024/10/07 20:27:46 by judenis           #+#    #+#             */
+/*   Updated: 2024/10/07 20:28:33 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/include.h"
+#include "includes/minishell.h"
 
 char	*ft_strncpy(char *s1, char *s2, int n)
 {

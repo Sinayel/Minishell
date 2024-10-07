@@ -1,12 +1,8 @@
 CC = 			cc
 CFLAGS = 		-Wall -Wextra -Werror -lreadline -g
-
 RM = 			rm -f
-
 NAME = 			Minishell
-
-MINISHELL_SRC = pwd.c
-
+MINISHELL_SRC = pwd.c utils.c main.c
 
 all :		$(NAME)
 
@@ -15,7 +11,7 @@ $(NAME) :
 				@${CC}  ${MINISHELL_SRC} ${CFLAGS} -o ${NAME}
 				@echo -e '\033[33;32mMinishell created ! 🎉'
 
-re : 			
+re :
 				@$(RM) $(NAME)
 				@echo -e '\033[0;31mMinishell deleted ! 🛑\n'
 				@echo -e '\033[33;32mCreating Minishell... 🕗\n'

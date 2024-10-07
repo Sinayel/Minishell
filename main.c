@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/07 20:01:09 by ylouvel          ###   ########.fr       */
+/*   Created: 2024/10/07 20:27:53 by judenis           #+#    #+#             */
+/*   Updated: 2024/10/07 20:27:55 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/include.h"
+#include "includes/minishell.h"
 
 //! ◦ CD with only a relative or absolute path |  (JULIO)
 //! ◦ PWD with no options                      |  (JULIO)
@@ -54,30 +54,6 @@ int	verif_input(char *input)
 		if (input[i] == ' ')
 			return (1);
 		i++;
-	}
-	return (0);
-}
-
-int	main(void)
-{
-	char	*input;
-	char	**str;
-
-	while (1)
-	{
-		input = readline("Minishell$ ");
-		if (word_count(input) > 1)
-		{
-			str = ft_split(input);
-			parsing(str);
-		}
-		else if (verif_input(input) == 1)
-			echo_for_one_caractere(input);
-		if (*input)
-		{
-			add_history(input);
-		}
-		free(input);
 	}
 	return (0);
 }
