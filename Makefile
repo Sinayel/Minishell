@@ -2,7 +2,7 @@ CC = 			cc
 CFLAGS = 		-Wall -Wextra -Werror -lreadline -g
 RM = 			rm -f
 NAME = 			Minishell
-MINISHELL_SRC = pwd.c utils.c main.c
+MINISHELL_SRC = pwd.c utils.c parsing.c
 
 all :		$(NAME)
 

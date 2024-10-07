@@ -6,24 +6,37 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:27:40 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/07 20:28:49 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/07 21:12:09 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-int ft_sig_handler(int sig, int raf)
+volatile sig_atomic_t g_sigint_received = 0;
+
+void ft_sig_handler(int sig)
 {
-    (void)raf;
     if (sig == SIGINT)
-        exit(0);
+    {
+        g_sigint_received = 1;
+        rl_replace_line("", 0); // Efface la ligne courante
+        rl_on_new_line();       // Déplace le curseur à une nouvelle ligne
+        rl_redisplay();         // Redisplay le prompt
+    }
 }
-int ft_strcmp(char *str, char *to_find)
+
+int ft_free(char **str)
 {
-    int i = 0;
-    while (str[i] && to_find[i] && str[i] == to_find[i])
+    int i;
+
+    i = 0;
+    while (str[i])
+    {
+        free(str[i]);
         i++;
-    return (str[i] - to_find[i]);
+    }
+    free(str);
+    return (0);
 }
 
 int	main(void)
@@ -33,16 +46,22 @@ int	main(void)
 
 	while (1)
 	{
+        signal(SIGINT, ft_sig_handler);
 		input = readline("Minishell$ ");
-		if (word_count(input) > 1)
+		if (word_count(input) >= 1)
 		{
 			str = ft_split(input);
 			parsing(str);
+            ft_free(str);
 		}
+        if (g_sigint_received)
+        {
+            g_sigint_received = 0;
+            free(input);
+            continue;
+        }
 		if (*input)
-		{
 			add_history(input);
-		}
 		free(input);
 	}
 	return (0);
