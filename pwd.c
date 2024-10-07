@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:27:40 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/07 21:12:09 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/07 21:30:44 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void ft_sig_handler(int sig)
     if (sig == SIGINT)
     {
         g_sigint_received = 1;
-        rl_replace_line("", 0); // Efface la ligne courante
         rl_on_new_line();       // Déplace le curseur à une nouvelle ligne
+        rl_replace_line("", 0); // Efface la ligne courante
         rl_redisplay();         // Redisplay le prompt
     }
 }
