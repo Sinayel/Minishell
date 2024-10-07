@@ -1,5 +1,5 @@
 CC = 			cc
-CFLAGS = 		-Wall -Wextra -Werror -L./minilibx/ -lmlx -lXext -lX11 -g
+CFLAGS = 		-Wall -Wextra -Werror -lreadline -g
 
 RM = 			rm -f
 
