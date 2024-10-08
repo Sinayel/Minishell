@@ -6,11 +6,11 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/07 20:01:09 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/07 21:24:12 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./includes/include.h"
+#include "./includes/minishell.h"
 
 //! ◦ CD with only a relative or absolute path |  (JULIO)
 //! ◦ PWD with no options                      |  (JULIO)
@@ -18,6 +18,20 @@
 //! ◦ EXPORT with no options                   |  (YANNS)
 //! ◦ ENV with no options or arguments         |  (YANNS)
 //! ◦ EXIT                                     |  (YANNS)
+
+int ft_free(char **str)
+{
+    int i;
+
+    i = 0;
+    while (str[i])
+    {
+        free(str[i]);
+        i++;
+    }
+    free(str);
+    return (0);
+}
 
 int	parsing(char *str[])
 {
@@ -42,42 +56,29 @@ int	parsing(char *str[])
 	return (0);
 }
 
-int	verif_input(char *input)
-{
-	int	i;
-
-	i = 0;
-	// printf("%s \n", input);
-	
-	while (input[i])
-	{
-		if (input[i] == ' ')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
 int	main(void)
 {
 	char	*input;
-	char	**str;
+	char	**str = NULL;
 
 	while (1)
 	{
 		input = readline("Minishell$ ");
+		str = ft_split(input);
 		if (word_count(input) > 1)
 		{
-			str = ft_split(input);
 			parsing(str);
 		}
-		else if (verif_input(input) == 1)
-			echo_for_one_caractere(input);
+		else if (word_count(input) == 1)
+			echo_for_one_caractere(str[0]);
 		if (*input)
-		{
 			add_history(input);
-		}
+		ft_free(str);
 		free(input);
+		rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
 	}
+	rl_clear_history();
 	return (0);
 }

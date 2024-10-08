@@ -6,11 +6,11 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:14 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/07 20:02:49 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/07 20:54:58 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/include.h"
+#include "../../includes/minishell.h"
 
 void	print_string(char *str[])
 {
@@ -60,11 +60,6 @@ void	print_string_with_option(char *str[])
 
 int	echo_for_one_caractere(char *input)
 {
-	printf("dzdqzd");
-	while (input[i])
-	{
-	}
-	
 	if (ft_strcmp(input, "echo") == 0)
 		printf("\n");
 	return (0);

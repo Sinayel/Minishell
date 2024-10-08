@@ -1,5 +1,7 @@
 CC = 			cc
-CFLAGS = 		-Wall -Wextra -Werror -lreadline -g
+
+CFLAGS = -Wall -Wextra -Werror -I/usr/local/opt/readline/include
+LDFLAGS = -L/usr/local/opt/readline/lib -lreadline
 
 RM = 			rm -f
 
@@ -14,14 +16,14 @@ all :		$(NAME)
 
 $(NAME) :
 				@echo 'Creating Minishell... 🕗\n'
-				@${CC} ${MINISHELL_SRC} ${CFLAGS} -o ${NAME}
+				@${CC} ${MINISHELL_SRC} ${CFLAGS} ${LDFLAGS} -o ${NAME}
 				@echo 'Minishell created ! 🎉'
 
 re : 			
 				@$(RM) $(NAME)
 				@echo 'Minishell deleted ! 🛑\n'
 				@echo 'Creating Minishell... 🕗\n'
-				@${CC} ${MINISHELL_SRC} ${CFLAGS} -o ${NAME}
+				@${CC} ${MINISHELL_SRC} ${CFLAGS} ${LDFLAGS} -o ${NAME}
 				@echo 'Minishell created ! 🎉'
 
 clean:
