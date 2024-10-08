@@ -1,2 +1,3 @@
 Minishell.dSYM/  // debug symbols
 Minishell   // executable file
+supp.supp   // valgrind output
