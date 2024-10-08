@@ -6,11 +6,12 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/07 21:24:12 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/08 20:42:05 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
+#include <stdio.h>
 
 //! ◦ CD with only a relative or absolute path |  (JULIO)
 //! ◦ PWD with no options                      |  (JULIO)
@@ -19,65 +20,43 @@
 //! ◦ ENV with no options or arguments         |  (YANNS)
 //! ◦ EXIT                                     |  (YANNS)
 
-int ft_free(char **str)
+void	init_variable(int argc, char **argv)
 {
-    int i;
-
-    i = 0;
-    while (str[i])
-    {
-        free(str[i]);
-        i++;
-    }
-    free(str);
-    return (0);
+	t_data *data = get_data();
+	(void)argc;
+	(void)argv;
+	data->env = NULL;
+	data->str = NULL;
+	data->input = NULL;
+	data->cmd = NULL;
+	data->status = 0;
 }
 
-int	parsing(char *str[])
+t_data *get_data(void)
 {
-	int	i;
-
-	i = 0;
-	if (str[i])
-	{
-		if (ft_strcmp(str[0], "echo") == 0)
-			echo(str);
-		if (ft_strcmp(str[0], "cd") == 0)
-			printf("cd\n");
-		if (ft_strcmp(str[0], "pwd") == 0)
-			printf("pwd\n");
-		if (ft_strcmp(str[0], "unset") == 0)
-			printf("unset\n");
-		if (ft_strcmp(str[0], "env") == 0)
-			printf("env\n");
-		if (ft_strcmp(str[0], "exit") == 0)
-			printf("exit\n");
-	}
-	return (0);
+	static t_data data;
+	return (&data);
 }
 
-int	main(void)
+int	main(int argc, char **argv, char **env)
 {
-	char	*input;
-	char	**str = NULL;
-
+	t_data *data = get_data();
+	init_variable(argc, argv);
+	data->env = env;
 	while (1)
 	{
-		input = readline("Minishell$ ");
-		str = ft_split(input);
-		if (word_count(input) > 1)
+		data->input = readline("minishell$ ");
+		data->str = ft_split(data->input);
+		if (word_count(data->input) == 1)
 		{
-			parsing(str);
+			for_one_word(data->str[0]);
 		}
-		else if (word_count(input) == 1)
-			echo_for_one_caractere(str[0]);
-		if (*input)
-			add_history(input);
-		ft_free(str);
-		free(input);
-		rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
+		else if (verif_word(data->str) == 0 && data->str[1] != NULL)
+			parsing(data->str);
+		if (*data->input)
+			add_history(data->input);
+		ft_free(data->str);
+		free(data->input);
 	}
 	rl_clear_history();
 	return (0);
