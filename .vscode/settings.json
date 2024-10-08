@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "unistd.h": "c",
-        "readline.h": "c"
+        "readline.h": "c",
+        "history.h": "c"
     }
 }

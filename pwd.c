@@ -6,22 +6,19 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:27:40 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/07 21:30:44 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/08 19:41:10 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
-volatile sig_atomic_t g_sigint_received = 0;
-
 void ft_sig_handler(int sig)
 {
     if (sig == SIGINT)
     {
-        g_sigint_received = 1;
-        rl_on_new_line();       // Déplace le curseur à une nouvelle ligne
-        rl_replace_line("", 0); // Efface la ligne courante
-        rl_redisplay();         // Redisplay le prompt
+        rl_replace_line("\n", 0);
+        rl_on_new_line();
+        rl_redisplay();
     }
 }
 
@@ -39,30 +36,61 @@ int ft_free(char **str)
     return (0);
 }
 
-int	main(void)
+t_data *get_data(void)
 {
-	char	*input;
-	char	**str;
+    static t_data data;
+    return (&data);
+}
 
+void ft_init_data(t_data *data)
+{
+    data->input = NULL;
+    data->str = NULL;
+}
+
+int ft_pwd(void)
+{
+    char *pwd;
+
+    pwd = getcwd(NULL, 0);
+    printf("%s\n", pwd);
+    free(pwd);
+    return (0);
+}
+
+int ft_process(void)
+{
+    t_data *data = get_data();
+    parsing();
+    ft_free(data->str);
+    return (0);
+}
+
+int	main()  //, char **env
+{
+    t_data *data = get_data();
+    ft_init_data(data);
+	struct sigaction	sms;
+
+	sms.sa_handler = ft_sig_handler;	//* Definie ft_receiver comme gestionnaire de signaux (ce qui recois)
+    sigemptyset(&sms.sa_mask);
+	sms.sa_flags = 0;	
+	sigaction(SIGINT, &sms, NULL);
 	while (1)
 	{
-        signal(SIGINT, ft_sig_handler);
-		input = readline("Minishell$ ");
-		if (word_count(input) >= 1)
-		{
-			str = ft_split(input);
-			parsing(str);
-            ft_free(str);
-		}
-        if (g_sigint_received)
+		data->input = readline("Minishell$ ");
+		if (word_count(data->input) >= 1)
         {
-            g_sigint_received = 0;
-            free(input);
-            continue;
+            data->str = ft_split(data->input);
+            ft_process();
         }
-		if (*input)
-			add_history(input);
-		free(input);
+		if (*data->input)
+        {
+			add_history(data->input);
+        }
+		free(data->input);
 	}
+    rl_clear_history();
 	return (0);
 }
+    
