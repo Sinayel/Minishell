@@ -2,7 +2,7 @@ CC = 			cc
 CFLAGS = 		-Wall -Wextra -Werror -lreadline -g
 RM = 			rm -f
 NAME = 			Minishell
-MINISHELL_SRC = pwd.c utils.c parsing.c exit.c
+MINISHELL_SRC = srcs/pwd.c srcs/utils.c srcs/parsing.c srcs/exit.c
 
 all :		$(NAME)
 
@@ -27,3 +27,5 @@ fclean:
 				@echo -e '\033[0;31mMinishell deleted ! 🛑'
 
 .PHONY: 	fclean clean re all
+
+#valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --suppressions=supp.supp -s ./Minishell

@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 18:53:06 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/09 10:21:09 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/09 11:57:33 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ typedef struct s_data
 {
     char *input;
     char **str;
+
+    int word_count;
 }              t_data;
 
 char	**ft_split(char *str);

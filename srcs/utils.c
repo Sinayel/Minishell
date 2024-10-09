@@ -6,11 +6,11 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:27:46 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/09 10:31:55 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/09 11:36:46 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
 
 char	*ft_strncpy(char *s1, char *s2, int n)
 {
@@ -56,7 +56,7 @@ int	word_count(char *str)
 	return (wc);
 }
 
-char	**ft_split(char *str)
+char	**ft_split(char *str) //*proteger les mallocs
 {
 	int		i;
 	int		j;

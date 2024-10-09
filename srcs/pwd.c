@@ -6,16 +6,15 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:27:40 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/09 11:08:36 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/09 12:02:33 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
 
 void ft_sig_handler(int sig)
 {
-    t_data *data = get_data();
-    if (sig == SIGINT && data->input == NULL)
+    if (sig == SIGINT)
     {
         printf("\n");
         rl_replace_line("", 0);
@@ -24,19 +23,6 @@ void ft_sig_handler(int sig)
     }
 }
 
-int ft_free(char **str)
-{
-    int i;
-
-    i = 0;
-    while (str[i])
-    {
-        free(str[i]);
-        i++;
-    }
-    free(str);
-    return (0);
-}
 
 t_data *get_data(void)
 {
@@ -46,6 +32,7 @@ t_data *get_data(void)
 
 void ft_init_data(t_data *data)
 {
+    data->word_count = 0;
     data->input = NULL;
     data->str = NULL;
 }
@@ -68,22 +55,28 @@ int ft_process(void)
     return (0);
 }
 
+void setup_signals(void)
+{
+    struct sigaction sms;
+
+    sms.sa_handler = ft_sig_handler;
+    sigemptyset(&sms.sa_mask);
+    sms.sa_flags = 0;
+    sigaction(SIGINT, &sms, NULL);
+}
+
 int	main()  //, char **env
 {
     t_data *data = get_data();
     ft_init_data(data);
-	struct sigaction	sms;
-
-	sms.sa_handler = ft_sig_handler;
-    sigemptyset(&sms.sa_mask);
-	sms.sa_flags = 0;	
-	sigaction(SIGINT, &sms, NULL);
+    setup_signals();
 	while (1)
 	{
 		data->input = readline("\033[1;33mMinishell$ \033[0m");
-        if (data->input[0] == EOF)
+        if (data->input == NULL)
             ft_exit();
-		if (word_count(data->input) >= 1)
+        data->word_count = word_count(data->input);
+		if (data->word_count >= 1)
         {
             data->str = ft_split(data->input);
             ft_process();
@@ -93,6 +86,7 @@ int	main()  //, char **env
 			add_history(data->input);
         }
 		free(data->input);
+        data->input = NULL;
 	}
     rl_clear_history();
 	return (0);

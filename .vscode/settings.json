@@ -3,5 +3,6 @@
         "unistd.h": "c",
         "readline.h": "c",
         "history.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }

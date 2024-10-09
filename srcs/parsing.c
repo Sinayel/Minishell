@@ -6,11 +6,11 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:27:53 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/09 10:38:52 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/09 11:36:50 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/minishell.h"
+#include "../includes/minishell.h"
 
 //! ◦ CD with only a relative or absolute path |  (JULIO)
 //! ◦ PWD with no options                      |  (JULIO)
