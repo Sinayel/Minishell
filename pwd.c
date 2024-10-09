@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:27:40 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/08 19:41:10 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/09 11:08:36 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 void ft_sig_handler(int sig)
 {
-    if (sig == SIGINT)
+    t_data *data = get_data();
+    if (sig == SIGINT && data->input == NULL)
     {
-        rl_replace_line("\n", 0);
+        printf("\n");
+        rl_replace_line("", 0);
         rl_on_new_line();
         rl_redisplay();
     }
@@ -72,13 +74,15 @@ int	main()  //, char **env
     ft_init_data(data);
 	struct sigaction	sms;
 
-	sms.sa_handler = ft_sig_handler;	//* Definie ft_receiver comme gestionnaire de signaux (ce qui recois)
+	sms.sa_handler = ft_sig_handler;
     sigemptyset(&sms.sa_mask);
 	sms.sa_flags = 0;	
 	sigaction(SIGINT, &sms, NULL);
 	while (1)
 	{
-		data->input = readline("Minishell$ ");
+		data->input = readline("\033[1;33mMinishell$ \033[0m");
+        if (data->input[0] == EOF)
+            ft_exit();
 		if (word_count(data->input) >= 1)
         {
             data->str = ft_split(data->input);
@@ -93,4 +97,3 @@ int	main()  //, char **env
     rl_clear_history();
 	return (0);
 }
-    
