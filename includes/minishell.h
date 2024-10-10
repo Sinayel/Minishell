@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/10 16:07:20 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/10 19:42:17 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 
 typedef struct s_data
 {
+	char   *source;
 	char	**env;
 	char	**str;
 	char	*input;
@@ -31,6 +32,7 @@ typedef struct s_data
 void		for_one_word(char *str);
 int			verif_word(char *str[]);
 int			parsing(char *str[]);
+void check_arg();
 
 // ------------  Env  --------------
 void		print_env(void);

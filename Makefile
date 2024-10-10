@@ -9,6 +9,7 @@ NAME = 			Minishell
 
 MINISHELL_SRC = 	main.c \
 					srcs/parsing/verif.c \
+					srcs/parsing/check_args.c \
 					srcs/cmd/echo/echo.c \
 					srcs/cmd/env/env.c \
 					srcs/utils/utils_2.c \
