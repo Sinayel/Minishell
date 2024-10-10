@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 13:36:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/10 18:27:01 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/10 19:44:44 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,20 +33,34 @@ int	parsing(char *str[])
 	return (0);
 }
 
-void check_arg(char *str)
-{
-	t_data *data = get_data();
-	if (str != NULL)
-	{
-		if (str[0] == '$' )
-		{
-			if (get_env(str, data->env) != NULL)
-				printf("minishell: %s: command not found...\n", get_env(str, data->env));
-		}
-		else
-			printf("minishell: command not found...\n", str);
-	}
-}
+// void check_arg(char *str)
+// {
+// 	t_data *data = get_data();
+// 	char *source;
+// 	int i;
+// 	int j;
+
+// 	source = malloc(sizeof(char) * 100);
+// 	i = 0;
+// 	j = 0;
+// 	if (str != NULL)
+// 	{
+// 		while (str[i])
+// 		{
+// 			if (str[i] == '$')
+// 				i++;
+// 			source[j] = str[i];
+// 			i++;
+// 		}
+// 		source[j] = '\0';
+// 		if (get_env(source, data->env) != NULL)
+// 			printf("minishell: %s: command not found...\n", get_env(str, data->env));
+// 		if (get_env(source, data->env) != NULL)
+// 			printf("minishell: %s: command not found...\n", source);
+// 		else
+// 			printf("minishell: command not found...\n");
+// 	}
+// }
 
 void for_one_word(char *str)
 {
@@ -61,7 +75,9 @@ void for_one_word(char *str)
 	if (ft_strcmp(str, "exit") == 0)
 		ft_exit();
 	if (ft_strcmp(str, "echo") != 0 && ft_strcmp(str, "cd") != 0 && ft_strcmp(str, "pwd") != 0 && ft_strcmp(str, "unset") != 0 && ft_strcmp(str, "env") != 0 && ft_strcmp(str, "exit") != 0)
-		check_arg(str);
+	{
+		check_arg();
+	}
 }
 
 int	verif_word(char *str[])
