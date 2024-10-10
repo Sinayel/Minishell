@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 13:36:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/08 21:01:49 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/10 18:27:01 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,23 @@ int	parsing(char *str[])
 	return (0);
 }
 
+void check_arg(char *str)
+{
+	t_data *data = get_data();
+	if (str != NULL)
+	{
+		if (str[0] == '$' )
+		{
+			if (get_env(str, data->env) != NULL)
+				printf("minishell: %s: command not found...\n", get_env(str, data->env));
+		}
+		else
+			printf("minishell: command not found...\n", str);
+	}
+}
+
 void for_one_word(char *str)
 {
-	t_data *new_data = get_data();
 	if (ft_strcmp(str, "echo") == 0)
 		echo_for_one_caractere(str);
 	if (ft_strcmp(str, "pwd") == 0)
@@ -43,9 +57,11 @@ void for_one_word(char *str)
 	if (ft_strcmp(str, "cd") == 0)
 		printf("cd 1\n");
 	if (ft_strcmp(str, "env") == 0)
-		print_env(new_data->env);
+		print_env();
 	if (ft_strcmp(str, "exit") == 0)
 		ft_exit();
+	if (ft_strcmp(str, "echo") != 0 && ft_strcmp(str, "cd") != 0 && ft_strcmp(str, "pwd") != 0 && ft_strcmp(str, "unset") != 0 && ft_strcmp(str, "env") != 0 && ft_strcmp(str, "exit") != 0)
+		check_arg(str);
 }
 
 int	verif_word(char *str[])
@@ -62,6 +78,8 @@ int	verif_word(char *str[])
 			return (0);
 		if (ft_strcmp(str[0], "exit") == 0)
 			return (0);
+		if (ft_strcmp(str[0], "pwd") == 0 || ft_strcmp(str[0], "export") == 0 || ft_strcmp(str[0], "env") == 0 || ft_strcmp(str[0], "exit") == 0 || ft_strcmp(str[0], "unset") == 0 || ft_strcmp(str[0], "cd") == 0 || ft_strcmp(str[0], "echo") == 0)
+			printf("minishell: %s: command not found...\n", str[0]);
 	}
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/08 20:59:52 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/10 16:07:20 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ int			verif_word(char *str[]);
 int			parsing(char *str[]);
 
 // ------------  Env  --------------
-void		print_env(char **env);
+void		print_env(void);
+char		*get_env(const char *var, char **env);
 
 //--- ---------  Echo  -------------
 int			echo(char *str[]);
-void		print_string(char *str[]);
+void		print_string(char *str[], char **env);
 void		print_string_with_option(char *str[]);
 int			echo_for_one_caractere(char *input);
 
