@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 13:36:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/10 18:27:01 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/11 17:11:33 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,7 @@
 
 int	parsing(char *str[])
 {
-	int	i;
-
-	i = 0;
-	if (str[i])
+	if (str)
 	{
 		if (ft_strcmp(str[0], "echo") == 0)
 			echo(str);
@@ -33,23 +30,15 @@ int	parsing(char *str[])
 	return (0);
 }
 
-void check_arg(char *str)
-{
-	t_data *data = get_data();
-	if (str != NULL)
-	{
-		if (str[0] == '$' )
-		{
-			if (get_env(str, data->env) != NULL)
-				printf("minishell: %s: command not found...\n", get_env(str, data->env));
-		}
-		else
-			printf("minishell: command not found...\n", str);
-	}
-}
-
 void for_one_word(char *str)
 {
+	char *before;
+    char *env_var;
+
+	before = NULL;
+	env_var = NULL;
+	if (dollar_check(&before, &env_var) != NULL)
+		printf("\n");
 	if (ft_strcmp(str, "echo") == 0)
 		echo_for_one_caractere(str);
 	if (ft_strcmp(str, "pwd") == 0)
@@ -60,8 +49,6 @@ void for_one_word(char *str)
 		print_env();
 	if (ft_strcmp(str, "exit") == 0)
 		ft_exit();
-	if (ft_strcmp(str, "echo") != 0 && ft_strcmp(str, "cd") != 0 && ft_strcmp(str, "pwd") != 0 && ft_strcmp(str, "unset") != 0 && ft_strcmp(str, "env") != 0 && ft_strcmp(str, "exit") != 0)
-		check_arg(str);
 }
 
 int	verif_word(char *str[])
