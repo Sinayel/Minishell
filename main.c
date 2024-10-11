@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/10 16:51:48 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/11 18:08:55 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,11 @@ void	init_variable(int argc, char **argv, char **env)
 	data->input = NULL;
 	data->cmd = NULL;
 	data->status = 0;
+	data->dollar_pos = NULL;
+	data->env_value = NULL;
+	data->inside_quotes = 0;
+	data->dollar_pos = NULL;
+	data->len = 0;
 }
 
 t_data *get_data(void)
