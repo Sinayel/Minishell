@@ -6,38 +6,43 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:39:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/10 15:34:43 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/11 20:22:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
-char *get_env(const char *var, char **env)
+char	*get_env(const char *var, char **env)
 {
-    int i = 0;
-    size_t len = strlen(var);
+	int		i;
+	size_t	len;
 
-    while (env[i])
-    {
-        if (strncmp(env[i], var, len) == 0 && env[i][len] == '=')
-        {
-            return env[i] + len + 1;
-        }
-        i++;
-    }
-    return NULL;
+	i = 0;
+	len = strlen(var);
+	while (env[i])
+	{
+		if (strncmp(env[i], var, len) == 0 && env[i][len] == '=')
+		{
+			return (env[i] + len + 1);
+		}
+		i++;
+	}
+	return (NULL);
 }
 
-void print_env()
+void	print_env(void)
 {
-    t_data *data = get_data();
-    int i = 0;
-    if (data->env != NULL)
-    {
-        while (data->env[i] != NULL)
-        {
-            printf("%s\n", data->env[i]);
-            i++;
-        }
-    }
+	t_data	*data;
+	int		i;
+
+	data = get_data();
+	i = 0;
+	if (data->env != NULL)
+	{
+		while (data->env[i] != NULL)
+		{
+			printf("%s\n", data->env[i]);
+			i++;
+		}
+	}
 }

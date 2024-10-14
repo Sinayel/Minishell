@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 13:36:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/11 17:11:33 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/11 20:24:55 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,15 @@ int	parsing(char *str[])
 		if (ft_strcmp(str[0], "unset") == 0)
 			printf("unset\n");
 		if (ft_strcmp(str[0], "exit") == 0)
-			printf("exit si y'a un nombre ou une lettre mais un message different\n");
+			printf("exit si y'a un nombre/lettre mais un message different\n");
 	}
 	return (0);
 }
 
-void for_one_word(char *str)
+void	for_one_word(char *str)
 {
-	char *before;
-    char *env_var;
+	char	*before;
+	char	*env_var;
 
 	before = NULL;
 	env_var = NULL;
@@ -65,7 +65,10 @@ int	verif_word(char *str[])
 			return (0);
 		if (ft_strcmp(str[0], "exit") == 0)
 			return (0);
-		if (ft_strcmp(str[0], "pwd") == 0 || ft_strcmp(str[0], "export") == 0 || ft_strcmp(str[0], "env") == 0 || ft_strcmp(str[0], "exit") == 0 || ft_strcmp(str[0], "unset") == 0 || ft_strcmp(str[0], "cd") == 0 || ft_strcmp(str[0], "echo") == 0)
+		if (ft_strcmp(str[0], "pwd") == 0 || ft_strcmp(str[0], "export") == 0
+			|| ft_strcmp(str[0], "env") == 0 || ft_strcmp(str[0], "exit") == 0
+			|| ft_strcmp(str[0], "unset") == 0 || ft_strcmp(str[0], "cd") == 0
+			|| ft_strcmp(str[0], "echo") == 0)
 			printf("minishell: %s: command not found...\n", str[0]);
 	}
 	return (1);
