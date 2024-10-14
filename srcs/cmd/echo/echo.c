@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:41:12 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/11 20:24:18 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/14 19:56:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,14 @@ int	print_string(char *str[])
 	while (str[i])
 	{
 		data->current_str = str[i];
-		if (data->current_str[0] == '"')
+		if (data->current_str[i] == '"')
 		{
 			data->inside_quotes = !data->inside_quotes;
-			if (data->current_str[strlen(data->current_str) - 1] == '"')
+			if (data->current_str[strlen(data->current_str) - 1] == '"' || data->current_str[strlen(data->current_str) - 1] != '$')
 				data->current_str[strlen(data->current_str) - 1] = '\0';
 			data->current_str++;
 		}
+		printf("data->current_str = %s\n", data->current_str);
 		print_with_vars(data->current_str, data->env);
 		if (str[i + 1] != NULL)
 			write(1, " ", 1);
@@ -68,13 +69,16 @@ int	echo_for_one_caractere(char *input)
 
 int	echo(char *str[])
 {
+	t_data	*data = get_data();
 	if (strcmp(str[1], "-n") == 0 && str != NULL)
 	{
 		print_string_with_option(str);
 	}
 	else if (str != NULL)
 	{
+		printf("str[1] = %s\n", str[1]);
 		print_string(str);
+		printf("%lu", strlen(data->current_str));
 		printf("\n");
 	}
 	return (0);

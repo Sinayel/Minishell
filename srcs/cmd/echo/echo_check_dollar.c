@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 20:23:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/11 20:24:23 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/14 19:51:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void	print_with_vars(char *str, char **env)
 
 	data = get_data();
 	data->dollar_pos = strchr(str, '$');
+	printf("str = %s\n", str);
+	printf("dollar_pos = %s\n", data->dollar_pos);
 	while (data->dollar_pos)
 	{
 		write(1, str, data->dollar_pos - str);

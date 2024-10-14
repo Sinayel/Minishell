@@ -29,7 +29,7 @@ all:		$(NAME)
 
 $(NAME):	
 				@echo -e '\033[35mCreating Minishell... 🕗\n'
-				@echo -e $(ASCII_LOGO)
+				@echo $(ASCII_LOGO)
 				@${CC} ${MINISHELL_SRC} ${CFLAGS} ${LDFLAGS} -o ${NAME}
 				@echo -e '\033[33;32mMinishell created ! 🎉\033[0m'
 
