@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/11 18:08:55 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/11 20:54:20 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,12 @@
 //! ◦ ENV with no options or arguments         |  (YANNS)
 //! ◦ EXIT                                     |  (YANNS)
 
+t_data *get_data(void)
+{
+	static t_data data;
+	return (&data);
+}
+
 void	init_variable(int argc, char **argv, char **env)
 {
 	t_data *data = get_data();
@@ -28,19 +34,11 @@ void	init_variable(int argc, char **argv, char **env)
 	data->env = env;
 	data->str = NULL;
 	data->input = NULL;
-	data->cmd = NULL;
-	data->status = 0;
 	data->dollar_pos = NULL;
 	data->env_value = NULL;
 	data->inside_quotes = 0;
 	data->dollar_pos = NULL;
 	data->len = 0;
-}
-
-t_data *get_data(void)
-{
-	static t_data data;
-	return (&data);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -49,7 +47,7 @@ int	main(int argc, char **argv, char **env)
 	init_variable(argc, argv, env);
 	while (1)
 	{
-		data->input = readline("minishell$ ");
+		data->input = readline("\033[35mMinishell$ \033[0m");
 		data->str = ft_split(data->input);
 		if (word_count(data->input) == 1)
 			for_one_word(data->str[0]);
