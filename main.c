@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/14 19:26:34 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/17 18:54:19 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 //! ◦ CD with only a relative or absolute path |  (JULIO)
 //! ◦ PWD with no options                      |  (JULIO)
 //! ◦ UNSET with no options                    |  (JULIO)
+//! ◦ PIPEX					                   |  (JULIO)
 //! ◦ EXPORT with no options                   |  (YANS)
 //! ◦ ENV with no options or arguments         |  (YANS)
 //! ◦ ECHO                                     |  (YANS)
