@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/17 18:54:19 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/18 18:15:00 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	init_variable(int argc, char **argv, char **env)
 	data->inside_quotes = 0;
 	data->dollar_pos = NULL;
 	data->len = 0;
+	data->before = NULL;
 }
 
 int	main(int argc, char **argv, char **env)
@@ -52,10 +53,11 @@ int	main(int argc, char **argv, char **env)
 	{
 		data->input = readline("\033[35mMinishell$ \033[0m");
 		data->str = ft_split(data->input);
-		if (word_count(data->input) == 1)
-			for_one_word(data->str[0]);
-		else if (verif_word(data->str) == 0 && data->str[1] != NULL)
-			parsing(data->str);
+		check_args();
+		// if (word_count(data->input) == 1)
+		// 	for_one_word(data->str[0]);
+		// else if (verif_word(data->str) == 0 && data->str[1] != NULL)
+		// 	parsing(data->str);
 		if (*data->input)
 			add_history(data->input);
 		ft_free(data->str);

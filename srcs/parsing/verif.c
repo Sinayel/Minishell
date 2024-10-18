@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 13:36:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/17 18:56:06 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/18 18:17:53 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,6 @@ int	parsing(char *str[])
 
 void	for_one_word(char *str)
 {
-	char	*before;
-	char	*env_var;
-
-	before = NULL;
-	env_var = NULL;
-	if (dollar_check(&before, &env_var) != NULL)
-		printf("\n");
 	if (ft_strcmp(str, "echo") == 0)
 		echo_for_one_caractere(str);
 	if (ft_strcmp(str, "pwd") == 0)

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/11 20:31:13 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/18 19:52:10 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ typedef struct s_data
 {
 	char	**env;
 	char	*input;
+	int		exec_value; // Valleur de retour pour "$?"
+	char	*before; //? dollar_check
 	char	**str; // Input en double tableau
 	char	*var_end; //? print_with_vars
 	char	*var_name; //? print_with_vars
@@ -37,7 +39,8 @@ void		for_one_word(char *str);
 int			verif_word(char *str[]);
 int			parsing(char *str[]);
 void		msg_dollar(const char *before, const char *env_var);
-char		*dollar_check(char **before, char **env_var);
+void		dollar_check();
+void 		check_args();
 
 //! -----------------------  Cmd  ----------------------------
 
@@ -54,6 +57,9 @@ void		print_string_with_option(char *str[]);
 int			echo_for_one_caractere(char *input);
 
 //! ----------------------------------------------------------
+
+//* --------------------  Error  --------------------
+void 		dollar_error();
 
 
 //? --------------------  Utils  --------------------
