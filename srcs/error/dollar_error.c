@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 17:54:55 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/18 20:20:42 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/22 13:14:19 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,34 +20,19 @@ void	*get_before_dollar(char *str)
 	i = 0;
 	while (str[i] && str[i] != '$')
 		i++;
-	
 	if (str[i] != '$')
 		return NULL;
-
-	data->before = (char *)malloc(sizeof(char) * (i + 1));
+    if(i != 0)
+	    data->before = (char *)malloc(sizeof(char) * (i + 1));
 	if (!data->before)
 		return NULL;
-
 	strncpy(data->before, str, i);
 	data->before[i] = '\0';
     return NULL;
 }
 
-void dollar_check_subj()
-{
-    t_data *data = get_data();
-    printf("data->before dollar check = %s\n", data->before);
-    data->env_value = get_env(data->before, data->env);
-    printf("env_value = %s\n", data->env_value);
-    // while (data->before == data->env)
-    // {
-    //     /* code */
-    // }
-    
-}
-
-//! Il faut que je retourne le mot avant le $ si je fais "ech$e" il doit me retourne "ech"
-void	dollar_error(void)
+//! Si la variable est un path il faut retourner le msg d'erreur pour un dossier
+int dollar_error(void)
 {
 	t_data *data = get_data();
     char *var_name;
@@ -58,7 +43,7 @@ void	dollar_error(void)
 	if (data->str[0][0] == '$' && data->str[0][1] == '\0')
     {
 		printf("minshell : $: Command not found\n");
-        return ;
+        return 1;
     }
     while (data->str[0][i])
     {
@@ -66,17 +51,18 @@ void	dollar_error(void)
         {
             var_name = strdup(data->str[0] + i + 1);
             env_value = get_env(var_name, data->env);
+            //! Si la variable est un path il faut retourner le msg d'erreur pour un dossier
             if (env_value != NULL)
             {
                 printf("minishell: %s: Command not found\n", env_value);
                 free(var_name);
-                return ;
+                return 1;
             }
-            else
+            if (data->before != NULL)
             {
-                printf("Il faut que je retourne le mot avant le $ si je fais ech$e il doit me retourne ech");
+                printf("minishell: %s: Command not found\n", data->before);
                 free(var_name);
-                return ;
+                return 1;
             }
         }
         i++;
@@ -85,5 +71,6 @@ void	dollar_error(void)
     if(data->str[0][i] == '$')
         printf("minshell : %s: Command not found\n", data->str[0]);
     else
-        printf("PITIER");
+        return 1;
+    return 0;
 }
