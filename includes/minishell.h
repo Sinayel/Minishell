@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/18 19:52:10 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/22 13:12:22 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,15 @@ void		for_one_word(char *str);
 int			verif_word(char *str[]);
 int			parsing(char *str[]);
 void		msg_dollar(const char *before, const char *env_var);
-void		dollar_check();
 void 		check_args();
+
 
 //! -----------------------  Cmd  ----------------------------
 
 //* --------------------  Env  --------------------
 void		print_env(void);
 char		*get_env(const char *var, char **env);
+
 
 //* --------------------  Echo  --------------------
 int			echo(char *str[]);
@@ -58,8 +59,10 @@ int			echo_for_one_caractere(char *input);
 
 //! ----------------------------------------------------------
 
+
 //* --------------------  Error  --------------------
-void 		dollar_error();
+int 		dollar_error();
+void		other_error(void);
 
 
 //? --------------------  Utils  --------------------
