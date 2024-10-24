@@ -1,8 +1,8 @@
 CC = 			cc
 CFLAGS = 		-Wall -Wextra -Werror -g
 RM = 			rm -f
-NAME = 			Pipex
-PIPEX_SRC = main.c
+NAME = 			pipex
+PIPEX_SRC = 	srcs/pipex_main.c srcs/pipex_utils.c srcs/pipex_utils2.c srcs/pipex_utils3.c srcs/ft_split.c srcs/gnl/get_next_line.c srcs/gnl/get_next_line_utils.c
 
 all :		$(NAME)
 
