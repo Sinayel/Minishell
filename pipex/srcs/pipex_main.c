@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:15:04 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/25 12:23:04 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/25 14:59:29 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ int	main(int ac, char **av, char **env)
 		if (ac < 6)
 			exit_handler(1);
 		i = 3;
-		fd_out = open_file(av[ac - 1], 2);
+		fd_out = open_file(av[ac - 1], 1);
 		here_doc(av);
 	}
 	else

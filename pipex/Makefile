@@ -11,6 +11,11 @@ $(NAME) :
 				@${CC}  ${PIPEX_SRC} ${CFLAGS} -o ${NAME}
 				@echo -e '\033[33;32mPipex created ! 🎉'
 
+bonus :
+				@echo -e '\033[33;32mCreating Pipex... 🕗\n'
+				@${CC}  ${PIPEX_SRC} ${CFLAGS} -o ${NAME}
+				@echo -e '\033[33;32mPipex created ! 🎉'
+
 re :
 				@$(RM) $(NAME)
 				@echo -e '\033[0;31mPipex deleted ! 🛑\n'
