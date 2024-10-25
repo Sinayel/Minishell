@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:14:58 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/24 12:19:59 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/25 15:28:24 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*get_path(char *cmd, char **env);
 char	*my_getenv(char *name, char **env);
 void	ft_free_tab(char **tab);
 int		open_file(char *file, int in_or_out);
-void	exit_handler(int n_exit);
+void	exit_handler(int n_exit, char *file);
 void	ft_putchar_fd(char c, int fd);
 int		ft_strcmp(char *s1, char *s2);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);

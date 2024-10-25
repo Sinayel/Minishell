@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 15:38:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/24 12:44:36 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/25 15:35:08 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,16 @@ void	ft_putstr_fd(char *s, int fd)
 	}
 }
 
-void	exit_handler(int n_exit)
+void	exit_handler(int n_exit, char *file)
 {
+	if (n_exit == 0)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(file, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+	}
 	if (n_exit == 1)
-		ft_putstr_fd("Expected : ./pipex infile cmd cmd outfile\n", 2);
+		ft_putstr_fd("Expected : ./pipex infile cmd cmd outfile\n", 2); //! PAS TERRIBLE COMMME MESS D'ERREUR, A REMPLACER...
 	exit(0);
 }
 
@@ -42,7 +48,7 @@ int	open_file(char *file, int in_or_out)
 	if (in_or_out == 1)
 		ret = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (ret == -1)
-		exit(0);
+		exit_handler(0, file);
 	return (ret);
 }
 
