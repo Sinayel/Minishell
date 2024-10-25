@@ -6,17 +6,21 @@
 
 typedef struct s_data
 {
+	int				i;
+	int				j;
+	int				k;
 	char			*value;
 	char			**first_split;
 	char			*input;
-    int             type;
+	int				type;
+	char			**env;
 	struct s_data	*next;
 }					t_data;
 
-//! UNIQUEMENT POUR LES STRUCTURE (NE MARCHE PAS AVEC LES LISTE CHAINEE)
-t_data *get_data(void)
+t_data	*get_data(void)
 {
-	static t_data data;
+	static t_data	data;
+
 	return (&data);
 }
 
@@ -31,7 +35,22 @@ char	*ft_strncpy(char *s1, char *s2, int n)
 	return (s1);
 }
 
-int	word_count(char *str)
+void	print(void)
+{
+	t_data	*data;
+	int		i;
+
+	data = get_data();
+	i = 0;
+	while (data->first_split[i])
+	{
+		printf("%s -> ", data->first_split[i]);
+		i++;
+	}
+	printf("NULL\n");
+}
+
+int	word_count_pipe(char *str)
 {
 	int	i;
 	int	wc;
@@ -40,164 +59,122 @@ int	word_count(char *str)
 	wc = 0;
 	while (str[i])
 	{
-		while (str[i] && (str[i] == ' ' || str[i] == '\n' || str[i] == '\t'))
+		while (str[i] && (str[i] == '|' || str[i] == ' ' || str[i] == '\n'
+				|| str[i] == '\t'))
+		{
+			if (str[i] == '|')
+				wc++;
 			i++;
+		}
 		if (str && str[i] != '\0')
 			wc++;
-		while (str[i] && (str[i] != ' ' && str[i] != '\n' && str[i] != '\t'))
+		while (str[i] && (str[i] != '|' && str[i] != ' ' && str[i] != '\n'
+				&& str[i] != '\t'))
 			i++;
 	}
+	printf("wc = %d\n", wc);
 	return (wc);
 }
 
-char	**ft_split(char *str)
+char **sortie(char **out, int i, int j, char *str, int k)
 {
-	int		i;
-	int		j;
-	int		k;
+	out[k] = (char *)malloc(sizeof(char) * ((i - j) + 1));
+	if (!out[k])
+	{
+		while (k > 0)
+			free(out[--k]);
+		free(out);
+		return (NULL);
+	}
+	strncpy(out[k], &str[j], i - j);
+	out[k][i - j] = '\0';
+	k++;
+	return out;
+}
+
+char **for_pipe(char **out, int k)
+{
+	out[k] = (char *)malloc(sizeof(char) * 2);
+	if (!out[k])
+	{
+		while (k > 0)
+			free(out[--k]);
+		free(out);
+		return (NULL);
+	}
+	out[k][0] = '|';
+	out[k][1] = '\0';
+	return out;
+}
+
+int	first_verif(char *str, int i)
+{
+	while (str[i] && (str[i] == ' ' || str[i] == '\n' || str[i] == '\t'))
+		i++;
+	return i;
+}
+
+int	second_verif(char *str, int i)
+{
+	while (str[i] && (str[i] != ' ' && str[i] != '\n' && str[i] != '\t'
+			&& str[i] != '|'))
+		i++;
+	return i;
+}
+
+char	**ft_split_pipe(char *str)
+{
+	t_data *data = get_data();
 	char	**out;
 
-	i = 0;
-	j = 0;
-	k = 0;
-	out = (char **)malloc(sizeof(char *) * (word_count(str) + 1));
+	out = (char **)malloc(sizeof(char *) * (word_count_pipe(str) + 1));
 	if (!out)
 		return (NULL);
-	while (str[i])
+	while (str[data->i])
 	{
-		while (str[i] && (str[i] == ' ' || str[i] == '\n' || str[i] == '\t'))
-			i++;
-		j = i;
-		while (str[i] && (str[i] != ' ' && str[i] != '\n' && str[i] != '\t'))
-			i++;
-		if (i > j)
+		data->i = first_verif(str, data->i);
+		if (str[data->i] == '|')
 		{
-			out[k] = (char *)malloc(sizeof(char) * ((i - j) + 1));
-			if (!out[k])
-			{
-				while (k > 0)
-					free(out[--k]);
-				free(out);
-				return (NULL);
-			}
-			ft_strncpy(out[k++], &str[j], i - j);
+			out = for_pipe(out, data->k);
+			data->k++;
+			data->i++;
+		}
+		data->j = data->i;
+		data->i = second_verif(str, data->i);
+		if (data->i > data->j)
+		{
+			out = sortie(out, data->i, data->j, str, data->k);
+			data->k++;
 		}
 	}
-	out[k] = NULL;
+	out[data->k] = NULL;
+	init_var();
 	return (out);
 }
 
-t_data	*add_last(t_data *list, char *value)
+void init_var()
 {
-	t_data	*new_element;
-	t_data	*temp;
-
-	new_element = malloc(sizeof(t_data));
-	if (!new_element)
-		return (list);
-	new_element->value = strdup(value);
-    new_element->type = 0;
-	new_element->next = NULL;
-	if (list == NULL)
-		return (new_element);
-	temp = list;
-	while (temp->next != NULL)
-		temp = temp->next;
-	temp->next = new_element;
-	return (list);
-}
-
-void	print_list(t_data *head)
-{
-	t_data	*temp;
-
-	temp = head;
-	while (temp != NULL)
-	{
-		printf("%s -> ", temp->value);
-		temp = temp->next;
-	}
-	printf("NULL\n");
-}
-
-void	ft_lstclear(t_data **lst)
-{
-	t_data	*temp;
-
-	if (!lst)
-		return ;
-	while (*lst)
-	{
-		temp = (*lst)->next;
-		free((*lst)->value); //1 Libere `value` du noeud actuel
-		free(*lst);          //1 Libere le noeud actuel
-		*lst = temp;
-	}
-	*lst = NULL;
-}
-
-t_data *init_list(t_data *list)
-{
-    t_data *data = get_data();
-    int i = 0;
-    while (data->first_split[i])
-    {
-        list = add_last(list, data->first_split[i]);
-        i++;
-    }
-    return list;
-}
-
-int args(char *str)
-{
-    printf("str = %s\n", str);
-    if(strcmp(str, "echo") == 0 ||      //3 Cmd a +1 d'arguments (ou 1 seul)
-        strcmp(str, "cd") == 0 ||
-        strcmp(str, "export") == 0 ||
-        strcmp(str, "unset") == 0)
-        return 0;
-    else if(strcmp(str, "exit") == 0 || //3 Cmd a 1 arguments (Sans option)
-            strcmp(str, "pwd") == 0 ||
-            strcmp(str, "env") == 0)
-        return 2;
-    else
-        return 1;
-}
-
-int check_cmd(t_data *list)
-{
-    t_data *temp = list;
-    int i = 0;
-    while(temp != NULL)
-    {
-        if(args(temp->value) == 1)
-            return 1;
-        temp = temp->next;
-        i++;
-    }
-    return 0;
+	t_data *data = get_data();
+	data->i = 0;
+	data->j = 0;
+	data->k = 0;
 }
 
 int	main(void)
 {
-	t_data	*list;
-	t_data	*data;
-    int i = 0;
+	t_data *data;
 
-	list = NULL;
 	data = get_data();
+	init_var();
 	while (1)
 	{
 		data->input = readline("Minishell> ");
-		data->first_split = ft_split(data->input);
-        list = init_list(list);
-
-        if (check_cmd(list) == 1)      //1 Check les arguments de base : Cd, pwd, exit...
-            exit(1);
-
-        print_list(list);
-        printf("input = %s\n", data->input);
-		ft_lstclear(&list);             //1 Libere tous les noeud de ma liste
+		data->first_split = ft_split_pipe(data->input);
+		if (!data->first_split)
+			free(data->input);
+		print();
+		if (*data->input)
+			add_history(data->input);
 		free(data->input);
 	}
 	return (0);

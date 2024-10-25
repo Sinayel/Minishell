@@ -6,12 +6,14 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:30:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/25 18:30:31 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/25 21:44:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+
+//5 ------------- Pour check les cmd -------------
 int args(char *str)
 {
     printf("str = %s\n", str);

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/25 18:44:32 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/25 21:47:12 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,19 +48,18 @@ int	main(void)
 	while (1)
 	{
 		data->input = readline("Minishell> ");
-		data->first_split = ft_split(data->input);
-        if(!data->first_split)
+		data->first_split = ft_split_pipe(data->input);
+
+		if(!data->first_split)
             free(data->input);
+
         list = init_list(list);
 
-        // if (check_cmd(list) == 1)      //1 Check les arguments de base : Cd, pwd, exit...
-        //     exit(1);
         if (*data->input)
 			add_history(data->input);
 
         print_list(list);
-        printf("input = %s\n", data->input);
-    
+
 		ft_lstclear(&list);             //1 Libere tous les noeud de ma liste
 		free(data->input);
 	}

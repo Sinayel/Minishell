@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/25 18:34:59 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/25 21:46:15 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,9 @@
 
 typedef struct s_data
 {
+	int				i;
+	int				j;
+	int				k;
 	char			*value;
 	char			**first_split;
 	char			*input;
@@ -88,3 +91,9 @@ char				*ft_strncpy(char *s1, char *s2, int n);
 char				**ft_split(char *str);
 int					word_count(char *str);
 t_data				*get_data(void);
+
+// Split_pipe (26 lignes sur le ft_split_pipe)
+void				init_var();
+char				**ft_split_pipe(char *str);
+int					word_count_pipe(char *str);
+char 				**for_pipe(char **out, int k);

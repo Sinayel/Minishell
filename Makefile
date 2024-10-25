@@ -19,7 +19,9 @@ ERROR_SRC =
 
 #4 ---------------------------- UTILS ---------------------------- #
 UTILS_SRC = srcs/utils/utils_2.c \
-			srcs/utils/utils.c
+			srcs/utils/utils.c	\
+			srcs/utils/utils_split.c \
+			srcs/utils/split_pipe.c
 
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(CMD_SRC) $(ERROR_SRC) $(UTILS_SRC)
