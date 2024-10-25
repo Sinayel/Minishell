@@ -6,34 +6,69 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/11 20:22:10 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/25 18:47:22 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	ft_exit(void)
+void	print_list(t_data *head)
 {
-	t_data	*data;
+	t_data	*temp;
 
-	data = get_data();
-	free(data->input);
-	ft_free(data->str);
-	rl_clear_history();
-	exit(0);
-	return (0);
+	temp = head;
+	while (temp != NULL)
+	{
+		printf("%s -> ", temp->value);
+		temp = temp->next;
+	}
+	printf("NULL\n");
 }
 
-int	ft_free(char **str)
+void	ft_lstclear(t_data **lst)
 {
-	int	i;
+	t_data	*temp;
 
-	i = 0;
-	while (str[i])
+	if (!lst)
+		return ;
+	while (*lst)
 	{
-		free(str[i]);
-		i++;
+		temp = (*lst)->next;
+		free((*lst)->value); //1 Libere `value` du noeud actuel
+		free(*lst);          //1 Libere le noeud actuel
+		*lst = temp;
 	}
-	free(str);
-	return (0);
+	*lst = NULL;
+}
+
+t_data	*add_last(t_data *list, char *value)
+{
+	t_data	*new_element;
+	t_data	*temp;
+
+	new_element = malloc(sizeof(t_data));
+	if (!new_element)
+		return (list);
+	new_element->value = strdup(value);
+    new_element->type = 0;
+	new_element->next = NULL;
+	if (list == NULL)
+		return (new_element);
+	temp = list;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = new_element;
+	return (list);
+}
+
+t_data *init_list(t_data *list)
+{
+    t_data *data = get_data();
+    int i = 0;
+    while (data->first_split[i])
+    {
+        list = add_last(list, data->first_split[i]);
+        i++;
+    }
+    return list;
 }

@@ -6,9 +6,17 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/22 13:12:22 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/25 18:34:59 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#define INPUT 1   // 3 "<"
+#define HEREDOC 2 // 3 "<<"
+#define TRUNC 3   // 3 ">"
+#define APPEND 4  // 3 ">>"
+#define PIPE 5    // 1 "|"
+#define CMD 6     // 1 "|"
+#define ARG 7     // 1 "|"
 
 #include <stdio.h>
 #include <readline/history.h>
@@ -20,56 +28,63 @@
 
 typedef struct s_data
 {
-	char	**env;
-	char	*input;
-	int		exec_value; // Valleur de retour pour "$?"
-	char	*before; //? dollar_check
-	char	**str; // Input en double tableau
-	char	*var_end; //? print_with_vars
-	char	*var_name; //? print_with_vars
-	size_t	len; //? print_with_vars
-	char	*dollar_pos; //? print_with_vars
-	char	*env_value; //? print_with_vars
-	int		inside_quotes; //* print_string
-	char	*current_str; //* print_string
-}			t_data;
+	char			*value;
+	char			**first_split;
+	char			*input;
+	int				type;
+	char			**env;
+	struct s_data	*next;
+}					t_data;
 
-//TODO --------------------  Parsing  --------------------
-void		for_one_word(char *str);
-int			verif_word(char *str[]);
-int			parsing(char *str[]);
-void		msg_dollar(const char *before, const char *env_var);
-void 		check_args();
+// typedef struct s_data
+// {
+// 	char			**env;
+// 	char			*input;
+// 	char			*inter;
+// 	int exec_value;      // Valleur de retour pour "$?"
+// 	char *before;        //? dollar_check
+// 	char **str;          // Input en double tableau
+// 	char *var_end;       //? print_with_vars
+// 	char *var_name;      //? print_with_vars
+// 	size_t len;          //? print_with_vars
+// 	char *dollar_pos;    //? print_with_vars
+// 	char *env_value;     //? print_with_vars
+// 	char *inside_quotes; //* print_string
+// 	char *current_str;   //* print_string
+// 	struct s_data	*next;
+// }					t_data;
 
+// TODO ------------------  Parsing  ----------------------
+int					args(char *str);
+int					check_cmd(t_data *list);
 
-//! -----------------------  Cmd  ----------------------------
+//! ------------------------  CMD  ------------------------
 
-//* --------------------  Env  --------------------
-void		print_env(void);
-char		*get_env(const char *var, char **env);
+//* ------------------------  Env  ------------------------
+void				print_env(void);
+char				*get_env(const char *var, char **env);
 
+//* -----------------------  Echo  ------------------------
+// int					echo(char *str[]);
+// int					print_string(char *str[]);
+// void				write_env_var(char **str, char **env);
+// void				print_with_vars(char *str, char **env);
+// void				print_string_with_option(char *str[]);
+// int					echo_for_one_caractere(char *input);
 
-//* --------------------  Echo  --------------------
-int			echo(char *str[]);
-int			print_string(char *str[]);
-void		write_env_var(char **str, char **env);
-void		print_with_vars(char *str, char **env);
-void		print_string_with_option(char *str[]);
-int			echo_for_one_caractere(char *input);
+//! --------------------------------------------------------
 
-//! ----------------------------------------------------------
+// 3 --------------------  Liste Chainee  --------------------
+void				print_list(t_data *head);
+void				ft_lstclear(t_data **lst);
+t_data				*add_last(t_data *list, char *value);
+t_data				*init_list(t_data *list);
 
+//* ------------------------  Error  ------------------------
 
-//* --------------------  Error  --------------------
-int 		dollar_error();
-void		other_error(void);
-
-
-//? --------------------  Utils  --------------------
-int			ft_strcmp(const char *s1, const char *s2);
-char		*ft_strncpy(char *s1, char *s2, int n);
-char		**ft_split(char *str);
-int			word_count(char *str);
-int			ft_free(char **str);
-t_data		*get_data(void);
-int			ft_exit(void);
+//? ------------------------  Utils  ------------------------
+int					ft_strcmp(const char *s1, const char *s2);
+char				*ft_strncpy(char *s1, char *s2, int n);
+char				**ft_split(char *str);
+int					word_count(char *str);
+t_data				*get_data(void);

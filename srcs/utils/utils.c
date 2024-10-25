@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:19:04 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/08 19:50:50 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/25 17:35:58 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ char	**ft_split(char *str)
 	j = 0;
 	k = 0;
 	out = (char **)malloc(sizeof(char *) * (word_count(str) + 1));
+	if (!out)
+		return (NULL);
 	while (str[i])
 	{
 		while (str[i] && (str[i] == ' ' || str[i] == '\n' || str[i] == '\t'))
@@ -76,7 +78,14 @@ char	**ft_split(char *str)
 			i++;
 		if (i > j)
 		{
-			out[k] = (char *)malloc(sizeof(char *) * ((i - j) + 1));
+			out[k] = (char *)malloc(sizeof(char) * ((i - j) + 1));
+			if (!out[k])
+			{
+				while (k > 0)
+					free(out[--k]);
+				free(out);
+				return (NULL);
+			}
 			ft_strncpy(out[k++], &str[j], i - j);
 		}
 	}

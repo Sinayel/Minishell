@@ -9,18 +9,13 @@ RM = 			rm -f
 NAME = 			Minishell
 
 #3 --------------------------- PARSING --------------------------- #
-PARSING_SRC = srcs/parsing/verif.c \
-			  srcs/parsing/dollar_check.c \
-			  srcs/parsing/parsing.c
+PARSING_SRC = srcs/parsing/check.c
 
 #1 ----------------------------- CMD ----------------------------- #
-CMD_SRC = srcs/cmd/echo/echo.c \
-		  srcs/cmd/echo/echo_check_dollar.c \
-		  srcs/cmd/env/env.c
+CMD_SRC =
 
 #! ---------------------------- ERROR ---------------------------- #
-ERROR_SRC = srcs/error/dollar_error.c \
-			srcs/error/args_error.c
+ERROR_SRC =
 
 #4 ---------------------------- UTILS ---------------------------- #
 UTILS_SRC = srcs/utils/utils_2.c \

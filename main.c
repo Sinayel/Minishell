@@ -6,12 +6,11 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/18 18:15:00 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/25 18:44:32 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
-#include <stdio.h>
 
 //! ◦ CD with only a relative or absolute path |  (JULIO)
 //! ◦ PWD with no options                      |  (JULIO)
@@ -23,6 +22,7 @@
 //! ◦ EXIT                                     |  (YANS)
 //! ◦ PARSING                                  |  (YANS)
 
+//! UNIQUEMENT POUR LES STRUCTURE (NE MARCHE PAS AVEC LES LISTE CHAINEE)
 t_data *get_data(void)
 {
 	static t_data data;
@@ -35,32 +35,33 @@ void	init_variable(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	data->env = env;
-	data->str = NULL;
 	data->input = NULL;
-	data->dollar_pos = NULL;
-	data->env_value = NULL;
-	data->inside_quotes = 0;
-	data->dollar_pos = NULL;
-	data->len = 0;
-	data->before = NULL;
 }
 
-int	main(int argc, char **argv, char **env)
+int	main(void)
 {
-	t_data *data = get_data();
-	init_variable(argc, argv, env);
+	t_data	*list;
+	t_data	*data;
+
+	list = NULL;
+	data = get_data();
 	while (1)
 	{
-		data->input = readline("\033[35mMinishell$ \033[0m");
-		data->str = ft_split(data->input);
-		check_args();
-		// if (word_count(data->input) == 1)
-		// 	for_one_word(data->str[0]);
-		// else if (verif_word(data->str) == 0 && data->str[1] != NULL)
-		// 	parsing(data->str);
-		if (*data->input)
+		data->input = readline("Minishell> ");
+		data->first_split = ft_split(data->input);
+        if(!data->first_split)
+            free(data->input);
+        list = init_list(list);
+
+        // if (check_cmd(list) == 1)      //1 Check les arguments de base : Cd, pwd, exit...
+        //     exit(1);
+        if (*data->input)
 			add_history(data->input);
-		ft_free(data->str);
+
+        print_list(list);
+        printf("input = %s\n", data->input);
+    
+		ft_lstclear(&list);             //1 Libere tous les noeud de ma liste
 		free(data->input);
 	}
 	return (0);
