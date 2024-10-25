@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:15:04 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/24 12:44:38 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/25 12:23:04 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ void	ft_exec(char *cmd, char **env)
 	path = get_path(split_cmd[0], env);
 	if (execve(path, split_cmd, env) == -1)
 	{
-		ft_putstr_fd("pipex: command not found: ", 2);
-		ft_putendl_fd(split_cmd[0], 2);
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(split_cmd[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
 		ft_free_tab(split_cmd);
 		exit(0);
 	}
