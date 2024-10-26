@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/25 21:46:15 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/26 21:23:14 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,26 @@
 #include <string.h>
 #include <unistd.h>
 
-typedef struct s_data
+typedef struct s_split
 {
 	int				i;
 	int				j;
 	int				k;
-	char			*value;
-	char			**first_split;
+}				t_split;
+
+typedef struct s_data
+{
+	char			*token;
 	char			*input;
-	int				type;
 	char			**env;
-	struct s_data	*next;
-}					t_data;
+}				t_data;
+
+typedef struct s_token
+{
+	char			*token;
+	int				type;
+	struct s_token	*next;
+}				t_token;
 
 // typedef struct s_data
 // {
@@ -59,7 +67,7 @@ typedef struct s_data
 
 // TODO ------------------  Parsing  ----------------------
 int					args(char *str);
-int					check_cmd(t_data *list);
+int					check_cmd(t_token *list);
 
 //! ------------------------  CMD  ------------------------
 
@@ -78,22 +86,22 @@ char				*get_env(const char *var, char **env);
 //! --------------------------------------------------------
 
 // 3 --------------------  Liste Chainee  --------------------
-void				print_list(t_data *head);
-void				ft_lstclear(t_data **lst);
-t_data				*add_last(t_data *list, char *value);
-t_data				*init_list(t_data *list);
+void				print_list(t_token *list);
+void				ft_lstclear(t_token **lst);
+t_token				*add_last(t_token *list, char *token);
+t_token *tokenization(char *str);
 
 //* ------------------------  Error  ------------------------
 
 //? ------------------------  Utils  ------------------------
-int					ft_strcmp(const char *s1, const char *s2);
-char				*ft_strncpy(char *s1, char *s2, int n);
-char				**ft_split(char *str);
-int					word_count(char *str);
+// int					ft_strcmp(const char *s1, const char *s2);
+// char				*ft_strncpy(char *s1, char *s2, int n);
+// char				**ft_split(char *str);
+// int					word_count(char *str);
 t_data				*get_data(void);
+t_split 			*get_data_split(void);
 
-// Split_pipe (26 lignes sur le ft_split_pipe)
+// create_token (26 lignes sur le ft_split_pipe)
 void				init_var();
-char				**ft_split_pipe(char *str);
 int					word_count_pipe(char *str);
-char 				**for_pipe(char **out, int k);
+char 				**for_pipe(char **out, int k, char str);

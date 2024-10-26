@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 18:30:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/25 21:44:50 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/26 17:49:36 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ int args(char *str)
         return 1;
 }
 
-int check_cmd(t_data *list)
+int check_cmd(t_token *list)
 {
-    t_data *temp = list;
+    t_token *temp = list;
     int i = 0;
     while(temp != NULL)
     {
-        if(args(temp->value) == 1)
+        if(args(temp->token) == 1)
             return 1;
         temp = temp->next;
         i++;

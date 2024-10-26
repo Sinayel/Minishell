@@ -9,7 +9,8 @@ RM = 			rm -f
 NAME = 			Minishell
 
 #3 --------------------------- PARSING --------------------------- #
-PARSING_SRC = srcs/parsing/check.c
+PARSING_SRC = srcs/parsing/check.c \
+			  srcs/parsing/tokenization.c
 
 #1 ----------------------------- CMD ----------------------------- #
 CMD_SRC =
@@ -19,9 +20,7 @@ ERROR_SRC =
 
 #4 ---------------------------- UTILS ---------------------------- #
 UTILS_SRC = srcs/utils/utils_2.c \
-			srcs/utils/utils.c	\
-			srcs/utils/utils_split.c \
-			srcs/utils/split_pipe.c
+			srcs/utils/utils_token.c
 
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(CMD_SRC) $(ERROR_SRC) $(UTILS_SRC)

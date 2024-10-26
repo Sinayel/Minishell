@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/25 21:47:12 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/26 21:08:17 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,12 @@ t_data *get_data(void)
 	return (&data);
 }
 
+t_split *get_data_split(void)
+{
+	static t_split data;
+	return (&data);
+}
+
 void	init_variable(int argc, char **argv, char **env)
 {
 	t_data *data = get_data();
@@ -40,7 +46,7 @@ void	init_variable(int argc, char **argv, char **env)
 
 int	main(void)
 {
-	t_data	*list;
+	t_token	*list;
 	t_data	*data;
 
 	list = NULL;
@@ -48,12 +54,10 @@ int	main(void)
 	while (1)
 	{
 		data->input = readline("Minishell> ");
-		data->first_split = ft_split_pipe(data->input);
+		list = tokenization(data->input);
 
-		if(!data->first_split)
+		if(!list->token)
             free(data->input);
-
-        list = init_list(list);
 
         if (*data->input)
 			add_history(data->input);

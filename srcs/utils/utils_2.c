@@ -6,50 +6,50 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/25 18:47:22 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/26 21:06:49 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	print_list(t_data *head)
+void	print_list(t_token *list)
 {
-	t_data	*temp;
+	t_token	*temp;
 
-	temp = head;
+	temp = list;
 	while (temp != NULL)
 	{
-		printf("%s -> ", temp->value);
+		printf("%s -> ", temp->token);
 		temp = temp->next;
 	}
 	printf("NULL\n");
 }
 
-void	ft_lstclear(t_data **lst)
+void	ft_lstclear(t_token **lst)
 {
-	t_data	*temp;
+	t_token	*temp;
 
 	if (!lst)
 		return ;
 	while (*lst)
 	{
 		temp = (*lst)->next;
-		free((*lst)->value); //1 Libere `value` du noeud actuel
+		free((*lst)->token); //1 Libere `value` du noeud actuel
 		free(*lst);          //1 Libere le noeud actuel
 		*lst = temp;
 	}
 	*lst = NULL;
 }
 
-t_data	*add_last(t_data *list, char *value)
+t_token	*add_last(t_token *list, char *value)
 {
-	t_data	*new_element;
-	t_data	*temp;
+	t_token	*new_element;
+	t_token	*temp;
 
-	new_element = malloc(sizeof(t_data));
+	new_element = malloc(sizeof(t_token));
 	if (!new_element)
 		return (list);
-	new_element->value = strdup(value);
+	new_element->token = value;
     new_element->type = 0;
 	new_element->next = NULL;
 	if (list == NULL)
@@ -59,16 +59,4 @@ t_data	*add_last(t_data *list, char *value)
 		temp = temp->next;
 	temp->next = new_element;
 	return (list);
-}
-
-t_data *init_list(t_data *list)
-{
-    t_data *data = get_data();
-    int i = 0;
-    while (data->first_split[i])
-    {
-        list = add_last(list, data->first_split[i]);
-        i++;
-    }
-    return list;
 }
