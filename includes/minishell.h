@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/28 18:31:33 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/28 19:36:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_token
 	char			*token;
 	int				type;
 	struct s_token	*next;
+	struct s_token	*prev;
 }					t_token;
 
 // typedef struct s_data

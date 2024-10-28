@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/28 18:33:00 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/28 19:40:22 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_token_lstclear(t_token **lst)
 {
 	t_token	*temp;
 
-	if (!lst)
+	if (!lst || !*lst)
 		return ;
 	while (*lst)
 	{
@@ -52,11 +52,13 @@ t_token	*add_last(t_token *list, char *value)
 	new_element->token = value;
     new_element->type = 0;
 	new_element->next = NULL;
+	new_element->prev = NULL;
 	if (list == NULL)
 		return (new_element);
 	temp = list;
 	while (temp->next != NULL)
 		temp = temp->next;
 	temp->next = new_element;
+	new_element->prev = temp;
 	return (list);
 }
