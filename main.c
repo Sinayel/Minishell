@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/28 18:09:56 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/28 18:31:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ int	main(void)
 		if(data->input)
 		{
 			list = tokenization(data->input);
-			
+			list = id_token(list);
+			//5 Fonction pour identifier les tokens (les types)
 		}
 
 		// if(!list->token)		//2 Jsp a pq mais si je le met il fais crash quand il a une ligne vide

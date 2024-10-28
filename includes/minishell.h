@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/28 18:03:58 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/28 18:31:33 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ typedef struct s_token
 // }					t_data;
 
 // TODO ------------------  Parsing  ----------------------
-int					args(char *str);
-int					check_cmd(t_token *list);
+t_token 			*id_token(t_token *list);
+t_token				*tokenization(char *str);
 
 //! ------------------------  CMD  ------------------------
 
@@ -90,22 +90,12 @@ char				*get_env(const char *var, char **env);
 void				print_list(t_token *list);
 void				ft_token_lstclear(t_token **lst);
 t_token				*add_last(t_token *list, char *token);
-t_token				*tokenization(char *str);
-void				skip_spaces(int *i, char *str);
-char				*extract_token(char *str, int *i, int j);
-void				handle_separator(char **str, int *i, t_token **list);
 
 //* ------------------------  Error  ------------------------
 
 //? ------------------------  Utils  ------------------------
-// int					ft_strcmp(const char *s1, const char *s2);
-// char				*ft_strncpy(char *s1, char *s2, int n);
-// char				**ft_split(char *str);
-// int					word_count(char *str);
 t_data				*get_data(void);
 t_split				*get_data_split(void);
-
-// create_token (26 lignes sur le ft_split_pipe)
-void				init_var(void);
-int					word_count_pipe(char *str);
-char				**for_pipe(char **out, int k, char str);
+void				skip_spaces(int *i, char *str);
+char				*extract_token(char *str, int *i, int j);
+void				handle_separator(char **str, int *i, t_token **list);

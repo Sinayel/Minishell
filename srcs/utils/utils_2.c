@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/28 17:10:24 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/28 18:33:00 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	print_list(t_token *list)
 	temp = list;
 	while (temp != NULL)
 	{
-		printf("%s -> ", temp->token);
+		printf("[%d] %s -> ", temp->type, temp->token);
 		temp = temp->next;
 	}
 	printf("NULL\n");

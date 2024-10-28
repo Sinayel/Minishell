@@ -1,7 +1,8 @@
-# Variables principales
 CC = cc
+
 CFLAGS = -Wall -Wextra -Werror -I/usr/local/opt/readline/include
 LDFLAGS = -L/usr/local/opt/readline/lib -lreadline -g3
+
 INCLUDE = -I ./include -I ./Libft
 DIRLIB = ./libft/
 FILELIB = libft.a
@@ -11,11 +12,12 @@ MAKEFLAGS += --no-print-directory
 RM = rm -f
 NAME = Minishell
 
-# Sources de Minishell
-PARSING_SRC = srcs/parsing/check.c \
+PARSING_SRC = srcs/parsing/id_token.c \
 			  srcs/parsing/tokenization.c
+
 UTILS_SRC = srcs/utils/utils_2.c \
 			srcs/utils/utils_token.c
+
 MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC)
 
 ASCII_LOGO = -e "\
@@ -26,7 +28,6 @@ ASCII_LOGO = -e "\
 	██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\n\
 	╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
 
-# Compilation de Minishell avec Libft
 all: $(NAMELFT) $(NAME)
 
 $(NAMELFT):
@@ -39,7 +40,6 @@ $(NAME): $(MINISHELL_SRC) $(NAMELFT)
 	@$(CC) $(MINISHELL_SRC) $(NAMELFT) $(CFLAGS) $(LDFLAGS) $(INCLUDE) -o $(NAME)
 	@echo -e '\033[33;32mMinishell created ! 🎉\033[0m'
 
-# Nettoyage
 clean:
 	@$(MAKE) -C $(DIRLIB) clean
 	@$(RM) $(NAME)
@@ -48,7 +48,6 @@ clean:
 fclean: clean
 	@$(MAKE) -C $(DIRLIB) fclean
 
-# Recompilation complète
 re: fclean all
 
 .PHONY: all clean fclean re
