@@ -1,30 +1,22 @@
-CC = 			cc
-
+# Variables principales
+CC = cc
 CFLAGS = -Wall -Wextra -Werror -I/usr/local/opt/readline/include
-LDFLAGS = -L/usr/local/opt/readline/lib -lreadline -g
+LDFLAGS = -L/usr/local/opt/readline/lib -lreadline -g3
+INCLUDE = -I ./include -I ./Libft
+DIRLIB = ./libft/
+FILELIB = libft.a
+NAMELFT = $(addprefix $(DIRLIB), $(FILELIB))
 
 MAKEFLAGS += --no-print-directory
-RM = 			rm -f
+RM = rm -f
+NAME = Minishell
 
-NAME = 			Minishell
-
-#3 --------------------------- PARSING --------------------------- #
+# Sources de Minishell
 PARSING_SRC = srcs/parsing/check.c \
 			  srcs/parsing/tokenization.c
-
-#1 ----------------------------- CMD ----------------------------- #
-CMD_SRC =
-
-#! ---------------------------- ERROR ---------------------------- #
-ERROR_SRC =
-
-#4 ---------------------------- UTILS ---------------------------- #
 UTILS_SRC = srcs/utils/utils_2.c \
 			srcs/utils/utils_token.c
-
-
-MINISHELL_SRC = main.c $(PARSING_SRC) $(CMD_SRC) $(ERROR_SRC) $(UTILS_SRC)
-
+MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC)
 
 ASCII_LOGO = -e "\
 	███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗     \n\
@@ -34,23 +26,29 @@ ASCII_LOGO = -e "\
 	██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\n\
 	╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
 
-all:		$(NAME)
+# Compilation de Minishell avec Libft
+all: $(NAMELFT) $(NAME)
 
-$(NAME):	
-				@echo -e '\033[35mCreating Minishell... 🕗\n'
-				@echo $(ASCII_LOGO)
-				@${CC} ${MINISHELL_SRC} ${CFLAGS} ${LDFLAGS} -o ${NAME}
-				@echo -e '\033[33;32mMinishell created ! 🎉\033[0m'
+$(NAMELFT):
+	@echo "Compilation de la libft..."
+	@$(MAKE) -C $(DIRLIB)
 
-re: 			
-				@$(RM) $(NAME)
-				@echo -e '\033[0;31mMinishell deleted ! 🛑'
-				$(MAKE) all
+$(NAME): $(MINISHELL_SRC) $(NAMELFT)
+	@echo -e '\033[35mCreating Minishell... 🕗\n'
+	@echo $(ASCII_LOGO)
+	@$(CC) $(MINISHELL_SRC) $(NAMELFT) $(CFLAGS) $(LDFLAGS) $(INCLUDE) -o $(NAME)
+	@echo -e '\033[33;32mMinishell created ! 🎉\033[0m'
 
+# Nettoyage
 clean:
-				@$(RM) $(NAME)
-				@echo -e '\033[0;31mMinishell deleted ! 🛑'
+	@$(MAKE) -C $(DIRLIB) clean
+	@$(RM) $(NAME)
+	@echo -e '\033[0;31mMinishell deleted ! 🛑'
 
 fclean: clean
+	@$(MAKE) -C $(DIRLIB) fclean
 
-.PHONY: 	fclean clean re all
+# Recompilation complète
+re: fclean all
+
+.PHONY: all clean fclean re

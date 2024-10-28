@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/26 21:23:14 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/28 18:03:58 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #define CMD 6     // 1 "|"
 #define ARG 7     // 1 "|"
 
+#include "../../libft/libft.h"
 #include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
@@ -31,21 +32,21 @@ typedef struct s_split
 	int				i;
 	int				j;
 	int				k;
-}				t_split;
+}					t_split;
 
 typedef struct s_data
 {
 	char			*token;
 	char			*input;
 	char			**env;
-}				t_data;
+}					t_data;
 
 typedef struct s_token
 {
 	char			*token;
 	int				type;
 	struct s_token	*next;
-}				t_token;
+}					t_token;
 
 // typedef struct s_data
 // {
@@ -87,9 +88,12 @@ char				*get_env(const char *var, char **env);
 
 // 3 --------------------  Liste Chainee  --------------------
 void				print_list(t_token *list);
-void				ft_lstclear(t_token **lst);
+void				ft_token_lstclear(t_token **lst);
 t_token				*add_last(t_token *list, char *token);
-t_token *tokenization(char *str);
+t_token				*tokenization(char *str);
+void				skip_spaces(int *i, char *str);
+char				*extract_token(char *str, int *i, int j);
+void				handle_separator(char **str, int *i, t_token **list);
 
 //* ------------------------  Error  ------------------------
 
@@ -99,9 +103,9 @@ t_token *tokenization(char *str);
 // char				**ft_split(char *str);
 // int					word_count(char *str);
 t_data				*get_data(void);
-t_split 			*get_data_split(void);
+t_split				*get_data_split(void);
 
 // create_token (26 lignes sur le ft_split_pipe)
-void				init_var();
+void				init_var(void);
 int					word_count_pipe(char *str);
-char 				**for_pipe(char **out, int k, char str);
+char				**for_pipe(char **out, int k, char str);

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/26 21:08:17 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/28 18:09:56 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,17 +54,21 @@ int	main(void)
 	while (1)
 	{
 		data->input = readline("Minishell> ");
-		list = tokenization(data->input);
+		if(data->input)
+		{
+			list = tokenization(data->input);
+			
+		}
 
-		if(!list->token)
-            free(data->input);
+		// if(!list->token)		//2 Jsp a pq mais si je le met il fais crash quand il a une ligne vide
+        //     free(data->input);
 
         if (*data->input)
 			add_history(data->input);
 
         print_list(list);
 
-		ft_lstclear(&list);             //1 Libere tous les noeud de ma liste
+		ft_token_lstclear(&list);             //1 Libere tous les noeud de ma liste
 		free(data->input);
 	}
 	return (0);

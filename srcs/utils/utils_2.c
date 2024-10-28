@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/26 21:06:49 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/28 17:10:24 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	print_list(t_token *list)
 	printf("NULL\n");
 }
 
-void	ft_lstclear(t_token **lst)
+void	ft_token_lstclear(t_token **lst)
 {
 	t_token	*temp;
 
