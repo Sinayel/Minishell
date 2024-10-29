@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/29 20:12:45 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/29 20:17:12 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,10 @@ char	*extract_token(const char *str, int *i, int start)
 	has_quotes = (str[start] == '"' || str[start] == '\'');
 	state.quote_type = has_quotes ? str[start] : 0;
 	initial_start = start;
-
 	if (has_quotes)
 		(*i)++;
 	while (str[*i] && !state.should_break)
 		process_token_char(str, i, has_quotes, &state);
-
 	if (*i > initial_start)
 		return (ft_substr(str, initial_start, *i - initial_start));
 	return (NULL);

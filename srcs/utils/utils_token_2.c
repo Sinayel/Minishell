@@ -6,13 +6,13 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 19:56:41 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/29 19:57:03 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/29 20:17:19 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void update_quote_state(char c, bool *in_squote, bool *in_dquote)
+void	update_quote_state(char c, bool *in_squote, bool *in_dquote)
 {
 	if (c == '"' && !*in_squote)
 		*in_dquote = !*in_dquote;
@@ -37,8 +37,8 @@ bool	is_quoted(const char *str, int pos)
 bool	should_break_token(const char *str, int i, bool has_quotes,
 		bool in_squote, bool in_dquote)
 {
-	return (!has_quotes && !in_squote && !in_dquote
-		&& (is_separator(str[i]) || isspace(str[i])));
+	return (!has_quotes && !in_squote && !in_dquote && (is_separator(str[i])
+			|| isspace(str[i])));
 }
 
 void	handle_quotes(const char *str, int *i, int quote_type,
