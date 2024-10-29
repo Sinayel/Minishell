@@ -1,94 +1,64 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   utils_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/07 17:19:04 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/25 17:35:58 by ylouvel          ###   ########.fr       */
+/*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
+/*   Updated: 2024/10/28 19:40:22 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*ft_strncpy(char *s1, char *s2, int n)
+void	print_list(t_token *list)
 {
-	int	i;
+	t_token	*temp;
 
-	i = -1;
-	while (++i < n && s2[i])
-		s1[i] = s2[i];
-	s1[i] = '\0';
-	return (s1);
+	temp = list;
+	while (temp != NULL)
+	{
+		printf("[%d] %s -> ", temp->type, temp->token);
+		temp = temp->next;
+	}
+	printf("NULL\n");
 }
 
-int	ft_strcmp(const char *s1, const char *s2)
+void	ft_token_lstclear(t_token **lst)
 {
-	size_t	i;
+	t_token	*temp;
 
-	i = 0;
-	while (s1[i] || s2[i])
+	if (!lst || !*lst)
+		return ;
+	while (*lst)
 	{
-		if ((unsigned char)s1[i] != (unsigned char)s2[i])
-			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-		i++;
+		temp = (*lst)->next;
+		free((*lst)->token); //1 Libere `value` du noeud actuel
+		free(*lst);          //1 Libere le noeud actuel
+		*lst = temp;
 	}
-	return (0);
+	*lst = NULL;
 }
 
-int	word_count(char *str)
+t_token	*add_last(t_token *list, char *value)
 {
-	int	i;
-	int	wc;
+	t_token	*new_element;
+	t_token	*temp;
 
-	i = 0;
-	wc = 0;
-	while (str[i])
-	{
-		while (str[i] && (str[i] == ' ' || str[i] == '\n' || str[i] == '\t'))
-			i++;
-		if (str && str[i] != '\0')
-			wc++;
-		while (str[i] && (str[i] != ' ' && str[i] != '\n' && str[i] != '\t'))
-			i++;
-	}
-	return (wc);
-}
-
-char	**ft_split(char *str)
-{
-	int		i;
-	int		j;
-	int		k;
-	char	**out;
-
-	i = 0;
-	j = 0;
-	k = 0;
-	out = (char **)malloc(sizeof(char *) * (word_count(str) + 1));
-	if (!out)
-		return (NULL);
-	while (str[i])
-	{
-		while (str[i] && (str[i] == ' ' || str[i] == '\n' || str[i] == '\t'))
-			i++;
-		j = i;
-		while (str[i] && (str[i] != ' ' && str[i] != '\n' && str[i] != '\t'))
-			i++;
-		if (i > j)
-		{
-			out[k] = (char *)malloc(sizeof(char) * ((i - j) + 1));
-			if (!out[k])
-			{
-				while (k > 0)
-					free(out[--k]);
-				free(out);
-				return (NULL);
-			}
-			ft_strncpy(out[k++], &str[j], i - j);
-		}
-	}
-	out[k] = NULL;
-	return (out);
+	new_element = malloc(sizeof(t_token));
+	if (!new_element)
+		return (list);
+	new_element->token = value;
+    new_element->type = 0;
+	new_element->next = NULL;
+	new_element->prev = NULL;
+	if (list == NULL)
+		return (new_element);
+	temp = list;
+	while (temp->next != NULL)
+		temp = temp->next;
+	temp->next = new_element;
+	new_element->prev = temp;
+	return (list);
 }

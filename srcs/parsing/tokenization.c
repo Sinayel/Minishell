@@ -6,80 +6,89 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/28 18:03:31 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/29 20:12:45 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	is_separator(char c)
+char	*extract_token(const char *str, int *i, int start)
 {
-	return (c == '<' || c == '>' || c == '|');
+	t_quote_state	state;
+	bool			has_quotes;
+	int				initial_start;
+
+	state = (t_quote_state){false, false, false, false, false, 0};
+	has_quotes = (str[start] == '"' || str[start] == '\'');
+	state.quote_type = has_quotes ? str[start] : 0;
+	initial_start = start;
+
+	if (has_quotes)
+		(*i)++;
+	while (str[*i] && !state.should_break)
+		process_token_char(str, i, has_quotes, &state);
+
+	if (*i > initial_start)
+		return (ft_substr(str, initial_start, *i - initial_start));
+	return (NULL);
+}
+
+char	*create_separator_token(const char *str, int *i)
+{
+	char	*token;
+
+	if ((str[*i] == '<' || str[*i] == '>') && str[*i + 1] == str[*i])
+	{
+		token = ft_substr(str, *i, 2);
+		(*i)++;
+	}
+	else
+		token = ft_substr(str, *i, 1);
+	(*i)++;
+	return (token);
+}
+
+void	handle_separator(const char *str, int *i, t_token **list)
+{
+	char	*token;
+
+	token = NULL;
+	if (is_separator(str[*i]) && !is_quoted(str, *i))
+	{
+		token = create_separator_token(str, i);
+		if (token)
+			*list = add_last(*list, token);
+	}
+}
+
+void	process_token(char *str, int *i, t_token **list)
+{
+	int		start;
+	char	*token;
+
+	start = *i;
+	token = extract_token(str, i, start);
+	if (token)
+		*list = add_last(*list, token);
+	handle_separator(str, i, list);
 }
 
 t_token	*tokenization(char *str)
 {
 	t_token	*list;
 	int		i;
-	int		j;
-	char	*token;
 
+	if (!str || has_unclosed_quotes(str))
+		return (NULL);
 	list = NULL;
 	i = 0;
-	j = 0;
 	while (str[i])
 	{
-		skip_spaces(&i, str);
-		j = i;
-		token = extract_token(str, &i, j);
-		if (token)
-			list = add_last(list, token);
-		handle_separator(&str, &i, &list);
+		skip_spaces(str, &i);
+		if (!str[i])
+			break ;
+		process_token(str, &i, &list);
 	}
+	list = id_token(list);
 	return (list);
-}
-
-void	skip_spaces(int *i, char *str)
-{
-	while (str[*i] == ' ')
-		(*i)++;
-}
-
-char	*extract_token(char *str, int *i, int j)
-{
-	while (str[*i] && !is_separator(str[*i]) && str[*i] != ' ')
-		(*i)++;
-	if (*i != j)
-		return (ft_substr(str, j, *i - j));
-	return (NULL);
-}
-
-void	handle_separator(char **str, int *i, t_token **list)
-{
-	char	*tmp;
-
-	if (is_separator((*str)[*i]))
-	{
-		tmp = NULL;
-		if ((*str)[*i] == '<' || (*str)[*i] == '>')
-		{
-			if ((*str)[*i + 1] == (*str)[*i])
-			{
-				tmp = ft_substr(*str, *i, 2);
-				*i += 2;
-			}
-			else
-			{
-				tmp = ft_substr(*str, *i, 1);
-				(*i)++;
-			}
-		}
-		else if ((*str)[*i] == '|')
-		{
-			tmp = ft_substr(*str, *i, 1);
-			(*i)++;
-		}
-		if (tmp)
-			*list = add_last(*list, tmp);
-	}
 }

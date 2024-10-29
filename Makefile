@@ -10,13 +10,14 @@ NAMELFT = $(addprefix $(DIRLIB), $(FILELIB))
 
 MAKEFLAGS += --no-print-directory
 RM = rm -f
-NAME = Minishell
+NAME = minishell
 
 PARSING_SRC = srcs/parsing/id_token.c \
 			  srcs/parsing/tokenization.c
 
-UTILS_SRC = srcs/utils/utils_2.c \
-			srcs/utils/utils_token.c
+UTILS_SRC = srcs/utils/utils.c \
+			srcs/utils/utils_token.c \
+			srcs/utils/utils_token_2.c
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC)
 

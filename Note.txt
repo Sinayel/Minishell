@@ -196,4 +196,3 @@ Redirection :
 
 Return Value :
     Comparer chaque return value avec le shell posix (parce que sinn c'est la merde)
-

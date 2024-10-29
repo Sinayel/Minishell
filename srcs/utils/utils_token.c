@@ -6,67 +6,62 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 21:38:04 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/26 19:36:49 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/29 19:57:00 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	is_operator(char *str, int i)
+void	process_token_char(const char *str, int *i, bool has_quotes,
+		t_quote_state *state)
 {
-	if (str[0] == '|' || str[0] == '<' || str[0] == '>')
-		return (0);
-	else if ((str[i] == '>' && str[i + 1] == '>') || (str[i] == '<' && str[i
-		+ 1] == '<'))
-		return 2;
-	return 1;
+	if (str[*i] == '"' || str[*i] == '\'')
+		handle_quotes(str, i, state->quote_type, state);
+	else if (should_break_token(str, *i, has_quotes,
+			state->in_squote, state->in_dquote))
+		state->should_break = true;
+	else
+		(*i)++;
 }
 
-int	word_count_pipe(char *str)
+bool has_unclosed_quotes(const char *line)
 {
-	int	i;
-	int	wc;
+    t_quote_state state;
+	state = (t_quote_state){false, false, false, false, false, 0};
 
-	i = 0;
-	wc = 0;
-	while (str[i])
-	{
-		printf("wc = %d\n", wc);
-		while (str[i] && (str[i] == ' ' || str[i] == '\n' || str[i] == '\t'))
-			i++;
-		if (str[i] == '\0')
-			break ;
-		else if (is_operator(str, i) == 0 || is_operator(str, i) == 2)
-		{
-			if(is_operator(str, i) == 2)
-				i += 2;
-			else
-				i++;
-			wc++;
-		}
-		else
-		{
-			while (str[i] && str[i] != ' ' && str[i] != '\n' && str[i] != '\t')
-			{
-				i++;
-				wc++;
-			}
-		}
-	}
-	return (wc);
+    for (int i = 0; line[i]; i++)
+    {
+        if (line[i] == '"' && !state.squote_open)
+            state.dquote_open = !state.dquote_open;
+        else if (line[i] == '\'' && !state.dquote_open)
+            state.squote_open = !state.squote_open;
+    }
+    return (state.squote_open || state.dquote_open);
 }
 
-char	**for_pipe(char **out, int k, char str)
+void handle_quoted_content(const char *str, int *i, bool *in_squote, bool *in_dquote)
 {
-	out[k] = (char *)malloc(sizeof(char) * 2);
-	if (!out[k])
-	{
-		while (k > 0)
-			free(out[--k]);
-		free(out);
-		return (NULL);
-	}
-	out[k][0] = str;
-	out[k][1] = '\0';
-	return (out);
+    if (str[*i] == '"' && !*in_squote)
+    {
+        *in_dquote = !*in_dquote;
+        (*i)++;
+    }
+    else if (str[*i] == '\'' && !*in_dquote)
+    {
+        *in_squote = !*in_squote;
+        (*i)++;
+    }
+    else
+        (*i)++;
+}
+
+bool is_separator(char c)
+{
+    return (c == '<' || c == '>' || c == '|');
+}
+
+void skip_spaces(const char *str, int *i)
+{
+    while (str[*i] && isspace(str[*i]))
+        (*i)++;
 }
