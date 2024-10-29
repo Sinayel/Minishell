@@ -6,9 +6,17 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:14:58 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/25 15:28:24 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/29 17:06:05 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#define INPUT 1   // 3 "<"
+#define HEREDOC 2 // 3 "<<"
+#define TRUNC 3   // 3 ">"
+#define APPEND 4  // 3 ">>"
+#define PIPE 5    // 1 "|"
+#define CMD 6     // 1 "|"
+#define ARG 7     // 1 "|"
 
 #ifndef PIPEX_H
 # define PIPEX_H
@@ -21,6 +29,15 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
+
+typedef struct s_token
+{
+	char			*token;
+	int				type;
+    int             i;
+	struct s_token	*next;
+	struct s_token	*prev;
+}					t_token;
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42

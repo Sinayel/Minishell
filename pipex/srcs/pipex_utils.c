@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 15:38:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/25 15:35:08 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/29 13:51:24 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,21 +35,24 @@ void	exit_handler(int n_exit, char *file)
 		ft_putstr_fd(": No such file or directory\n", 2);
 	}
 	if (n_exit == 1)
-		ft_putstr_fd("Expected : ./pipex infile cmd cmd outfile\n", 2); //! PAS TERRIBLE COMMME MESS D'ERREUR, A REMPLACER...
+		ft_putstr_fd("Error!\n", 2); //! PAS TERRIBLE COMMME MESS D'ERREUR, A REMPLACER...
 	exit(0);
 }
 
 int	open_file(char *file, int in_or_out)
 {
-	int	ret;
+	int	fd;
 
 	if (in_or_out == 0)
-		ret = open(file, O_RDONLY, 0777);
+		fd = open(file, O_RDONLY, 0777);
 	if (in_or_out == 1)
-		ret = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (ret == -1)
+		fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (fd == -1)
+	{
+		close(fd);
 		exit_handler(0, file);
-	return (ret);
+	}
+	return (fd);
 }
 
 void	ft_free_tab(char **tab)
