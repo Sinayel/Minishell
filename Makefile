@@ -13,7 +13,8 @@ RM = rm -f
 NAME = minishell
 
 PARSING_SRC = srcs/parsing/id_token.c \
-			  srcs/parsing/tokenization.c
+			  srcs/parsing/tokenization.c \
+			  srcs/parsing/parsing.c
 
 UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/utils_token.c \

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/29 14:39:41 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/31 17:33:23 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,26 +38,27 @@ void	init_variable(int argc, char **argv, char **env)
 	data->input = NULL;
 }
 
-int	main(void)
+int	main(int argc, char *argv[], char **env)
 {
 	t_token	*list;
 	t_data	*data;
 
 	list = NULL;
 	data = get_data();
+	init_variable(argc, argv, env);
 	while (1)
 	{
 		data->input = readline("Minishell> ");
-		if(data->input)
-			list = tokenization(data->input);
-
+		list = tokenization(data->input);
+		if(list)
+			if(parsing(list) == 1)
+				continue;					//1 Si il y a une erreur dans la syntaxe, on recommence la boucle
         if (*data->input)
 			add_history(data->input);
-
         print_list(list);
-
 		ft_token_lstclear(&list);             //1 Libere tous les noeud de ma liste
-		free(data->input);
+		if(data->input)
+			free(data->input);
 	}
 	return (0);
 }

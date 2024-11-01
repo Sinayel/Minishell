@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_2.c                                          :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/28 19:40:22 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/31 17:05:46 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ t_token	*add_last(t_token *list, char *value)
 		return (list);
 	new_element->token = value;
     new_element->type = 0;
+    new_element->first = 0;
 	new_element->next = NULL;
 	new_element->prev = NULL;
 	if (list == NULL)

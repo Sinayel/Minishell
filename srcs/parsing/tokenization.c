@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/29 20:17:12 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/31 13:55:04 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ char	*extract_token(const char *str, int *i, int start)
 
 	state = (t_quote_state){false, false, false, false, false, 0};
 	has_quotes = (str[start] == '"' || str[start] == '\'');
-	state.quote_type = has_quotes ? str[start] : 0;
 	initial_start = start;
 	if (has_quotes)
 		(*i)++;
@@ -76,8 +75,11 @@ t_token	*tokenization(char *str)
 	t_token	*list;
 	int		i;
 
-	if (!str || has_unclosed_quotes(str))
+	if (has_unclosed_quotes(str))
+	{
+		ft_putstr_fd("minishell: syntax error (open quotes)\n", 2);
 		return (NULL);
+	}
 	list = NULL;
 	i = 0;
 	while (str[i])
@@ -87,6 +89,7 @@ t_token	*tokenization(char *str)
 			break ;
 		process_token(str, &i, &list);
 	}
-	list = id_token(list);
+	if(list)
+		list = id_token(list);
 	return (list);
 }

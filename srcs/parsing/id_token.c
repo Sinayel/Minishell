@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 18:21:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/29 21:21:35 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/10/31 17:06:07 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 t_token *cmd_token(t_token *list)
 {
     t_token *tmp = list;
+    tmp->first = 1;
     tmp->type = CMD;
     tmp = tmp->next;
     while(tmp != NULL)
