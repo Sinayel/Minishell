@@ -6,11 +6,28 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:15:04 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/29 18:43:32 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/29 20:47:49 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
+
+void	ft_token_lstclear(t_token **lst)
+{
+	t_token	*temp;
+
+	if (!lst || !*lst)
+		return ;
+	while (*lst)
+	{
+		temp = (*lst)->next;
+		if ((*lst)->token)
+			free((*lst)->token); //1 Libere `value` du noeud actuel
+		free(*lst);          //1 Libere le noeud actuel
+		*lst = temp;
+	}
+	*lst = NULL;
+}
 
 int 	ft_strchr(const char *s, int c)
 {
@@ -99,10 +116,11 @@ void	here_doc(char *here_doc)
 	}
 }
 
-void	do_pipe(char *cmd, char **env)
+void	do_pipe(char *cmd, char *arg, char **env)
 {
 	pid_t	pid;
 	int		p_fd[2];
+	char *cmd_join;
 
 	if (pipe(p_fd) == -1)
 		exit(0);
@@ -112,14 +130,25 @@ void	do_pipe(char *cmd, char **env)
 	if (!pid)
 	{
 		close(p_fd[0]);
-		dup2(p_fd[1], 1);
-		ft_exec(cmd, env);
+		dup2(p_fd[1], 1); 
+		if (arg != NULL)
+		{
+			printf("test ?\n");
+			cmd_join = ft_strjoin(cmd, " ");
+			cmd_join = ft_strjoin(cmd_join, arg);
+			ft_exec(cmd_join, env);
+		}
+		//? ft_join pour essayer de changer le moins de truc posssible ?
+		else
+			ft_exec(cmd, env);
 	}
 	else
 	{
 		close(p_fd[1]);
 		dup2(p_fd[0], 0);
 	}
+	// if (cmd_join)
+	// 	free(cmd_join);
 }
 
 // void	pipex(t_token *list, char **env)
@@ -157,8 +186,21 @@ void	do_pipe(char *cmd, char **env)
 // 	return (0);
 // }
 
+int cmb_cmd(t_token *list)
+{
+	int i = 0;
+	while (list)
+	{
+		if (list->type == 6)
+			i++;
+		list = list->next;
+	}
+	return i;
+}
+
 void	pipex(t_token *list, char **env)
 {
+	int nb_cmd = cmb_cmd(list);
 	int fd_in = 0;
 	int fd_out = 0;
     while (list)
@@ -180,24 +222,35 @@ void	pipex(t_token *list, char **env)
         }
         else if (list->type == 4) // APPEND
         {
-            fd_out = open_file(list->next->token, 2);
+            fd_out = open_file(list->next->token, 1);
             list = list->next->next;
         }
-        else if (list->type == 5) // PIPE
+        else if (list->type == 5 && list->next->type == 6 && list->next->next->type == 7) // PIPE
         {
-            do_pipe(list->next->token, env);
+            do_pipe(list->next->token, list->next->next->token, env);
+            list = list->next->next->next;
+        }
+		else if (list->type == 5 && list->next->type == 6) // PIPE
+        {
+            do_pipe(list->next->token, NULL, env);
             list = list->next->next;
         }
-        else if (list->type == 6) // CMD
+        else if (list->type == 6 && list->next->type == 7) // CMD
         {
-            do_pipe(list->token, env);
+            do_pipe(list->token, list->next->token, env);
+            list = list->next->next;
+        }
+		else if (list->type == 6) // CMD
+        {
+            do_pipe(list->token, NULL, env);
             list = list->next;
         }
         else if (list->type == 7) // ARG
         {
-            do_pipe(list->token, env);
             list = list->next;
         }
+		else
+			printf("Error\n");
     }
 	if (fd_out != 0 && fd_out != -1)
 		close(fd_out);
@@ -205,37 +258,38 @@ void	pipex(t_token *list, char **env)
 		close(fd_in);
 }
 
-int main(int ac, char **av, char **env) 
+
+int main(int ac, char **av, char **env)
 {
     (void)ac;
     (void)av;
-    t_token *list;
-    list = malloc(sizeof(t_token));
-	list->next = malloc(sizeof(t_token));
-	list->next->next = malloc(sizeof(t_token));
-	list->next->next->next = malloc(sizeof(t_token));
-	list->next->next->next->next = malloc(sizeof(t_token));
-    list->token = "cat";
-    list->type = 6;
-    list->i = 0;
-    list = list->next;
-    list->token = "Makefile";
-    list->type = 7;
-    list->i = 1;
-    list = list->next;
-    list->token = "|";
-    list->type = 5;
-    list->i = 2;
-    list = list->next;
-    list->token = "grep";
-    list->type = 6;
-    list->i = 3;
-    list = list->next;
-    list->token = "=";
-    list->type = 7;
-    list->i = 4;
-    list->next = NULL;
-    pipex(list, env);    
+	t_token *list = NULL;
+	t_token *current = NULL;
+
+	// Helper function to create a new token node
+	t_token *create_token(char *token, int type, int index) {
+		t_token *new_token = malloc(sizeof(t_token));
+		if (!new_token)
+			return NULL;
+		new_token->token = token;
+		new_token->type = type;
+		new_token->i = index;
+		new_token->next = NULL;
+		return new_token;
+	}
+
+	// Create and link the tokens
+	list = create_token("cat", 6, 0);
+	current = list;
+	current->next = create_token("Makefile", 7, 1);
+	current = current->next;
+	current->next = create_token("|", 5, 2);
+	current = current->next;
+	current->next = create_token("grep", 6, 3);
+	current = current->next;
+	current->next = create_token("=", 7, 4);
+    pipex(list, env);
+	return (0);    
 }
 
 //! Verifier si la commande est un builtin ou non

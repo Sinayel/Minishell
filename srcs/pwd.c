@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:27:40 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/09 12:02:33 by judenis          ###   ########.fr       */
+/*   Updated: 2024/10/29 18:08:47 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,7 @@ int	main()  //, char **env
             ft_process();
         }
 		if (*data->input)
-        {
 			add_history(data->input);
-        }
 		free(data->input);
         data->input = NULL;
 	}
