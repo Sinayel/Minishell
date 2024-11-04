@@ -126,37 +126,10 @@ char	*my_getenv(char *name, char **env)
 }
 
 
-// void ft_cd(char *path, char **env)
-// {
-// 	printf("%s\n", getcwd(NULL, 0));
-//     if (path == "-")
-//     {
-//         chdir(my_getenv("OLDPWD", env));
-// 	}
-//     else if (path == NULL)
-//     {
-//         chdir(my_getenv("HOME", env));
-//     }
-//     else
-//     {
-//         chdir(path);
-//     }
-// }
-
-// int main(int ac, char **av, char **env)
-// {
-// 	char *input;
-
-// 	(void)ac;
-// 	(void)av;
-// 	while (1)
-// 	{
-// 		input = readline("test >");
-// 		ft_cd(input, env);
-// 		free(input);
-// 	}
-//     return (0);
-// }
+void ft_cd(char *path, char **env)
+{
+	
+}
 
 int main(int argc, char *argv[], char **env)
 {
