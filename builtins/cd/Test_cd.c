@@ -21,7 +21,7 @@ void ch_oldpwd(t_env *env_list)
 	temp = env_list;
 	while (temp)
 	{
-		if (ft_strcmp(temp->name, "PWD") == 0)
+		if (ft_strcmp(temp->name, "OLDPWD") == 0)
 		{
 			oldpwd = temp->value;
 			break;
@@ -155,13 +155,14 @@ int main(int argc, char *argv[], char **env)
 		}
 		else if (ft_strlen(input) == 0)
 			input = ft_strjoin(my_getenv("HOME", env), "/");
+		ch_oldpwd(env_list);
 		if (chdir(input) == -1)
     	    perror("Erreur lors du changement de répertoire");
 
     	// Obtenir et afficher le répertoire courant
     	char cwd[1024];
     	if (getcwd(cwd, sizeof(cwd)) != NULL) {
-			printf("Répertoire precedent : %s\n", my_getenv("OLDPWD", env));
+			print_env_vars(env_list);
     	    printf("Répertoire actuel : %s\n", cwd);
     	} else {
     	    printf("Erreur lors de la récupération du répertoire\n");
