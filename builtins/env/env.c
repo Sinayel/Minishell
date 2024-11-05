@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:23:21 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/04 19:46:19 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/05 20:05:50 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,9 @@ void free_env_vars(t_env *head) {
     }
 }
 
-int main(int argc, char *argv[], char *envp[]) {
+t_env *env_import(char **envp)
+{
+    
     t_env *env_list = NULL;
 
     // Parcours de envp pour extraire les variables d'environnement
@@ -194,12 +196,45 @@ int main(int argc, char *argv[], char *envp[]) {
             i++;
         }
     }
-
-    // Affichage des variables d'environnement
-    print_env_vars(env_list);
-
-    // Libération de la mémoire
-    free_env_vars(env_list);
-
-    return 0;
+    return (env_list);
 }
+
+// int main(int argc, char **argv, char **envp)
+// {
+//     t_env *env = env_import(envp);
+//     print_env_vars(env);
+// }
+
+// int main(int argc, char *argv[], char *envp[]) {
+//     t_env *env_list = NULL;
+
+//     // Parcours de envp pour extraire les variables d'environnement
+//     int i;
+//     i = 0;
+//     while (envp[i]) {
+//         char *env_entry = envp[i];
+//         char *delimiter = ft_strchr(env_entry, '=');
+
+//         if (delimiter != NULL) {
+//             // Sépare le nom et la valeur de la variable d'environnement
+//             *delimiter = '\0';
+//             char *name = env_entry;
+//             char *value = delimiter + 1;
+
+//             // Ajout de la variable à la liste chaînée
+//             append_env_var(&env_list, name, value);
+
+//             // Rétablit le '=' dans envp[i] (pour ne pas altérer envp)
+//             *delimiter = '=';
+//             i++;
+//         }
+//     }
+
+//     // Affichage des variables d'environnement
+//     print_env_vars(env_list);
+
+//     // Libération de la mémoire
+//     free_env_vars(env_list);
+
+//     return 0;
+// }

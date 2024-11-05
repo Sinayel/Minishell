@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:26:28 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/04 19:42:50 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/05 20:06:48 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ typedef struct s_env
     struct s_env *next;
 }               t_env;
 
-
+void print_env_vars(t_env *head);
+t_env *env_import(char **envp);
+size_t	ft_strlen(const char *str);
 
 #endif

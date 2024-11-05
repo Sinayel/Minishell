@@ -10,27 +10,32 @@
 // /*                                                                            */
 // /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <dirent.h>
+#include "../env/env.h"
 
-
-size_t	ft_strlen(const char *str)
+void ch_oldpwd(t_env *env_list)
 {
-	size_t	i;
+	t_env *temp;
+	char *oldpwd;
+	char cwd[1024];
 
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+	temp = env_list;
+	while (temp)
+	{
+		if (ft_strcmp(temp->name, "PWD") == 0)
+		{
+			oldpwd = temp->value;
+			break;
+		}
+		temp = temp->next;
+	}
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+	{
+		temp->value = ft_strdup(cwd);
+	}
+	else
+	{
+		printf("Erreur lors de la récupération du répertoire\n");
+	}
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -131,9 +136,13 @@ void ft_cd(char *path, char **env)
 	
 }
 
+
+
 int main(int argc, char *argv[], char **env)
 {
 	char *input;
+	t_env *env_list = env_import(env); //!Verfifer si env existe avant de l'utiliser
+	print_env_vars(env_list);
 	input = NULL;
 	printf("%s\n", my_getenv("HOME", env));
 	while (1)
