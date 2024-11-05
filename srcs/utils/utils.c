@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/31 17:05:46 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/04 18:03:52 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,29 @@ void	print_list(t_token *list)
 	printf("NULL\n");
 }
 
+void ft_del_one_token(t_token *lst)
+{
+    if (!lst)
+        return;
+    if (lst->prev)
+    {
+        if (lst->next)
+            lst->next->prev = lst->prev;
+        else
+            lst->prev->next = NULL;
+    }
+    if (lst->next)
+    {
+        if (lst->prev)
+            lst->prev->next = lst->next;
+        else
+            lst->next->prev = NULL;
+    }
+    free(lst->token);
+    free(lst);
+}
+
+
 void	ft_token_lstclear(t_token **lst)
 {
 	t_token	*temp;
@@ -34,8 +57,8 @@ void	ft_token_lstclear(t_token **lst)
 	while (*lst)
 	{
 		temp = (*lst)->next;
-		free((*lst)->token); //1 Libere `value` du noeud actuel
-		free(*lst);          //1 Libere le noeud actuel
+		free((*lst)->token); // 1 Libere `value` du noeud actuel
+		free(*lst);          // 1 Libere le noeud actuel
 		*lst = temp;
 	}
 	*lst = NULL;
@@ -50,8 +73,8 @@ t_token	*add_last(t_token *list, char *value)
 	if (!new_element)
 		return (list);
 	new_element->token = value;
-    new_element->type = 0;
-    new_element->first = 0;
+	new_element->type = 0;
+	new_element->first = 0;
 	new_element->next = NULL;
 	new_element->prev = NULL;
 	if (list == NULL)

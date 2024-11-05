@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/31 17:33:23 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/05 21:20:03 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 //! ◦ PWD with no options                      |  (JULIO)
 //! ◦ UNSET with no options                    |  (JULIO)
 //! ◦ PIPEX					                   |  (JULIO)
+//! ◦ ENV with no options or arguments         |  (JULIO)
+//! ◦ ECHO                                     |  (JULIO)
+//! ◦ EXIT                                     |  (JULIO)
 //! ◦ EXPORT with no options                   |  (YANS)
-//! ◦ ENV with no options or arguments         |  (YANS)
-//! ◦ ECHO                                     |  (YANS)
-//! ◦ EXIT                                     |  (YANS)
-//! ◦ PARSING                                  |  (YANS)
+//! ◦ PARSING (99% du projet)                  |  (YANS)
 
 //! UNIQUEMENT POUR LES STRUCTURE (NE MARCHE PAS AVEC LES LISTE CHAINEE)
 t_data *get_data(void)
@@ -51,8 +51,8 @@ int	main(int argc, char *argv[], char **env)
 		data->input = readline("Minishell> ");
 		list = tokenization(data->input);
 		if(list)
-			if(parsing(list) == 1)
-				continue;					//1 Si il y a une erreur dans la syntaxe, on recommence la boucle
+			parsing(list);							//2 Retour value ERREUR
+		list = remove_quote(list);					//1 Sert a supprimer les doubles quotes
         if (*data->input)
 			add_history(data->input);
         print_list(list);

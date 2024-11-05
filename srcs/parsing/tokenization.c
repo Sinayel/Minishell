@@ -6,90 +6,100 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/31 13:55:04 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/05 20:07:05 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*extract_token(const char *str, int *i, int start)
+static bool	is_quote(char c)
 {
-	t_quote_state	state;
-	bool			has_quotes;
-	int				initial_start;
-
-	state = (t_quote_state){false, false, false, false, false, 0};
-	has_quotes = (str[start] == '"' || str[start] == '\'');
-	initial_start = start;
-	if (has_quotes)
-		(*i)++;
-	while (str[*i] && !state.should_break)
-		process_token_char(str, i, has_quotes, &state);
-	if (*i > initial_start)
-		return (ft_substr(str, initial_start, *i - initial_start));
-	return (NULL);
+	return (c == '"' || c == '\'');
 }
 
-char	*create_separator_token(const char *str, int *i)
+int    openquote(char *line)
 {
-	char	*token;
+    int    i;
+    bool            squote_open;
+    bool            dquote_open;
 
-	if ((str[*i] == '<' || str[*i] == '>') && str[*i + 1] == str[*i])
-	{
-		token = ft_substr(str, *i, 2);
-		(*i)++;
-	}
-	else
-		token = ft_substr(str, *i, 1);
-	(*i)++;
-	return (token);
+    i = 0;
+    squote_open = false;
+    dquote_open = false;
+    while (line[i])
+    {
+        if (line[i] == 34 && !squote_open)
+            dquote_open = !dquote_open;
+        if (line[i] == 39 && !dquote_open)
+            squote_open = !squote_open;
+        i++;
+    }
+    if (squote_open || dquote_open)
+        return (true);
+    return (false);
 }
 
-void	handle_separator(const char *str, int *i, t_token **list)
-{
-	char	*token;
-
-	token = NULL;
-	if (is_separator(str[*i]) && !is_quoted(str, *i))
-	{
-		token = create_separator_token(str, i);
-		if (token)
-			*list = add_last(*list, token);
-	}
-}
-
-void	process_token(char *str, int *i, t_token **list)
+static char	*extract_token(char *str, int *i)
 {
 	int		start;
-	char	*token;
+	char	quote_type;
 
 	start = *i;
-	token = extract_token(str, i, start);
-	if (token)
-		*list = add_last(*list, token);
-	handle_separator(str, i, list);
+	quote_type = '\0';
+	while (str[*i] && (!isspace(str[*i]) || quote_type != '\0')
+		&& !is_separator(str[*i]))
+	{
+		if (is_quote(str[*i]))
+		{
+			if (quote_type == '\0')
+				quote_type = str[*i];
+			else if (str[*i] == quote_type)
+				quote_type = '\0';
+		}
+		(*i)++;
+	}
+	return (ft_substr(str, start, *i - start));
+}
+
+static char	*extract_separator_token(char *str, int *i)
+{
+	int	start;
+
+	start = *i;
+	if ((str[*i] == '<' || str[*i] == '>') && str[*i + 1] == str[*i])
+	{
+		(*i) += 2;
+		return (ft_substr(str, start, 2));
+	}
+	(*i)++;
+	return (ft_substr(str, start, 1));
 }
 
 t_token	*tokenization(char *str)
 {
 	t_token	*list;
 	int		i;
+	char	*token;
 
-	if (has_unclosed_quotes(str))
-	{
-		ft_putstr_fd("minishell: syntax error (open quotes)\n", 2);
-		return (NULL);
-	}
 	list = NULL;
 	i = 0;
-	while (str[i])
+	if(str[i] && !openquote(str))
 	{
-		skip_spaces(str, &i);
-		if (!str[i])
-			break ;
-		process_token(str, &i, &list);
-	}
-	if(list)
+		while (str[i])
+		{
+			skip_spaces(str, &i);
+			if (!str[i])
+				break ;
+			if (is_separator(str[i]))
+				token = extract_separator_token(str, &i);
+			else
+				token = extract_token(str, &i);
+			if (token)
+				list = add_last(list, token);
+		}
 		list = id_token(list);
+	}
+	else if(openquote(str))
+		printf("open quote\n");
 	return (list);
 }

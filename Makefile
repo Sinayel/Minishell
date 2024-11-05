@@ -17,8 +17,7 @@ PARSING_SRC = srcs/parsing/id_token.c \
 			  srcs/parsing/parsing.c
 
 UTILS_SRC = srcs/utils/utils.c \
-			srcs/utils/utils_token.c \
-			srcs/utils/utils_token_2.c
+			srcs/utils/utils_token.c
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC)
 

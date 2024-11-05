@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/31 17:31:16 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/05 20:05:39 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,24 +19,14 @@
 #define ARG 7     //7  "ARG"
 
 #include <stdio.h>
-#include "../libft/libft.h"
 #include <readline/history.h>
 #include <readline/readline.h>
+#include "../libft/libft.h"
 #include <signal.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
-typedef struct s_quote_state
-{
-	bool			squote_open;
-	bool			dquote_open;
-	bool			in_squote;
-	bool			in_dquote;
-	bool 			should_break;
-	int				quote_type;
-}					t_quote_state;
 
 typedef struct s_data
 {
@@ -57,12 +47,14 @@ typedef struct s_token
 
 //5 -------------------  Tokenization  -------------------
 t_token				*id_token(t_token *list);
-t_token				*tokenization(char *str);
+t_token 			*tokenization(char *str);
+int					openquote(char *line);
 
 
 //TODO -------------------  Parsing  ----------------------
 int 	   			parsing(t_token *list);
 int	    			check_pipe(t_token *list);
+t_token 			*remove_quote(t_token *list);
 
 
 //! ------------------------  CMD  ------------------------
@@ -97,17 +89,6 @@ t_token				*add_last(t_token *list, char *token);
 
 //4 ------------------------  Utils  ------------------------
 t_data				*get_data(void);
-void				handle_quoted_content(const char *str, int *i,
-						bool *in_squote, bool *in_dquote);
 bool				is_separator(char c);
-void				process_token_char(const char *str, int *i, bool has_quotes,
-						t_quote_state *state);
-void				handle_quotes(const char *str, int *i, int quote_type,
-						t_quote_state *state);
-bool				should_break_token(const char *str, int i, bool has_quotes,
-						bool in_squote, bool in_dquote);
-bool				is_quoted(const char *str, int pos);
-void				update_quote_state(char c, bool *in_squote,
-						bool *in_dquote);
-bool				has_unclosed_quotes(const char *line);
-void				skip_spaces(const char *str, int *i);
+void				skip_spaces(char *str, int *i);
+void				ft_del_one_token(t_token *lst);
