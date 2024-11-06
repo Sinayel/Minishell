@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:41:15 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 19:58:54 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,23 @@ void	ft_token_lstclear(t_token **lst)
 		*lst = temp;
 	}
 	*lst = NULL;
+}
+
+void	ft_env_lstclear(t_env *lst)
+{
+	t_env	*temp;
+
+	if (!lst)
+		return ;
+	while (lst)
+	{
+		temp = lst->next;
+		free(lst->name);
+		free(lst->value);
+		free(lst);
+		lst = temp;
+	}
+	lst = NULL;
 }
 
 t_token	*add_last(t_token *list, char *value)

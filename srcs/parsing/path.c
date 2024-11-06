@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:37:35 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 19:56:51 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,21 @@ t_path	*return_path(t_env *env)
 int	double_check(t_path *path, t_token *tmp)
 {
 	char	*word;
-	int		fd;
+	int		is_ok;
 
 	while (path)
 	{
 		word = ft_strjoin(path->name, "/");
 		word = ft_strjoin(word, tmp->token);
-		fd = open(word, O_RDONLY);
-		if (fd > 0)
+		is_ok = access(word, X_OK|X_OK|X_OK);
+		if (is_ok == 0)
 		{
 			printf("Dans ta petite mere <3\n");
-			close(fd);
+			free(word);
 			return (0);
 		}
+		free(word);
 		path = path->next;
 	}
-	close(fd);
 	return (1);
 }

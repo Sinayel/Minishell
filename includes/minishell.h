@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:45:10 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 19:59:33 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ t_env				*create_env_var(char *name, char *value);
 // 3 --------------------  Liste Chainee  --------------------
 void				print_list(t_token *list);
 void				ft_token_lstclear(t_token **lst);
+void				ft_env_lstclear(t_env *lst);
 t_token				*add_last(t_token *list, char *token);
 t_path				*add_env(t_path *list, char *value);
 

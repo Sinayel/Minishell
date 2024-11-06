@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:39:50 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 19:59:11 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ int	parsing(t_token *list, t_env *env)
 	if (check_cmd(list, env) == 1)
 	{
 		printf("Pas bon...\n");
+		ft_env_lstclear(env);
 		return (1);
 	}
 	return (0);
