@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 13:51:32 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 13:52:20 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int    openquote(char *line)
     return (false);
 }
 
-// extract_token() function is used to extract a token from the input string.
+// extract_token() function is used to extract a token from the input string
 static char	*extract_token(char *str, int *i)
 {
 	int		start;
