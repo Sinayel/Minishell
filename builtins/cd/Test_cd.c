@@ -152,15 +152,16 @@ int main(int argc, char *argv[], char **env)
 		}
 		else if (ft_strlen(input) == 0)
 			input = return_env_value(env_list, "HOME");
-		ch_oldpwd(env_list);
-		if (input == cwd)
-		{
-			printf("test\n");
-			free(input);
-			input = NULL;
-			continue;
-		}
-		if (chdir(input) == -1)
+		// if (input == cwd)
+		// {
+		// 	printf("test\n");
+		// 	free(input);
+		// 	input = NULL;
+		// 	continue;
+		// }
+		if (chdir(input) == 0)
+			ch_oldpwd(env_list);
+		else
     	    perror("Erreur lors du changement de répertoire");
 
     	// Obtenir et afficher le répertoire courant
