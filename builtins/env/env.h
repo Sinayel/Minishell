@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:26:28 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/06 13:47:01 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/06 18:26:41 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,6 @@ char *return_env_value(t_env *head, char *name);
 t_env *env_import(char **envp);
 size_t	ft_strlen(const char *str);
 int	ft_strcmp(char *s1, char *s2);
+char	**ft_split(char const *s, char c);
 
 #endif
