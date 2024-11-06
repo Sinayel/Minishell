@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:23:21 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/05 21:10:58 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/06 13:47:16 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,16 +150,30 @@ void append_env_var(t_env **head, const char *name, const char *value) {
 }
 
 // Fonction pour afficher les variables d'environnement de la liste chaînée
-void print_env_vars(t_env *head) {
+void print_env_vars(t_env *head, char *name) {
     t_env *temp = head;
     while (temp)
 	{
-		if (ft_strcmp(temp->name, "OLDPWD") == 0)
+		if (ft_strcmp(temp->name, name) == 0)
 		{
             printf("%s=%s\n", temp->name, temp->value);
 		}
 		temp = temp->next;
 	}
+}
+
+char *return_env_value(t_env *head, char *name)
+{
+    t_env *temp = head;
+    while (temp)
+	{
+		if (ft_strcmp(temp->name, name) == 0)
+		{
+            return (temp->value);
+		}
+		temp = temp->next;
+	}
+    return (NULL);
 }
 
 // Fonction pour libérer la mémoire de la liste chaînée

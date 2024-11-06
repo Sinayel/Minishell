@@ -15,7 +15,6 @@
 void ch_oldpwd(t_env *env_list)
 {
 	t_env *temp;
-	char *oldpwd;
 	char cwd[1024];
 
 	temp = env_list;
@@ -23,7 +22,6 @@ void ch_oldpwd(t_env *env_list)
 	{
 		if (ft_strcmp(temp->name, "OLDPWD") == 0)
 		{
-			oldpwd = temp->value;
 			break;
 		}
 		temp = temp->next;
@@ -131,19 +129,18 @@ char	*my_getenv(char *name, char **env)
 }
 
 
-void ft_cd(char *path, char **env)
-{
-	
-}
-
 
 
 int main(int argc, char *argv[], char **env)
 {
+	(void)argc;
+	(void)argv;
 	char *input;
 	t_env *env_list = env_import(env); //!Verfifer si env existe avant de l'utiliser
-	print_env_vars(env_list);
+	print_env_vars(env_list, "OLDPWD");
 	input = NULL;
+    char cwd[1024];
+	getcwd(cwd, sizeof(cwd));
 	printf("%s\n", my_getenv("HOME", env));
 	while (1)
 	{
@@ -151,18 +148,25 @@ int main(int argc, char *argv[], char **env)
 		if (ft_strcmp(input, "-") == 0)
 		{
 			free(input);
-			input = ft_strjoin(my_getenv("OLDPWD", env), "/");
+			input = return_env_value(env_list, "OLDPWD");
 		}
 		else if (ft_strlen(input) == 0)
-			input = ft_strjoin(my_getenv("HOME", env), "/");
+			input = return_env_value(env_list, "HOME");
 		ch_oldpwd(env_list);
+		if (input == cwd)
+		{
+			printf("test\n");
+			free(input);
+			input = NULL;
+			continue;
+		}
 		if (chdir(input) == -1)
     	    perror("Erreur lors du changement de répertoire");
 
     	// Obtenir et afficher le répertoire courant
-    	char cwd[1024];
-    	if (getcwd(cwd, sizeof(cwd)) != NULL) {
-			print_env_vars(env_list);
+		getcwd(cwd, sizeof(cwd));
+    	if (cwd != NULL) {
+			print_env_vars(env_list, "OLDPWD");
     	    printf("Répertoire actuel : %s\n", cwd);
     	} else {
     	    printf("Erreur lors de la récupération du répertoire\n");
