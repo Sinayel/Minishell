@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:59:33 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 21:15:19 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ t_token				*add_last(t_token *list, char *token);
 t_path				*add_env(t_path *list, char *value);
 
 // 2 ------------------------  Error  ------------------------
-void				msg_error(int value);
+int					msg_error(int value);
 
 // 4 ------------------------  Utils  ------------------------
 t_data				*get_data(void);

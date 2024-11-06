@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 17:30:24 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:34:36 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 21:20:58 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,7 @@ int	check_type(t_token *list)
 	t_token	*tmp;
 
 	tmp = list;
-	if ((tmp->type == PIPE && tmp->next->type == PIPE) || (tmp->first == 1
-			&& ft_strcmp(tmp->token, "|") == 0))
+	if (tmp->type == PIPE && tmp->next->type == PIPE)
 	{
 		msg_error(2);
 		return (1);
@@ -26,22 +25,23 @@ int	check_type(t_token *list)
 	return (0);
 }
 
+//! GERER LES PIPE ET LES REDIRECTIONS
 int	check_pipe(t_token *list)
 {
 	t_token	*tmp;
 
 	tmp = list;
-	if (ft_strcmp(tmp->token, "|") == 0)
+	if (ft_strcmp(tmp->token, "|") == 0 && tmp->next == NULL)
 	{
 		msg_error(2);
 		return (1);
 	}
 	while (tmp)
 	{
-		if ((tmp->next == NULL && tmp->type == PIPE) || (tmp->type == PIPE
-				&& (tmp->next->type == TRUNC || tmp->next->type == APPEND
-					|| tmp->next->type == INPUT)))
+		if ((tmp->next == NULL && tmp->type == PIPE) || ft_strcmp(tmp->token, ">") == 0)
 		{
+			if((ft_strcmp(tmp->token, ">") == 0))		//! GERER LES PIPE ET LES REDIRECTIONS
+				return(msg_error(1));
 			msg_error(2);
 			return (1);
 		}
@@ -66,16 +66,10 @@ int	check_redirection(t_token *list)
 			|| tmp->type == HEREDOC)
 		{
 			if (tmp->next == NULL || tmp->next->type == PIPE)
-			{
-				msg_error(1);
-				return (1);
-			}
+				return (msg_error(1));
 			if (tmp->next->type == TRUNC || tmp->next->type == APPEND
 				|| tmp->next->type == INPUT || tmp->next->type == HEREDOC)
-			{
-				msg_error(1);
-				return (1);
-			}
+				return (msg_error(1));
 		}
 		tmp = tmp->next;
 	}
