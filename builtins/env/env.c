@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:23:21 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/06 13:47:16 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/06 15:59:27 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ t_env *create_env_var(const char *name, const char *value)
 }
 
 // Fonction pour ajouter une variable d'environnement à la fin de la liste chaînée
-void append_env_var(t_env **head, const char *name, const char *value) {
+void append_env_var(t_env **head, char *name, char *value) {
     t_env *new_node = create_env_var(name, value);
     if (*head == NULL) {
         *head = new_node;

@@ -21,19 +21,13 @@ void ch_oldpwd(t_env *env_list)
 	while (temp)
 	{
 		if (ft_strcmp(temp->name, "OLDPWD") == 0)
-		{
 			break;
-		}
 		temp = temp->next;
 	}
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-	{
 		temp->value = ft_strdup(cwd);
-	}
 	else
-	{
 		printf("Erreur lors de la récupération du répertoire\n");
-	}
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -141,7 +135,6 @@ int main(int argc, char *argv[], char **env)
 	input = NULL;
     char cwd[1024];
 	getcwd(cwd, sizeof(cwd));
-	printf("%s\n", my_getenv("HOME", env));
 	while (1)
 	{
 		input = readline("test >");
