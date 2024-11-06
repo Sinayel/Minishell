@@ -3,4 +3,4 @@ Minishell           // executable file
 a.out               // executable file
 supp.supp           // valgrind output
 .vscode/            // vscode settings
-test.c              // test file
+test.c              // test filevgcore.*
