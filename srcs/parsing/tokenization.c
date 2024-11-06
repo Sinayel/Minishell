@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 13:56:30 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 14:27:55 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,26 +17,26 @@ static bool	is_quote(char c)
 	return (c == '"' || c == '\'');
 }
 
-int    openquote(char *line)
+int	openquote(char *line)
 {
-    int    i;
-    bool            squote_open;
-    bool            dquote_open;
+	int		i;
+	bool	squote_open;
+	bool	dquote_open;
 
-    i = 0;
-    squote_open = false;
-    dquote_open = false;
-    while (line[i])
-    {
-        if (line[i] == 34 && !squote_open)
-            dquote_open = !dquote_open;
-        if (line[i] == 39 && !dquote_open)
-            squote_open = !squote_open;
-        i++;
-    }
-    if (squote_open || dquote_open)
-        return (true);
-    return (false);
+	i = 0;
+	squote_open = false;
+	dquote_open = false;
+	while (line[i])
+	{
+		if (line[i] == 34 && !squote_open)
+			dquote_open = !dquote_open;
+		if (line[i] == 39 && !dquote_open)
+			squote_open = !squote_open;
+		i++;
+	}
+	if (squote_open || dquote_open)
+		return (true);
+	return (false);
 }
 
 // extract_token() function is used to extract a token from the input string
@@ -84,7 +84,7 @@ t_token	*tokenization(char *str)
 
 	list = NULL;
 	i = 0;
-	if(str[i] && !openquote(str))
+	if (str[i] && !openquote(str))
 	{
 		while (str[i])
 		{
@@ -100,7 +100,7 @@ t_token	*tokenization(char *str)
 		}
 		list = id_token(list);
 	}
-	else if(openquote(str))
+	else if (openquote(str))
 		printf("open quote\n");
 	return (list);
 }

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/05 21:20:03 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 19:43:11 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 //! ◦ CD with only a relative or absolute path |  (JULIO)
 //! ◦ PWD with no options                      |  (JULIO)
 //! ◦ UNSET with no options                    |  (JULIO)
-//! ◦ PIPEX					                   |  (JULIO)
+//! ◦ PIPEX						                |  (JULIO)
 //! ◦ ENV with no options or arguments         |  (JULIO)
 //! ◦ ECHO                                     |  (JULIO)
 //! ◦ EXIT                                     |  (JULIO)
@@ -23,18 +23,20 @@
 //! ◦ PARSING (99% du projet)                  |  (YANS)
 
 //! UNIQUEMENT POUR LES STRUCTURE (NE MARCHE PAS AVEC LES LISTE CHAINEE)
-t_data *get_data(void)
+t_data	*get_data(void)
 {
-	static t_data data;
+	static t_data	data;
+
 	return (&data);
 }
 
-void	init_variable(int argc, char **argv, char **env)
+void	init_variable(int argc, char **argv)
 {
-	t_data *data = get_data();
+	t_data	*data;
+
+	data = get_data();
 	(void)argc;
 	(void)argv;
-	data->env = env;
 	data->input = NULL;
 }
 
@@ -42,22 +44,24 @@ int	main(int argc, char *argv[], char **env)
 {
 	t_token	*list;
 	t_data	*data;
+	t_env	*env_list;
 
 	list = NULL;
+	env_list = NULL;
 	data = get_data();
-	init_variable(argc, argv, env);
+	init_variable(argc, argv);
 	while (1)
 	{
 		data->input = readline("Minishell> ");
 		list = tokenization(data->input);
-		if(list)
-			parsing(list);							//2 Retour value ERREUR
-		list = remove_quote(list);					//1 Sert a supprimer les doubles quotes
-        if (*data->input)
+		if (list)
+			parsing(list, env_list = env_import(env));
+		// list = remove_quote(list);
+		if (*data->input)
 			add_history(data->input);
-        print_list(list);
-		ft_token_lstclear(&list);             //1 Libere tous les noeud de ma liste
-		if(data->input)
+		print_list(list);
+		ft_token_lstclear(&list);
+		if (data->input)
 			free(data->input);
 	}
 	return (0);

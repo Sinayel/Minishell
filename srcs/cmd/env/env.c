@@ -6,43 +6,50 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:39:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/10/11 20:22:29 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 19:12:18 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
-char	*get_env(const char *var, char **env)
+void	free_env_vars(t_env *head)
 {
-	int		i;
-	size_t	len;
+	t_env	*temp;
 
-	i = 0;
-	len = strlen(var);
-	while (env[i])
+	while (head != NULL)
 	{
-		if (strncmp(env[i], var, len) == 0 && env[i][len] == '=')
-		{
-			return (env[i] + len + 1);
-		}
-		i++;
+		temp = head;
+		head = head->next;
+		free(temp->name);
+		free(temp->value);
+		free(temp);
 	}
-	return (NULL);
 }
 
-void	print_env(void)
+t_env	*env_import(char **envp)
 {
-	t_data	*data;
+	t_env	*env_list;
 	int		i;
+	char	*env_entry;
+	char	*delimiter;
+	char	*name;
+	char	*value;
 
-	data = get_data();
+	env_list = NULL;
 	i = 0;
-	if (data->env != NULL)
+	while (envp[i])
 	{
-		while (data->env[i] != NULL)
+		env_entry = envp[i];
+		delimiter = ft_strchr(env_entry, '=');
+		if (delimiter != NULL)
 		{
-			printf("%s\n", data->env[i]);
+			*delimiter = '\0';
+			name = env_entry;
+			value = delimiter + 1;
+			append_env_var(&env_list, name, value);
+			*delimiter = '=';
 			i++;
 		}
 	}
+	return (env_list);
 }

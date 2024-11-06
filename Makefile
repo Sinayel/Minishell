@@ -14,12 +14,19 @@ NAME = minishell
 
 PARSING_SRC = srcs/parsing/id_token.c \
 			  srcs/parsing/tokenization.c \
+			  srcs/parsing/check.c \
+			  srcs/parsing/path.c \
 			  srcs/parsing/parsing.c
 
-UTILS_SRC = srcs/utils/utils.c \
-			srcs/utils/utils_token.c
+BUILTIN_SRC = srcs/cmd/env/env.c \
+			  srcs/cmd/env/create_env.c \
 
-MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC)
+UTILS_SRC = srcs/utils/utils.c \
+			srcs/utils/utils_2.c \
+			srcs/utils/utils_token.c \
+			srcs/error/msg.c \
+
+MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC)
 
 ASCII_LOGO = -e "\
 	███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗     \n\

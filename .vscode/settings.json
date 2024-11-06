@@ -3,6 +3,7 @@
       "editor.defaultFormatter": "keyhr.42-c-format"
     },
     "files.associations": {
-      "minishell.h": "c"
+      "minishell.h": "c",
+      "stdbool.h": "c"
     }
   }

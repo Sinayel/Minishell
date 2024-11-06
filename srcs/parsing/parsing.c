@@ -6,126 +6,62 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/05 21:24:14 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/06 19:39:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	check_pipe(t_token *list)
+int	cmd(char *str, t_token *list, t_env *env)
 {
-	t_token	*tmp;
-
-	tmp = list;
-	if (strcmp(tmp->token, "|") == 0)
-	{
-		ft_putstr_fd("minishell: syntax error unexpected token `|'\n", 2);
+	(void)list;
+	(void)env;
+	if (ft_strcmp(str, "cd") == 0)
 		return (1);
-	}
+	if (ft_strcmp(str, "pwd") == 0)
+		return (1);
+	if (ft_strcmp(str, "unset") == 0)
+		return (1);
+	if (ft_strcmp(str, "env") == 0)
+		return (1);
+	if (ft_strcmp(str, "echo") == 0)
+		return (1);
+	if (ft_strcmp(str, "exit") == 0)
+		return (1);
+	if (ft_strcmp(str, "export") == 0)
+		return (1);
+	return (0);
+}
+
+int	check_cmd(t_token *list, t_env *env)
+{
+	t_token	*tmp;
+	t_path	*path;
+
+	path = return_path(env);
+	tmp = list;
 	while (tmp)
 	{
-		if ((tmp->next == NULL && tmp->type == PIPE) || (tmp->type == PIPE
-				&& (tmp->next->type == TRUNC || tmp->next->type == APPEND
-					|| tmp->next->type == INPUT)))
+		if (tmp->type == CMD && cmd(tmp->token, list, env) == 0)
 		{
-			ft_putstr_fd("minishell: syntax error unexpected token `|'\n", 2);
-			return (1);
-		}
-		if (tmp->next != NULL)
-		{
-			if ((tmp->type == PIPE && tmp->next->type == PIPE)
-				|| (tmp->first == 1 && strcmp(tmp->token, "|") == 0))
-			{
-				ft_putstr_fd("minishell: syntax error unexpected token `|'\n",
-					2);
+			if (double_check(path, tmp) == 1)
 				return (1);
-			}
 		}
 		tmp = tmp->next;
 	}
 	return (0);
 }
 
-int	check_redirection(t_token *list)
-{
-	t_token	*tmp;
-
-	tmp = list;
-	while (tmp)
-	{
-		if (tmp->type == TRUNC || tmp->type == APPEND || tmp->type == INPUT
-			|| tmp->type == HEREDOC)
-		{
-			if (tmp->next == NULL || tmp->next->type == PIPE)
-			{
-				ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n",
-					2);
-				return (1);
-			}
-			if (tmp->next->type == TRUNC || tmp->next->type == APPEND
-				|| tmp->next->type == INPUT || tmp->next->type == HEREDOC)
-			{
-				ft_putstr_fd("minishell: syntax error near unexpected token `newline'\n",
-					2);
-				return (1);
-			}
-		}
-		tmp = tmp->next;
-	}
-	return (0);
-}
-
-char	*check_quote(t_token *tmp, int *i, int *j)
-{
-	while (tmp->token[*i])
-	{
-		if (tmp->token[*i] == '\"')
-		{
-			(*i)++;
-			continue ;
-		}
-		if (tmp->token[*i] != '\"')
-		{
-			tmp->token[*j] = tmp->token[*i];
-			(*i)++;
-			(*j)++;
-		}
-	}
-	tmp->token[*j] = '\0';
-	*i = 0;
-	*j = 0;
-	return (tmp->token);
-}
-
-//? Pour enlever les doubles quotes des noeud de la liste chainee
-t_token	*remove_quote(t_token *list)
-{
-	t_token	*tmp;
-	int		i;
-	int		j;
-
-	i = 0;
-	j = 0;
-	tmp = list;
-	while (tmp)
-	{
-		if (tmp->type == CMD || tmp->type == ARG)
-		{
-			tmp->token = check_quote(tmp, &i, &j);
-			i = 0;
-			j = 0;
-		}
-		tmp = tmp->next;
-	}
-	return (list);
-}
-
-int	parsing(t_token *list)
+int	parsing(t_token *list, t_env *env)
 {
 	if (check_pipe(list) == 1)
 		return (1);
 	if (check_redirection(list) == 1)
 		return (1);
-	// 1 -------------------  Check if there is a good word  -------------------
+	if (check_cmd(list, env) == 1)
+	{
+		printf("Pas bon...\n");
+		return (1);
+	}
 	return (0);
 }
