@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 21:15:19 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 13:33:38 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ typedef struct s_token
 	int				type;
 	int				first;
 	struct s_token	*next;
-	struct s_token	*prev;
 }					t_token;
 
 // 5 -------------------  Tokenization  -------------------
@@ -64,7 +63,7 @@ t_token				*tokenization(char *str);
 int					openquote(char *line);
 
 // TODO -------------------  Parsing  ----------------------
-int					parsing(t_token *list, t_env *env);
+int					parsing(t_token *list, t_env *env, t_data *data);
 
 // Check pipe,quote,redir
 int					check_pipe(t_token *list);
@@ -113,5 +112,5 @@ int					msg_error(int value);
 t_data				*get_data(void);
 bool				is_separator(char c);
 void				skip_spaces(char *str, int *i);
-void				ft_del_one_token(t_token *lst);
 int					ft_strcmp(char *s1, char *s2);
+bool				is_quote(char c);

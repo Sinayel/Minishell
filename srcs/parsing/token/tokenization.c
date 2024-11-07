@@ -6,16 +6,11 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 14:27:55 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 13:34:54 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
-
-static bool	is_quote(char c)
-{
-	return (c == '"' || c == '\'');
-}
+#include "../../../includes/minishell.h"
 
 int	openquote(char *line)
 {
@@ -39,7 +34,6 @@ int	openquote(char *line)
 	return (false);
 }
 
-// extract_token() function is used to extract a token from the input string
 static char	*extract_token(char *str, int *i)
 {
 	int		start;
@@ -76,30 +70,39 @@ static char	*extract_separator_token(char *str, int *i)
 	return (ft_substr(str, start, 1));
 }
 
+t_token	*proccess_token(t_token *list, char *str)
+{
+	int		i;
+	char	*token;
+
+	i = 0;
+	while (str[i])
+	{
+		skip_spaces(str, &i);
+		if (!str[i])
+			break ;
+		if (is_separator(str[i]))
+			token = extract_separator_token(str, &i);
+		else
+			token = extract_token(str, &i);
+		if (token)
+			list = add_last(list, token);
+	}
+	list = id_token(list);
+	return (list);
+}
+
 t_token	*tokenization(char *str)
 {
 	t_token	*list;
 	int		i;
-	char	*token;
 
-	list = NULL;
 	i = 0;
+	list = NULL;
+	while (str[i] == ' ')
+		i++;
 	if (str[i] && !openquote(str))
-	{
-		while (str[i])
-		{
-			skip_spaces(str, &i);
-			if (!str[i])
-				break ;
-			if (is_separator(str[i]))
-				token = extract_separator_token(str, &i);
-			else
-				token = extract_token(str, &i);
-			if (token)
-				list = add_last(list, token);
-		}
-		list = id_token(list);
-	}
+		list = proccess_token(list, str);
 	else if (openquote(str))
 		printf("open quote\n");
 	return (list);

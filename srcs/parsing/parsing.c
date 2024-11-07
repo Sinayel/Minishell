@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 20:51:12 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 13:33:25 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,15 @@ int	check_cmd(t_token *list, t_env *env)
 	return (0);
 }
 
-int	parsing(t_token *list, t_env *env)
+int	parsing(t_token *list, t_env *env, t_data *data)
 {
-	if (check_pipe(list) == 1)
+	if (check_pipe(list) != 0)
 		return (1);
-	if (check_redirection(list) == 1)
+	if (check_redirection(list) != 0)
 		return (1);
-	if (check_cmd(list, env) == 1)
+	if (check_cmd(list, env) != 0)
 	{
-		printf("Pas bon...\n");
+		data->error = 128;
 		ft_env_lstclear(env);
 		return (1);
 	}

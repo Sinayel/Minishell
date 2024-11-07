@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 17:30:24 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 12:44:31 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 12:56:02 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,7 @@ int	check_type(t_token *list)
 
 	tmp = list;
 	if (tmp->type == PIPE && tmp->next->type == PIPE)
-	{
-		msg_error(2);
-		return (1);
-	}
+		return (msg_error(2));
 	return (0);
 }
 
@@ -31,22 +28,19 @@ int	check_pipe(t_token *list)
 
 	tmp = list;
 	if (ft_strcmp(tmp->token, "|") == 0 && tmp->next == NULL)
-	{
-		msg_error(2);
-		return (1);
-	}
+		return (msg_error(2));
 	while (tmp)
 	{
-		if ((tmp->next == NULL && tmp->type == PIPE) || ft_strcmp(tmp->token, ">") == 0)
+		if ((tmp->next == NULL && tmp->type == PIPE) || ft_strcmp(tmp->token,
+				">") == 0)
 		{
-			if((ft_strcmp(tmp->token, ">") == 0))
-				return(msg_error(1));
-			msg_error(2);
-			return (1);
+			if ((ft_strcmp(tmp->token, ">") == 0))
+				return (msg_error(1));
+			return (msg_error(2));
 		}
 		if (tmp->next != NULL)
 		{
-			if (check_type(tmp) == 1)
+			if (check_type(tmp) != 0)
 				return (1);
 		}
 		tmp = tmp->next;

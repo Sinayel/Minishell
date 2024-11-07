@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:39:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:12:18 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 12:46:36 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,13 @@ void	free_env_vars(t_env *head)
 t_env	*env_import(char **envp)
 {
 	t_env	*env_list;
-	int		i;
 	char	*env_entry;
 	char	*delimiter;
 	char	*name;
-	char	*value;
+	int		i;
 
-	env_list = NULL;
 	i = 0;
+	env_list = NULL;
 	while (envp[i])
 	{
 		env_entry = envp[i];
@@ -45,8 +44,7 @@ t_env	*env_import(char **envp)
 		{
 			*delimiter = '\0';
 			name = env_entry;
-			value = delimiter + 1;
-			append_env_var(&env_list, name, value);
+			append_env_var(&env_list, name, delimiter + 1);
 			*delimiter = '=';
 			i++;
 		}

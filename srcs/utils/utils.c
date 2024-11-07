@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:58:54 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 13:04:34 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,28 +39,6 @@ void	print_list(t_token *list)
 		temp = temp->next;
 	}
 	printf("NULL\n");
-}
-
-void	ft_del_one_token(t_token *lst)
-{
-	if (!lst)
-		return ;
-	if (lst->prev)
-	{
-		if (lst->next)
-			lst->next->prev = lst->prev;
-		else
-			lst->prev->next = NULL;
-	}
-	if (lst->next)
-	{
-		if (lst->prev)
-			lst->prev->next = lst->next;
-		else
-			lst->next->prev = NULL;
-	}
-	free(lst->token);
-	free(lst);
 }
 
 void	ft_token_lstclear(t_token **lst)
@@ -108,13 +86,11 @@ t_token	*add_last(t_token *list, char *value)
 	new_element->type = 0;
 	new_element->first = 0;
 	new_element->next = NULL;
-	new_element->prev = NULL;
 	if (list == NULL)
 		return (new_element);
 	temp = list;
 	while (temp->next != NULL)
 		temp = temp->next;
 	temp->next = new_element;
-	new_element->prev = temp;
 	return (list);
 }

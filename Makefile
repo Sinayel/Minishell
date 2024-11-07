@@ -12,8 +12,8 @@ MAKEFLAGS += --no-print-directory
 RM = rm -f
 NAME = minishell
 
-PARSING_SRC = srcs/parsing/id_token.c \
-			  srcs/parsing/tokenization.c \
+PARSING_SRC = srcs/parsing/token/id_token.c \
+			  srcs/parsing/token/tokenization.c \
 			  srcs/parsing/check.c \
 			  srcs/parsing/path.c \
 			  srcs/parsing/parsing.c
@@ -23,7 +23,7 @@ BUILTIN_SRC = srcs/cmd/env/env.c \
 
 UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/utils_2.c \
-			srcs/utils/utils_token.c \
+			srcs/parsing/token/utils_token.c \
 			srcs/error/msg.c \
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC)

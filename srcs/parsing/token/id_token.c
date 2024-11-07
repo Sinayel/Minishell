@@ -6,27 +6,30 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 18:21:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:40:38 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 13:05:44 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "../../../includes/minishell.h"
 
 // 5 Fonction pour verifier si c'est une cmd ou un argument
 t_token	*cmd_token(t_token *list)
 {
 	t_token	*tmp;
+	t_token	*last;
 
 	tmp = list;
 	tmp->first = 1;
 	tmp->type = CMD;
+	last = tmp;
 	tmp = tmp->next;
 	while (tmp != NULL)
 	{
-		if (tmp->prev->type == PIPE && tmp->type == ARG)
+		if (last->type == PIPE && tmp->type == ARG)
 			tmp->type = CMD;
 		else if (tmp->type != PIPE && tmp->type >= PIPE)
 			tmp->type = ARG;
+		last = tmp;
 		tmp = tmp->next;
 	}
 	return (list);

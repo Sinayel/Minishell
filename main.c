@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 19:43:11 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 13:35:58 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 //! ◦ CD with only a relative or absolute path |  (JULIO)
 //! ◦ PWD with no options                      |  (JULIO)
 //! ◦ UNSET with no options                    |  (JULIO)
-//! ◦ PIPEX						                |  (JULIO)
+//! ◦ PIPEX							             |  (JULIO)
 //! ◦ ENV with no options or arguments         |  (JULIO)
 //! ◦ ECHO                                     |  (JULIO)
 //! ◦ EXIT                                     |  (JULIO)
@@ -55,7 +55,7 @@ int	main(int argc, char *argv[], char **env)
 		data->input = readline("Minishell> ");
 		list = tokenization(data->input);
 		if (list)
-			parsing(list, env_list = env_import(env));
+			parsing(list, env_list = env_import(env), data);
 		// list = remove_quote(list);
 		if (*data->input)
 			add_history(data->input);

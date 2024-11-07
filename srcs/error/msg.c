@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:31:18 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 21:16:14 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 13:11:22 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ int	msg_error(int value)
 	if (value == 2)
 		printf("minishell: syntax error unexpected token `|'\n");
 	if (value == 3)
-		return 0;
+		printf("open quote\n");
 	if (value == 4)
-		return 0;
+		return (0);
 	if (value == 5)
-		return 0;
+		return (0);
 	return (1);
 }
