@@ -6,16 +6,22 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 13:33:25 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 18:22:28 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	cmd(char *str, t_token *list, t_env *env)
+int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 {
 	(void)list;
 	(void)env;
+	(void)path;
+	if (ft_strcmp(str, "?") == 0)
+	{
+		printf("[%d]\n", data->error);
+		return (1);
+	}
 	if (ft_strcmp(str, "cd") == 0)
 		return (1);
 	if (ft_strcmp(str, "pwd") == 0)
@@ -27,13 +33,40 @@ int	cmd(char *str, t_token *list, t_env *env)
 	if (ft_strcmp(str, "echo") == 0)
 		return (1);
 	if (ft_strcmp(str, "exit") == 0)
-		return (1);
+	{
+		ft_env_lstclear(&env);
+		free(env);
+		ft_token_lstclear(&list);
+    	free(data->input);
+		exit(1);
+	}
 	if (ft_strcmp(str, "export") == 0)
 		return (1);
 	return (0);
 }
 
-int	check_cmd(t_token *list, t_env *env)
+int	check_redirection(t_token *list)
+{
+	t_token	*tmp;
+
+	tmp = list;
+	while (tmp)
+	{
+		if (tmp->type == TRUNC || tmp->type == APPEND || tmp->type == INPUT
+			|| tmp->type == HEREDOC)
+		{
+			if (tmp->next == NULL || tmp->next->type == PIPE)
+				return (msg_error(1));
+			if (tmp->next->type == TRUNC || tmp->next->type == APPEND
+				|| tmp->next->type == INPUT || tmp->next->type == HEREDOC)
+				return (msg_error(1));
+		}
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+int	check_cmd(t_token *list, t_env *env, t_data *data)
 {
 	t_token	*tmp;
 	t_path	*path;
@@ -42,11 +75,42 @@ int	check_cmd(t_token *list, t_env *env)
 	tmp = list;
 	while (tmp)
 	{
-		if (tmp->type == CMD && cmd(tmp->token, list, env) == 0)
+		if (tmp->type == CMD && cmd(tmp->token, list, env, data, path) == 0)
 		{
 			if (double_check(path, tmp) == 1)
+			{
+				printf("Command not found...\n");
 				return (1);
+			}
 		}
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+int	check_pipe(t_token *list)
+{
+	t_token	*tmp;
+
+	tmp = list;
+	if (tmp && ft_strcmp(tmp->token, "|") == 0 && tmp->next == NULL)
+		return (msg_error(2));
+	while (tmp)
+	{
+		if (tmp->type == PIPE)
+		{
+			if (tmp->next == NULL)
+				return (msg_error(2));
+			if (tmp->next->type == PIPE)
+				return (msg_error(2));
+		}
+		if (ft_strcmp(tmp->token, ">") == 0)
+		{
+			if (tmp->next == NULL || tmp->next->type == PIPE)
+				return (msg_error(1));
+		}
+		if (tmp->next != NULL && check_type(tmp) != 0)
+			return (1);
 		tmp = tmp->next;
 	}
 	return (0);
@@ -54,15 +118,33 @@ int	check_cmd(t_token *list, t_env *env)
 
 int	parsing(t_token *list, t_env *env, t_data *data)
 {
-	if (check_pipe(list) != 0)
-		return (1);
-	if (check_redirection(list) != 0)
-		return (1);
-	if (check_cmd(list, env) != 0)
+	if(check_unclosed_pipe(list))
 	{
-		data->error = 128;
-		ft_env_lstclear(env);
+		data->error = 2;
+		printf("unclosed pipe !\n");
 		return (1);
 	}
+	if (check_pipe(list) != 0)
+	{
+		data->error = 2;
+		printf("error pipe\n");
+		return (1);
+	}
+	if (check_redirection(list) != 0)
+	{
+		data->error = 2;
+		return (1);
+	}
+	// if(check_dollar(list) != 0)
+	// {
+	// 	data->error = 127;
+	// 	return (1);
+	// }
+	if (check_cmd(list, env, data) != 0)
+	{
+		data->error = 127;
+		return (1);
+	}
+	data->error = 0;
 	return (0);
 }

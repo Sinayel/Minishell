@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 17:30:24 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 12:56:02 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 15:57:45 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,52 +22,10 @@ int	check_type(t_token *list)
 	return (0);
 }
 
-int	check_pipe(t_token *list)
-{
-	t_token	*tmp;
-
-	tmp = list;
-	if (ft_strcmp(tmp->token, "|") == 0 && tmp->next == NULL)
-		return (msg_error(2));
-	while (tmp)
-	{
-		if ((tmp->next == NULL && tmp->type == PIPE) || ft_strcmp(tmp->token,
-				">") == 0)
-		{
-			if ((ft_strcmp(tmp->token, ">") == 0))
-				return (msg_error(1));
-			return (msg_error(2));
-		}
-		if (tmp->next != NULL)
-		{
-			if (check_type(tmp) != 0)
-				return (1);
-		}
-		tmp = tmp->next;
-	}
-	return (0);
-}
-
-int	check_redirection(t_token *list)
-{
-	t_token	*tmp;
-
-	tmp = list;
-	while (tmp)
-	{
-		if (tmp->type == TRUNC || tmp->type == APPEND || tmp->type == INPUT
-			|| tmp->type == HEREDOC)
-		{
-			if (tmp->next == NULL || tmp->next->type == PIPE)
-				return (msg_error(1));
-			if (tmp->next->type == TRUNC || tmp->next->type == APPEND
-				|| tmp->next->type == INPUT || tmp->next->type == HEREDOC)
-				return (msg_error(1));
-		}
-		tmp = tmp->next;
-	}
-	return (0);
-}
+// bool if_open_redirection(char c)
+// {
+// 	if(c == '>')
+// }
 
 char	*check_quote(t_token *tmp, int *i, int *j)
 {

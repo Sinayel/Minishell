@@ -23,6 +23,7 @@ BUILTIN_SRC = srcs/cmd/env/env.c \
 
 UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/utils_2.c \
+			srcs/utils/free.c \
 			srcs/parsing/token/utils_token.c \
 			srcs/error/msg.c \
 

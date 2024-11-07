@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 13:04:34 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 18:13:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,21 +57,27 @@ void	ft_token_lstclear(t_token **lst)
 	*lst = NULL;
 }
 
-void	ft_env_lstclear(t_env *lst)
+void ft_env_lstclear(t_env **lst)
 {
-	t_env	*temp;
+    t_env *tmp;
 
-	if (!lst)
-		return ;
-	while (lst)
-	{
-		temp = lst->next;
-		free(lst->name);
-		free(lst->value);
-		free(lst);
-		lst = temp;
-	}
-	lst = NULL;
+    if (!lst || !*lst)  // Vérification si la liste est déjà NULL
+        return;
+
+    while (*lst)
+    {
+        tmp = (*lst)->next;
+        
+        // Libération des éléments de l'environnement
+        if ((*lst)->name)  // Vérification si name est non NULL
+            free((*lst)->name);
+        if ((*lst)->value)  // Vérification si value est non NULL
+            free((*lst)->value);
+        
+        free(*lst);  // Libération de l'élément lui-même
+        *lst = tmp;  // Avance au prochain élément
+    }
+    *lst = NULL;
 }
 
 t_token	*add_last(t_token *list, char *value)
