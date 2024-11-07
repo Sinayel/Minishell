@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 21:38:04 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 13:21:37 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 19:15:01 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@ bool	is_quote(char c)
 bool	is_separator(char c)
 {
 	return (c == '<' || c == '>' || c == '|');
+}
+
+bool is_redirection(char *c)
+{
+    if (ft_strcmp(c, ">") == 0 || ft_strcmp(c, "<") == 0 ||
+        ft_strcmp(c, ">>") == 0 || ft_strcmp(c, "<<") == 0)
+        return true;
+    return false;
 }
 
 int	ft_isspace(int c)

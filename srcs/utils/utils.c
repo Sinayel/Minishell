@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 18:13:29 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 18:52:54 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,21 +61,19 @@ void ft_env_lstclear(t_env **lst)
 {
     t_env *tmp;
 
-    if (!lst || !*lst)  // Vérification si la liste est déjà NULL
+    if (!lst || !*lst)
         return;
 
     while (*lst)
     {
         tmp = (*lst)->next;
-        
-        // Libération des éléments de l'environnement
-        if ((*lst)->name)  // Vérification si name est non NULL
+        if ((*lst)->name)
             free((*lst)->name);
-        if ((*lst)->value)  // Vérification si value est non NULL
+        if ((*lst)->value)
             free((*lst)->value);
         
-        free(*lst);  // Libération de l'élément lui-même
-        *lst = tmp;  // Avance au prochain élément
+        free(*lst);
+        *lst = tmp;
     }
     *lst = NULL;
 }

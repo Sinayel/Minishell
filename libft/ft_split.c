@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/13 17:23:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 18:21:00 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 19:34:56 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,100 +19,64 @@ c = " "
 le resultat de l'index 0 sera : "hello"
 celui de l'index 1 sera : "world"
 */
-static int	word_count(const char *str, char c);
-static char	*fill_word(const char *str, int start, int end);
-static void	*ft_free(char **strs, int count);
-static void	ft_initiate_vars(size_t *i, int *j, int *s_word);
 
-char	**ft_split(const char *s, char c)
+static int	count_words(const char *str, char c)
 {
-	if(!s)
-		return NULL;
-	char	**res;
-	size_t	i;
-	int		j;
-	int		s_word;
-
-	ft_initiate_vars(&i, &j, &s_word);
-	res = ft_calloc((word_count(s, c) + 1), sizeof(char *));
-	if (!res)
-		return (NULL);
-	while (s[i] != '\0')
-	{
-		if (s[i] != c && s_word < 0)
-			s_word = i;
-		else if ((s[i] == c || i == ft_strlen(s)) && s_word >= 0)
-		{
-			res[j] = fill_word(s, s_word, i);
-			if (!(res[j]))
-				return (ft_free(res, j));
-			s_word = -1;
-			j++;
-		}
-		i++;
-	}
-	return (res);
-}
-
-static void	ft_initiate_vars(size_t *i, int *j, int *s_word)
-{
-	*i = 0;
-	*j = 0;
-	*s_word = -1;
-}
-
-static void	*ft_free(char **strs, int count)
-{
-	int	i;
+	int i;
+	int trigger;
 
 	i = 0;
-	while (i < count)
+	trigger = 0;
+	while (*str)
 	{
-		free(strs[i]);
-		i++;
+		if (*str != c && trigger == 0)
+		{
+			trigger = 1;
+			i++;
+		}
+		else if (*str == c)
+			trigger = 0;
+		str++;
 	}
-	free(strs);
-	return (NULL);
+	return (i);
 }
 
-static char	*fill_word(const char *str, int start, int end)
+static char	*word_dup(const char *str, int start, int finish)
 {
 	char	*word;
 	int		i;
 
 	i = 0;
-	word = malloc((end - start + 1) * sizeof(char));
-	if (!word)
-		return (NULL);
-	while (start < end)
-	{
-		word[i] = str[start];
-		i++;
-		start++;
-	}
-	word[i] = 0;
+	word = malloc((finish - start + 1) * sizeof(char));
+	while (start < finish)
+		word[i++] = str[start++];
+	word[i] = '\0';
 	return (word);
 }
 
-static int	word_count(const char *str, char c)
+char		**ft_split(char const *s, char c)
 {
-	if(!str)
-		return 0;
-	int	count;
-	int	x;
+	size_t	i;
+	size_t	j;
+	int		index;
+	char	**split;
 
-	count = 0;
-	x = 0;
-	while (*str)
+	if (!s || !(split = malloc((count_words(s, c) + 1) * sizeof(char *))))
+		return (0);
+	i = 0;
+	j = 0;
+	index = -1;
+	while (i <= ft_strlen(s))
 	{
-		if (*str != c && x == 0)
+		if (s[i] != c && index < 0)
+			index = i;
+		else if ((s[i] == c || i == ft_strlen(s)) && index >= 0)
 		{
-			x = 1;
-			count++;
+			split[j++] = word_dup(s, index, i);
+			index = -1;
 		}
-		else if (*str == c)
-			x = 0;
-		str++;
+		i++;
 	}
-	return (count);
+	split[j] = 0;
+	return (split);
 }

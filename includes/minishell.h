@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 18:06:13 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 19:02:47 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ char				*return_env_value(t_env *head, char *name);
 t_env				*env_import(char **envp);
 void				append_env_var(t_env **head, char *name, char *value);
 t_env				*create_env_var(char *name, char *value);
-void 				ft_free_env(t_env *env);
 
 //* -----------------------  Pwd  -------------------------		// (JULIO)
 
@@ -114,6 +113,7 @@ int					msg_error(int value);
 // 4 ------------------------  Utils  ------------------------
 t_data				*get_data(void);
 bool				is_separator(char c);
+bool				is_redirection(char *c);
 void				skip_spaces(char *str, int *i);
 int					ft_strcmp(char *s1, char *s2);
 bool				is_quote(char c);

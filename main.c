@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 18:22:52 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 19:45:55 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,12 @@ int	main(int argc, char *argv[], char **env)
 
 	list = NULL;
 	data = get_data();
+	env_list = env_import(env);
 	init_variable(argc, argv);
 	while (1)
 	{
 		data->input = readline("Minishell> ");
 		list = tokenization(data->input);
-		env_list = env_import(env);
-		if(env_list)
-			ft_env_lstclear(&env_list);
 		if (list)
 			parsing(list, env_list, data);
 		// list = remove_quote(list);

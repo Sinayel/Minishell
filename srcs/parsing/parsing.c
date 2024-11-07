@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 18:22:28 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 19:54:24 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 
 int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 {
-	(void)list;
-	(void)env;
-	(void)path;
 	if (ft_strcmp(str, "?") == 0)
 	{
 		printf("[%d]\n", data->error);
@@ -37,7 +34,9 @@ int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 		ft_env_lstclear(&env);
 		free(env);
 		ft_token_lstclear(&list);
+		ft_free_path(path);
     	free(data->input);
+		// free(data);
 		exit(1);
 	}
 	if (ft_strcmp(str, "export") == 0)
@@ -72,6 +71,7 @@ int	check_cmd(t_token *list, t_env *env, t_data *data)
 	t_path	*path;
 
 	path = return_path(env);
+	// printf("%s\n",path->name);
 	tmp = list;
 	while (tmp)
 	{
@@ -79,6 +79,7 @@ int	check_cmd(t_token *list, t_env *env, t_data *data)
 		{
 			if (double_check(path, tmp) == 1)
 			{
+				ft_free_path(path);
 				printf("Command not found...\n");
 				return (1);
 			}
@@ -93,7 +94,7 @@ int	check_pipe(t_token *list)
 	t_token	*tmp;
 
 	tmp = list;
-	if (tmp && ft_strcmp(tmp->token, "|") == 0 && tmp->next == NULL)
+	if (tmp && ft_strcmp(tmp->token, "|") == 0)
 		return (msg_error(2));
 	while (tmp)
 	{
@@ -104,10 +105,10 @@ int	check_pipe(t_token *list)
 			if (tmp->next->type == PIPE)
 				return (msg_error(2));
 		}
-		if (ft_strcmp(tmp->token, ">") == 0)
+		if (is_redirection(list->token))
 		{
 			if (tmp->next == NULL || tmp->next->type == PIPE)
-				return (msg_error(1));
+				return (1);
 		}
 		if (tmp->next != NULL && check_type(tmp) != 0)
 			return (1);
@@ -121,7 +122,6 @@ int	parsing(t_token *list, t_env *env, t_data *data)
 	if(check_unclosed_pipe(list))
 	{
 		data->error = 2;
-		printf("unclosed pipe !\n");
 		return (1);
 	}
 	if (check_pipe(list) != 0)
@@ -145,6 +145,7 @@ int	parsing(t_token *list, t_env *env, t_data *data)
 		data->error = 127;
 		return (1);
 	}
+	// ft_env_lstclear(&env);
 	data->error = 0;
 	return (0);
 }
