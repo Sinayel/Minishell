@@ -12,6 +12,22 @@
 
 #include "../env/env.h"
 
+int	ft_strncmp(char *s1, char *s2, unsigned int n)
+{
+	unsigned int	i;
+
+	i = 0;
+	if (n == 0)
+		return (0);
+	while (i < n - 1 && (s1[i] == s2[i]) && s1[i] != '\0')
+	{
+		i++;
+	}
+	if (s1[i] != s2[i])
+		return (s1[i] - s2[i]);
+	return (0);
+}
+
 int	word_count(char *str)
 {
 	int	i;
@@ -65,6 +81,31 @@ void ch_oldpwd(t_env *env_list)
 		temp->value = ft_strdup(cwd);
 	else
 		printf("Erreur lors de la récupération du répertoire\n");
+}
+
+void ft_pwd(t_env *env_list, char *arg)
+{
+	char cwd[4096];
+
+	(void)env_list;
+	getcwd(cwd, sizeof(cwd));
+	
+	if (arg == NULL || arg[0] != '-')
+	{
+		// ch_pwd(env_list);
+		printf("%s\n", cwd);
+		return;
+	}
+	if (arg[0] == '-' && arg[1] == '-')
+	{
+		printf("bash: pwd: --: invalid option\n");
+		return;
+	}
+	if (arg[0] == '-' && arg[1])
+	{
+		printf("bash: pwd: %s: invalid option\n", arg);
+		return;
+	}
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -168,17 +209,16 @@ int main(int argc, char *argv[], char **env)
     t_env *env_list = env_import(env); //!Verfifer si env existe avant de l'utiliser
     print_env_vars(env_list, "OLDPWD");
     input = NULL;
-    char cwd[1024];
     
     while (1)
     {
         input = readline("test >");
-		getcwd(cwd, sizeof(cwd));
+		ch_pwd(env_list);
         if (word_count(input) == 0)
             continue;
         if (ft_strcmp(input, "pwd") == 0)
         {
-            printf("%s\n", cwd);
+            ft_pwd(env_list, NULL);
             continue;
         }
 		if (ft_strcmp(input, "env") == 0)
@@ -190,24 +230,32 @@ int main(int argc, char *argv[], char **env)
         {
             ch_oldpwd(env_list);  // On sauvegarde OLDPWD avant de changer de répertoire
             if (chdir(return_env_value(env_list, "HOME")) != 0) //! GERE LE CAS OU HOME EST UNSET ET GERER LE CAS OU HOME EST INCORRECT
-                printf("bash: cd: %s: No such file or directory", return_env_value(env_list, "HOME"));
+                printf("bash: cd: %s: No such file or directory\n", return_env_value(env_list, "HOME"));
         }
         else
         {
             split_input = ft_split(input, ' ');
+			if (ft_strcmp(split_input[0], "pwd") == 0)
+				ft_pwd(env_list, split_input[1]);
             if (ft_strcmp(split_input[0], "cd") == 0)
             {
+				if (ft_strncmp(split_input[1], "$", 1) == 0)
+				{
+					printf("->%ld<-\n", ft_strlen(split_input[1]) - 1);
+					char *name = ft_substr(split_input[1], 1, ft_strlen(split_input[1]) - 1);
+					free(split_input[1]);
+					printf("\n-> %s\n", name);
+					split_input[1] = return_env_value(env_list, name);
+					free(name);
+				}
                 if (ft_strcmp(split_input[1], "-") == 0)
                 {
                     free(split_input[1]);
                     split_input[1] = return_env_value(env_list, "OLDPWD");
                 }
-                
                 ch_oldpwd(env_list);  // On sauvegarde OLDPWD avant de changer de répertoire
                 if (chdir(split_input[1]) != 0)
-                    printf("bash: cd: %s: No such file or directory", split_input[1]);
-				else
-					ch_pwd(env_list);
+                    printf("bash: cd: %s: No such file or directory\n", split_input[1]);
             }
         }
         free(input);
