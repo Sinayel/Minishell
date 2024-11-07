@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:23:21 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/07 12:37:29 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/07 18:22:56 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,19 +67,15 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-char *ft_strchr(const char *s, int c) {
+char *ft_strchr(const char *s, int c)
+{
     int i;
+
     i = 0;
-
-    
-    while (s[i] != '\0' && s[i] != c) {
-        i++;
-    }
-
-    
+    while (s[i] != '\0' && s[i] != c)
+        i++;    
     if (s[i] == c) 
         return (char*)&s[i];
-    
     return NULL;
 }
 
@@ -106,43 +102,50 @@ char	*ft_strdup(const char *src)
 // Fonction pour créer un nouveau nœud pour la liste chaînée
 t_env *create_env_var(const char *name, const char *value)
 {
-    if (!name || !value) {
+    if (!name || !value)
         return NULL;
-    }
-
-    t_env *new_node = (t_env *)malloc(sizeof(t_env));
-    if (!new_node) {
+    t_env *new_node;
+    new_node = (t_env *)malloc(sizeof(t_env));
+    if (!new_node)
+    {
         perror("Erreur d'allocation de mémoire");
         exit(EXIT_FAILURE);
     }
-
     new_node->name = ft_strdup(name);
-    if (!new_node->name) {
+    if (!new_node->name)
+    {
         free(new_node);
         perror("Erreur strdup name");
         exit(EXIT_FAILURE);
     }
-
     new_node->value = ft_strdup(value);
-    if (!new_node->value) {
+    if (!new_node->value)
+    {
         free(new_node->name);
         free(new_node);
         perror("Erreur strdup value");
         exit(EXIT_FAILURE);
     }
-
     new_node->next = NULL;
     return new_node;
 }
 
 // Fonction pour ajouter une variable d'environnement à la fin de la liste chaînée
-void append_env_var(t_env **head, char *name, char *value) {
-    t_env *new_node = create_env_var(name, value);
-    if (*head == NULL) {
+void append_env_var(t_env **head, char *name, char *value)
+{
+    t_env *new_node;
+    t_env *temp;
+    
+    new_node = create_env_var(name, value);
+    if (*head == NULL)
+    {
         *head = new_node;
-    } else {
-        t_env *temp = *head;
-        while (temp->next != NULL) {
+    }
+    else
+    {
+        temp = *head;
+        while (temp->next != NULL)
+        {
             temp = temp->next;
         }
         temp->next = new_node;
@@ -150,7 +153,8 @@ void append_env_var(t_env **head, char *name, char *value) {
 }
 
 // Fonction pour afficher les variables d'environnement de la liste chaînée
-void print_env_vars(t_env *head, char *name) {
+void print_env_vars(t_env *head, char *name)
+{
     t_env *temp = head;
     while (temp)
 	{
@@ -164,8 +168,12 @@ void print_env_vars(t_env *head, char *name) {
 
 void print_env(t_env *head)
 {
-    t_env *temp = head;
-    while (temp)
+    t_env *temp;
+
+    if (head == NULL)
+        return;
+    temp = head;
+    while (temp != NULL)
 	{
         printf("%s=%s\n", temp->name, temp->value);
 		temp = temp->next;
@@ -174,7 +182,11 @@ void print_env(t_env *head)
 
 char *return_env_value(t_env *head, char *name)
 {
-    t_env *temp = head;
+    t_env *temp;
+
+    if (head == NULL)
+        return (NULL);
+    temp = head;
     while (temp)
 	{
 		if (ft_strcmp(temp->name, name) == 0)
@@ -187,11 +199,74 @@ char *return_env_value(t_env *head, char *name)
 }
 
 // Fonction pour libérer la mémoire de la liste chaînée
-void free_env_vars(t_env *head) {
+void free_env_vars(t_env *head)
+{
     t_env *temp;
-    while (head != NULL) {
+    while (head != NULL)
+    {
         temp = head;
         head = head->next;
+        free(temp->name);
+        free(temp->value);
+        free(temp);
+    }
+}
+
+// void	ft_lstaddback(t_list **alst, t_list *new)
+// {
+// 	t_list *ptr;
+
+// 	if (alst && *alst)
+// 	{
+// 		ptr = *alst;
+// 		while (ptr->next)
+// 			ptr = ptr->next;
+// 		ptr->next = new;
+// 	}
+// 	else if (alst)
+// 		*alst = new;
+// }
+
+void env_create_oldpwd(t_env **env_list)
+{
+    t_env *new;
+    char cwd[4096];
+
+    getcwd(cwd, sizeof(cwd));
+    new = (t_env *)malloc(sizeof(t_env));
+    new->name = ft_strdup("OLDPWD");
+    new->value = ft_strdup(cwd);
+    new->next = NULL;
+    if (env_list == NULL)
+        *env_list = new;
+    else
+        (*env_list)->next = new;
+}
+
+void env_create_pwd(t_env **env_list)
+{
+    t_env *new;
+    char cwd[4096];
+
+    getcwd(cwd, sizeof(cwd));
+    new = (t_env *)malloc(sizeof(t_env));
+    new->name = ft_strdup("PWD");
+    new->value = ft_strdup(cwd);
+    new->next = NULL;
+    if (env_list == NULL)
+        *env_list = new;
+    else
+        (*env_list)->next = new;
+}
+
+void ft_free_env(t_env *env)
+{
+    t_env *temp;
+
+    while (env)
+    {
+        temp = env;
+        env = env->next;
         free(temp->name);
         free(temp->value);
         free(temp);
@@ -206,21 +281,34 @@ t_env *env_import(char **envp)
     char *name;
     int i;
 
-    // Parcours de envp pour extraire les variables d'environnement
     i = 0;
     env_list = NULL;
-    while (envp[i]) {
+    if (envp)
+    {
+        while (envp[i])
+        {
+            printf("envp: %s\n", envp[i]);
+            i++;
+        }    
+    }
+    // printf("envp: %s\n", envp[0]);
+    i = 0;
+    if (!envp)
+    {
+        printf("DEBUG\n");
+        env_create_pwd(&env_list);
+        return (env_list);
+    }
+    while (envp[i])
+    {
         env_entry = envp[i];
         delimiter = ft_strchr(env_entry, '=');
 
-        if (delimiter != NULL) {
-            // Sépare le nom et la valeur de la variable d'environnement
+        if (delimiter != NULL)
+        {
             *delimiter = '\0';
             name = env_entry;
-            // Ajout de la variable à la liste chaînée
             append_env_var(&env_list, name, delimiter + 1);
-
-            // Rétablit le '=' dans envp[i] (pour ne pas altérer envp)
             *delimiter = '=';
             i++;
         }

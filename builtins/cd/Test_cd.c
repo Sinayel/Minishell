@@ -71,6 +71,11 @@ void ch_oldpwd(t_env *env_list)
 	char cwd[1024];
 
 	temp = env_list;
+	if (return_env_value(env_list, "OLDPWD") == NULL)
+	{
+		env_create_oldpwd(&env_list);
+		return;
+	}
 	while (temp)
 	{
 		if (ft_strcmp(temp->name, "OLDPWD") == 0)
@@ -176,6 +181,29 @@ int	ft_strcmp(char *s1, char *s2)
 	return (0);
 }
 
+void free_tabtab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+}
+
+char *skip_spaces_input(char *input)
+{
+	int i;
+
+	i = 0;
+	while (input[i] && (input[i] == ' ' || input[i] == '\t'))
+		i++;
+	return (input + i);
+}
+
 char	*my_getenv(char *name, char **env)
 {
 	int		i;
@@ -206,14 +234,14 @@ int main(int argc, char *argv[], char **env)
     (void)argv;
     char *input;
     char **split_input;
+	char *name;
     t_env *env_list = env_import(env); //!Verfifer si env existe avant de l'utiliser
-    print_env_vars(env_list, "OLDPWD");
+    // print_env_vars(env_list, "OLDPWD");
     input = NULL;
     
     while (1)
     {
-        input = readline("test >");
-		ch_pwd(env_list);
+        input = readline("$> ");
         if (word_count(input) == 0)
             continue;
         if (ft_strcmp(input, "pwd") == 0)
@@ -229,35 +257,64 @@ int main(int argc, char *argv[], char **env)
         if (word_count(input) == 1)
         {
             ch_oldpwd(env_list);  // On sauvegarde OLDPWD avant de changer de répertoire
-            if (chdir(return_env_value(env_list, "HOME")) != 0) //! GERE LE CAS OU HOME EST UNSET ET GERER LE CAS OU HOME EST INCORRECT
-                printf("bash: cd: %s: No such file or directory\n", return_env_value(env_list, "HOME"));
+			if (ft_strcmp(skip_spaces_input(input), "cd") == 0) //! ICI 
+			{
+            	if (chdir(return_env_value(env_list, "HOME")) != 0) //! GERE LE CAS OU HOME EST UNSET ET GERER LE CAS OU HOME EST INCORRECT
+                	printf("bash: cd: %s: No such file or directory\n", return_env_value(env_list, "HOME"));
+			}
+			ch_pwd(env_list);
+			free(input);
+			continue;
         }
         else
         {
+			ch_oldpwd(env_list);
             split_input = ft_split(input, ' ');
 			if (ft_strcmp(split_input[0], "pwd") == 0)
 				ft_pwd(env_list, split_input[1]);
+			if (ft_strcmp(split_input[0], "cd") == 0 && word_count(input) > 2)
+			{
+				printf("bash: cd: too many arguments\n");
+				free_tabtab(split_input);
+				free(input);
+				continue;
+			}
             if (ft_strcmp(split_input[0], "cd") == 0)
             {
-				if (ft_strncmp(split_input[1], "$", 1) == 0)
+				if (ft_strncmp(split_input[1], "$", 1) == 0) //! NOrmalement a enlever
 				{
 					printf("->%ld<-\n", ft_strlen(split_input[1]) - 1);
-					char *name = ft_substr(split_input[1], 1, ft_strlen(split_input[1]) - 1);
+					name = ft_substr(split_input[1], 1, ft_strlen(split_input[1]) - 1);
 					free(split_input[1]);
 					printf("\n-> %s\n", name);
 					split_input[1] = return_env_value(env_list, name);
 					free(name);
 				}
-                if (ft_strcmp(split_input[1], "-") == 0)
+                if (ft_strcmp(split_input[1], "-") == 0 || ft_strcmp(split_input[1], "~") == 0)
                 {
                     free(split_input[1]);
                     split_input[1] = return_env_value(env_list, "OLDPWD");
+					printf("%s\n", split_input[1]);
                 }
-                ch_oldpwd(env_list);  // On sauvegarde OLDPWD avant de changer de répertoire
+				if (split_input[1][0] == '-' && split_input[1][1] == '-')
+                {
+					printf("bash: cd: --: invalid option\n");
+					free_tabtab(split_input);
+					free(input);
+					continue;
+                }
                 if (chdir(split_input[1]) != 0)
-                    printf("bash: cd: %s: No such file or directory\n", split_input[1]);
+				{
+					if (errno == ENOTDIR)
+						printf("bash: cd: %s: Not a directory\n", split_input[1]);
+					if (errno == ENOENT)
+                    	printf("bash: cd: %s: No such file or directory\n", split_input[1]);
+				}
             }
         }
+		ch_pwd(env_list);
+		ft_free_env(env_list);
+		free_tabtab(split_input);
         free(input);
         input = NULL;
     }
