@@ -31,6 +31,24 @@ int	word_count(char *str)
 	return (wc);
 }
 
+void ch_pwd(t_env *env_list)
+{
+	t_env *temp;
+	char cwd[1024];
+
+	temp = env_list;
+	while (temp)
+	{
+		if (ft_strcmp(temp->name, "PWD") == 0)
+			break;
+		temp = temp->next;
+	}
+	if (getcwd(cwd, sizeof(cwd)) != NULL)
+		temp->value = ft_strdup(cwd);
+	else
+		printf("Erreur lors de la récupération du répertoire\n");
+}
+
 void ch_oldpwd(t_env *env_list)
 {
 	t_env *temp;
@@ -143,73 +161,57 @@ char	*my_getenv(char *name, char **env)
 
 int main(int argc, char *argv[], char **env)
 {
-	(void)argc;
-	(void)argv;
-	char *input;
-	char **split_input;
-	t_env *env_list = env_import(env); //!Verfifer si env existe avant de l'utiliser
-	print_env_vars(env_list, "OLDPWD");
-	input = NULL;
+    (void)argc;
+    (void)argv;
+    char *input;
+    char **split_input;
+    t_env *env_list = env_import(env); //!Verfifer si env existe avant de l'utiliser
+    print_env_vars(env_list, "OLDPWD");
+    input = NULL;
     char cwd[1024];
-	getcwd(cwd, sizeof(cwd));
-	while (1)
-	{
-		input = readline("test >");
-		if (word_count(input) == 0)
-			continue;
-		if (ft_strcmp(input, "pwd") == 0)
-		{
-			printf("%s\n", cwd);
-			continue;
-		}
-		if (ft_strcmp(input, "cd") == 0) // !REMPLACER PAR LES CMD DE LA LISTE CHAINEE
-		{
-			if (chdir(return_env_value(env_list, "HOME")) != 0)
-				perror("Erreur lors du changement de répertoire");
-			else
-				ch_oldpwd(env_list); //! METTRE LE OLD PWD AVANT DE CHANGER DE REPERTOIRE
-			continue;
-		}
-		else
-		{
-			split_input = ft_split(input, ' ');
-			if (ft_strcmp(split_input[0], "cd") == 0)
-			{
-				if (ft_strcmp(split_input[1], "-") == 0)
-				{
-					free(split_input[1]);
-					split_input[1] = return_env_value(env_list, "OLDPWD");
-				}
-				// else 
-				// if (input == cwd)
-				// {
-				// 	printf("test\n");
-				// 	free(input);
-				// 	input = NULL;
-				// 	continue;
-				// }
-				if (chdir(split_input[1]) != 0)
-					perror("Erreur lors du changement de répertoire");
+    
+    while (1)
+    {
+        input = readline("test >");
+		getcwd(cwd, sizeof(cwd));
+        if (word_count(input) == 0)
+            continue;
+        if (ft_strcmp(input, "pwd") == 0)
+        {
+            printf("%s\n", cwd);
+            continue;
+        }
+		if (ft_strcmp(input, "env") == 0)
+        {
+            print_env(env_list);
+            continue;
+        }
+        if (word_count(input) == 1)
+        {
+            ch_oldpwd(env_list);  // On sauvegarde OLDPWD avant de changer de répertoire
+            if (chdir(return_env_value(env_list, "HOME")) != 0) //! GERE LE CAS OU HOME EST UNSET ET GERER LE CAS OU HOME EST INCORRECT
+                printf("bash: cd: %s: No such file or directory", return_env_value(env_list, "HOME"));
+        }
+        else
+        {
+            split_input = ft_split(input, ' ');
+            if (ft_strcmp(split_input[0], "cd") == 0)
+            {
+                if (ft_strcmp(split_input[1], "-") == 0)
+                {
+                    free(split_input[1]);
+                    split_input[1] = return_env_value(env_list, "OLDPWD");
+                }
+                
+                ch_oldpwd(env_list);  // On sauvegarde OLDPWD avant de changer de répertoire
+                if (chdir(split_input[1]) != 0)
+                    printf("bash: cd: %s: No such file or directory", split_input[1]);
 				else
-					ch_oldpwd(env_list);
-				// else
-				//     perror("Erreur lors du changement de répertoire");
-
-				// Obtenir et afficher le répertoire courant
-				getcwd(cwd, sizeof(cwd));
-				if (cwd != NULL)
-				{
-					print_env_vars(env_list, "OLDPWD");
-					printf("Répertoire actuel : %s\n", cwd);
-				}
-				else
-				{
-					printf("Erreur lors de la récupération du répertoire\n");
-				}
-			}
-		}
-		free(input);
-		input = NULL;
-	}
+					ch_pwd(env_list);
+            }
+        }
+        free(input);
+        input = NULL;
+    }
     return 0;
 }

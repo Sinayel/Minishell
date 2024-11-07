@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:23:21 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/06 18:16:14 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/07 12:37:29 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,16 @@ void print_env_vars(t_env *head, char *name) {
 	}
 }
 
+void print_env(t_env *head)
+{
+    t_env *temp = head;
+    while (temp)
+	{
+        printf("%s=%s\n", temp->name, temp->value);
+		temp = temp->next;
+	}
+}
+
 char *return_env_value(t_env *head, char *name)
 {
     t_env *temp = head;
@@ -190,24 +200,25 @@ void free_env_vars(t_env *head) {
 
 t_env *env_import(char **envp)
 {
-    
-    t_env *env_list = NULL;
+    t_env *env_list;
+    char *env_entry;
+    char *delimiter;
+    char *name;
+    int i;
 
     // Parcours de envp pour extraire les variables d'environnement
-    int i;
     i = 0;
+    env_list = NULL;
     while (envp[i]) {
-        char *env_entry = envp[i];
-        char *delimiter = ft_strchr(env_entry, '=');
+        env_entry = envp[i];
+        delimiter = ft_strchr(env_entry, '=');
 
         if (delimiter != NULL) {
             // Sépare le nom et la valeur de la variable d'environnement
             *delimiter = '\0';
-            char *name = env_entry;
-            char *value = delimiter + 1;
-
+            name = env_entry;
             // Ajout de la variable à la liste chaînée
-            append_env_var(&env_list, name, value);
+            append_env_var(&env_list, name, delimiter + 1);
 
             // Rétablit le '=' dans envp[i] (pour ne pas altérer envp)
             *delimiter = '=';
