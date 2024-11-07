@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 17:30:24 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/06 21:20:58 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/07 12:44:31 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	check_type(t_token *list)
 	return (0);
 }
 
-//! GERER LES PIPE ET LES REDIRECTIONS
 int	check_pipe(t_token *list)
 {
 	t_token	*tmp;
@@ -40,7 +39,7 @@ int	check_pipe(t_token *list)
 	{
 		if ((tmp->next == NULL && tmp->type == PIPE) || ft_strcmp(tmp->token, ">") == 0)
 		{
-			if((ft_strcmp(tmp->token, ">") == 0))		//! GERER LES PIPE ET LES REDIRECTIONS
+			if((ft_strcmp(tmp->token, ">") == 0))
 				return(msg_error(1));
 			msg_error(2);
 			return (1);
