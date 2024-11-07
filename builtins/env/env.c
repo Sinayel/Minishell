@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:23:21 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/07 18:22:56 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/07 19:15:47 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,10 +237,7 @@ void env_create_oldpwd(t_env **env_list)
     new->name = ft_strdup("OLDPWD");
     new->value = ft_strdup(cwd);
     new->next = NULL;
-    if (env_list == NULL)
-        *env_list = new;
-    else
-        (*env_list)->next = new;
+    (*env_list)->next = new;
 }
 
 void env_create_pwd(t_env **env_list)
@@ -249,28 +246,33 @@ void env_create_pwd(t_env **env_list)
     char cwd[4096];
 
     getcwd(cwd, sizeof(cwd));
+    printf("-> cwd_init : %s\n", cwd);
     new = (t_env *)malloc(sizeof(t_env));
-    new->name = ft_strdup("PWD");
-    new->value = ft_strdup(cwd);
+    new->name = "PWD";
+    new->value = cwd;
     new->next = NULL;
-    if (env_list == NULL)
-        *env_list = new;
-    else
-        (*env_list)->next = new;
+    *env_list = new;
 }
 
-void ft_free_env(t_env *env)
+void ft_free_env(t_env **lst)
 {
-    t_env *temp;
+    t_env *tmp;
 
-    while (env)
+    if (!lst || !*lst)
+        return;
+
+    while (*lst)
     {
-        temp = env;
-        env = env->next;
-        free(temp->name);
-        free(temp->value);
-        free(temp);
+        tmp = (*lst)->next;
+        if ((*lst)->name)
+            free((*lst)->name);
+        if ((*lst)->value)
+            free((*lst)->value);
+        
+        free(*lst);
+        *lst = tmp;
     }
+    *lst = NULL;
 }
 
 t_env *env_import(char **envp)
@@ -283,17 +285,17 @@ t_env *env_import(char **envp)
 
     i = 0;
     env_list = NULL;
-    if (envp)
-    {
-        while (envp[i])
-        {
-            printf("envp: %s\n", envp[i]);
-            i++;
-        }    
-    }
+    // if (envp)
+    // {
+    //     while (envp[i])
+    //     {
+    //         printf("envp: %s\n", envp[i]);
+    //         i++;
+    //     }    
+    // }
     // printf("envp: %s\n", envp[0]);
-    i = 0;
-    if (!envp)
+    // i = 0;
+    if (!*envp)
     {
         printf("DEBUG\n");
         env_create_pwd(&env_list);

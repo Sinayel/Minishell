@@ -92,12 +92,11 @@ void ft_pwd(t_env *env_list, char *arg)
 {
 	char cwd[4096];
 
-	(void)env_list;
 	getcwd(cwd, sizeof(cwd));
 	
 	if (arg == NULL || arg[0] != '-')
 	{
-		// ch_pwd(env_list);
+		ch_pwd(env_list);
 		printf("%s\n", cwd);
 		return;
 	}
@@ -236,7 +235,6 @@ int main(int argc, char *argv[], char **env)
     char **split_input;
 	char *name;
     t_env *env_list = env_import(env); //!Verfifer si env existe avant de l'utiliser
-    // print_env_vars(env_list, "OLDPWD");
     input = NULL;
     
     while (1)
@@ -256,10 +254,15 @@ int main(int argc, char *argv[], char **env)
         }
         if (word_count(input) == 1)
         {
-            ch_oldpwd(env_list);  // On sauvegarde OLDPWD avant de changer de répertoire
 			if (ft_strcmp(skip_spaces_input(input), "cd") == 0) //! ICI 
 			{
-            	if (chdir(return_env_value(env_list, "HOME")) != 0) //! GERE LE CAS OU HOME EST UNSET ET GERER LE CAS OU HOME EST INCORRECT
+				free(input);
+				input = return_env_value(env_list, "HOME");
+				if (!input)
+					printf("bash: cd: HOME not set\n");
+				else if (input)
+					ch_oldpwd(env_list);
+            	else if (chdir(return_env_value(env_list, "HOME")) != 0) //! GERE LE CAS OU HOME EST UNSET ET GERER LE CAS OU HOME EST INCORRECT
                 	printf("bash: cd: %s: No such file or directory\n", return_env_value(env_list, "HOME"));
 			}
 			ch_pwd(env_list);
@@ -268,7 +271,6 @@ int main(int argc, char *argv[], char **env)
         }
         else
         {
-			ch_oldpwd(env_list);
             split_input = ft_split(input, ' ');
 			if (ft_strcmp(split_input[0], "pwd") == 0)
 				ft_pwd(env_list, split_input[1]);
@@ -283,17 +285,31 @@ int main(int argc, char *argv[], char **env)
             {
 				if (ft_strncmp(split_input[1], "$", 1) == 0) //! NOrmalement a enlever
 				{
-					printf("->%ld<-\n", ft_strlen(split_input[1]) - 1);
 					name = ft_substr(split_input[1], 1, ft_strlen(split_input[1]) - 1);
 					free(split_input[1]);
-					printf("\n-> %s\n", name);
 					split_input[1] = return_env_value(env_list, name);
+					if (split_input[1] == NULL)
+					{
+						printf("bash: cd: %s not set\n", name);
+						free_tabtab(split_input);
+        				free(input);
+        				input = NULL;
+						continue;
+					}
 					free(name);
 				}
                 if (ft_strcmp(split_input[1], "-") == 0 || ft_strcmp(split_input[1], "~") == 0)
                 {
                     free(split_input[1]);
                     split_input[1] = return_env_value(env_list, "OLDPWD");
+					if (split_input[1] == NULL)
+					{
+						printf("bash: cd: OLDPWD not set\n");
+						free_tabtab(split_input);
+        				free(input);
+        				input = NULL;
+						continue;
+					}
 					printf("%s\n", split_input[1]);
                 }
 				if (split_input[1][0] == '-' && split_input[1][1] == '-')
@@ -303,20 +319,26 @@ int main(int argc, char *argv[], char **env)
 					free(input);
 					continue;
                 }
+				if (access(split_input[1], F_OK) == 0)
+					ch_oldpwd(env_list);
                 if (chdir(split_input[1]) != 0)
 				{
 					if (errno == ENOTDIR)
 						printf("bash: cd: %s: Not a directory\n", split_input[1]);
 					if (errno == ENOENT)
                     	printf("bash: cd: %s: No such file or directory\n", split_input[1]);
+					else
+						continue;
 				}
             }
         }
 		ch_pwd(env_list);
-		ft_free_env(env_list);
 		free_tabtab(split_input);
         free(input);
         input = NULL;
     }
+	ft_free_env(&env_list);
     return 0;
 }
+
+//! TOKENISE PAR RAPPORT AU : QUAND CD $PATH !!!!!!

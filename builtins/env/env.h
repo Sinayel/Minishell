@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:26:28 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/07 18:12:11 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/07 19:00:46 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,6 @@ int	ft_strncmp(char *s1, char *s2, unsigned int n);
 void env_create_pwd(t_env **env_list);
 void env_create_oldpwd(t_env **env_list);
 
-void ft_free_env(t_env *env);
+void ft_free_env(t_env **lst);
 
 #endif
