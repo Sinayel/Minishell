@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/12 14:44:31 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/12 18:48:53 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,18 @@ bool	verif_token(char c)
 	return ((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95);
 }
 
-t_token *return_pid(t_token *list, int pid, t_data *data)
-{
-	int i;
-	i = 0;
-	while(pid > 0)
-	{
-		list->token[i] = ft_strdup(ft_itoa(data->pid));
-		i += 2;
-		pid--;
-	}
-	return list;
-}
+// t_token *return_pid(t_token *list, int pid, t_data *data)
+// {
+// 	int i;
+// 	i = 0;
+// 	while(pid > 0)
+// 	{
+// 		list->token[i] = ft_strdup(ft_itoa(data->pid));
+// 		i += 2;
+// 		pid--;
+// 	}
+// 	return list;
+// }
 
 char	*dollar_value(t_env *env, char *token, t_data *data, t_token *list)
 {
@@ -55,7 +55,8 @@ char	*dollar_value(t_env *env, char *token, t_data *data, t_token *list)
 	char	*tmp;
 	char	*value;
 	int		pid;
-
+	(void)list;
+	(void)data;
 	i = 0;
 	j = 0;
 	len = ft_strlen_dollar(token);
@@ -69,8 +70,8 @@ char	*dollar_value(t_env *env, char *token, t_data *data, t_token *list)
 		}
 		i++;
 	}
-	if(pid)
-		return_pid(list, pid, data);
+	// if(pid)
+	// 	return_pid(list, pid, data);
 	if (i % 2 != 0)
 	{
 		while (token[i] && verif_token(token[i]))

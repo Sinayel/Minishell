@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/12 13:47:22 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/12 18:49:01 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,3 +123,4 @@ bool				is_redirection(char *c);
 void				skip_spaces(char *str, int *i);
 int					ft_strcmp(char *s1, char *s2);
 bool				is_quote(char c);
+int					ft_isspace(int c);

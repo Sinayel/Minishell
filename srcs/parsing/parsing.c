@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/12 13:46:12 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/12 15:49:06 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,11 +135,11 @@ int	parsing(t_token *list, t_env *env, t_data *data)
 		data->error = 2;
 		return (1);
 	}
-	if(!check_dollar(env, list, data) != 0)
-	{
-		data->error = 127;
-		return (1);
-	}
+	// if(!check_dollar(env, list, data) != 0)
+	// {
+	// 	data->error = 127;
+	// 	return (1);
+	// }
 	if (check_cmd(list, env, data) != 0)
 	{
 		data->error = 127;
