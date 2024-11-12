@@ -47,43 +47,45 @@ int	word_count(char *str)
 	return (wc);
 }
 
-void ch_pwd(t_env *env_list)
+void ch_pwd(t_env **env_list)
 {
-	t_env *temp;
+	t_env **temp;
 	char cwd[1024];
 
 	temp = env_list;
-	while (temp)
+	while (*temp)
 	{
-		if (ft_strcmp(temp->name, "PWD") == 0)
+		if (ft_strcmp((*temp)->name, "PWD") == 0)
 			break;
-		temp = temp->next;
+		*temp = (*temp)->next;
 	}
+	if (getcwd(cwd, sizeof(cwd)) == (*temp)->value)
+		return;
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		temp->value = ft_strdup(cwd);
+		(*temp)->value = ft_strdup(cwd);
 	else
 		printf("Erreur lors de la récupération du répertoire\n");
 }
 
-void ch_oldpwd(t_env *env_list)
+void ch_oldpwd(t_env **env_list)
 {
-	t_env *temp;
+	t_env **temp;
 	char cwd[1024];
 
 	temp = env_list;
-	if (return_env_value(env_list, "OLDPWD") == NULL)
+	if (return_env_value(*env_list, "OLDPWD") == NULL)
 	{
-		env_create_oldpwd(&env_list);
+		env_create_oldpwd(env_list);
 		return;
 	}
 	while (temp)
 	{
-		if (ft_strcmp(temp->name, "OLDPWD") == 0)
+		if (ft_strcmp((*temp)->name, "OLDPWD") == 0)
 			break;
-		temp = temp->next;
+		*temp = (*temp)->next;
 	}
 	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		temp->value = ft_strdup(cwd);
+		(*temp)->value = ft_strdup(cwd);
 	else
 		printf("Erreur lors de la récupération du répertoire\n");
 }
@@ -92,8 +94,8 @@ void ft_pwd(t_env *env_list, char *arg)
 {
 	char cwd[4096];
 
-	(void)env_list;
 	getcwd(cwd, sizeof(cwd));
+	ch_pwd(&env_list);
 	if (arg == NULL || arg[0] != '-')
 	{
 		// ch_pwd(env_list);
@@ -252,12 +254,16 @@ void ft_cd(t_env *env_list, char *input)
 	{
 		path = return_env_value(env_list, "HOME");
 		if (!path)
+		{
 			printf("bash: cd: HOME not set\n");
+			return;
+		}
 		else if (path)
-			ch_oldpwd(env_list);
-		else if (chdir(return_env_value(env_list, "HOME")) != 0)
-                	printf("bash: cd: %s: No such file or directory\n", return_env_value(env_list, "HOME"));
-		ch_pwd(env_list);
+			ch_oldpwd(&env_list); //! CAS OU PATH N'EST PAS VALIDE !
+		if (chdir(return_env_value(env_list, "HOME")) != 0)
+            printf("bash: cd: %s: No such file or directory\n", return_env_value(env_list, "HOME"));
+		ch_pwd(&env_list);
+		return;
 	}
 	else
 	{
@@ -283,17 +289,19 @@ void ft_cd(t_env *env_list, char *input)
 			return;
 		}
 		if (access(path, X_OK) == 0)
-			ch_oldpwd(env_list);
+			ch_oldpwd(&env_list);
 		if (chdir(path) != 0)
 		{
 			if (errno == ENOTDIR)
 				printf("bash: cd: %s: Not a directory\n", path);
 			if (errno == ENOENT)
 				printf("bash: cd: %s: No such file or directory\n", path);
+			else
+				printf("Error\n");
 		}
 	}
-	ch_pwd(env_list);
-	return;
+	ch_pwd(&env_list);
+	// return;
 }
 
 int main(int argc, char *argv[], char **env)
@@ -302,7 +310,7 @@ int main(int argc, char *argv[], char **env)
     (void)argv;
     char *input;
     char **split_input;
-    t_env *env_list = env_import(env); //!Verfifer si env existe avant de l'utiliser
+    t_env *env_list = env_import(env);
     input = NULL;
     
     while (1)
@@ -320,24 +328,30 @@ int main(int argc, char *argv[], char **env)
             print_env(env_list);
             continue;
         }
+		if (ft_strcmp(input, "export") == 0)
+		{
+			ft_export(env_list, NULL);
+			continue;
+		}
         if (word_count(input) == 1)
         {
-			if (ft_strcmp(skip_spaces_input(input), "cd") == 0) //! ICI 
+			if (ft_strcmp(skip_spaces_input(input), "cd") == 0)
 			{
 				free(input);
-				input = return_env_value(env_list, "HOME");
+				input = ft_strdup(return_env_value(env_list, "HOME"));
+				printf("test : %s\n", input);
 				if (!input)
+				{
 					printf("bash: cd: HOME not set\n");
+					continue;
+				}
 				else if (input)
-					ch_oldpwd(env_list);
-            	else if (chdir(return_env_value(env_list, "HOME")) != 0) //! GERE LE CAS OU HOME EST UNSET ET GERER LE CAS OU HOME EST INCORRECT
+					ch_oldpwd(&env_list);
+            	if (chdir(input) != 0)
                 	printf("bash: cd: %s: No such file or directory\n", return_env_value(env_list, "HOME"));
 			}
-			if (ft_strcmp(skip_spaces_input(input), "export") == 0)
-				ft_export(env_list, NULL);
-			ch_pwd(env_list);
+			ch_pwd(&env_list);
 			free(input);
-			continue;
         }
         else
         {
@@ -351,11 +365,10 @@ int main(int argc, char *argv[], char **env)
 				free(input);
 				continue;
 			}
+            if (ft_strcmp(split_input[0], "cd") == 0)
+				ft_cd(env_list, split_input[1]);
 			if (ft_strcmp(split_input[0], "export") == 0)
 				ft_export(env_list, split_input[1]);
-            if (ft_strcmp(split_input[0], "cd") == 0)
-			{
-				ft_cd(env_list, split_input[1]);
             // {
 			// 	if (ft_strncmp(split_input[1], "$", 1) == 0) //! NOrmalement a enlever
 			// 	{
@@ -404,11 +417,10 @@ int main(int argc, char *argv[], char **env)
 			// 		else
 			// 			continue;
 			// 	}
-            }
+			free_tabtab(split_input);
+        	free(input);
+        	input = NULL;
         }
-		free_tabtab(split_input);
-        free(input);
-        input = NULL;
     }
 	ft_free_env(&env_list);
     return 0;
