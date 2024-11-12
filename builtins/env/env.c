@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:23:21 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/07 19:15:47 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/12 14:37:00 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,7 +246,6 @@ void env_create_pwd(t_env **env_list)
     char cwd[4096];
 
     getcwd(cwd, sizeof(cwd));
-    printf("-> cwd_init : %s\n", cwd);
     new = (t_env *)malloc(sizeof(t_env));
     new->name = "PWD";
     new->value = cwd;
@@ -285,19 +284,8 @@ t_env *env_import(char **envp)
 
     i = 0;
     env_list = NULL;
-    // if (envp)
-    // {
-    //     while (envp[i])
-    //     {
-    //         printf("envp: %s\n", envp[i]);
-    //         i++;
-    //     }    
-    // }
-    // printf("envp: %s\n", envp[0]);
-    // i = 0;
     if (!*envp)
     {
-        printf("DEBUG\n");
         env_create_pwd(&env_list);
         return (env_list);
     }

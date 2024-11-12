@@ -265,6 +265,8 @@ int main(int argc, char *argv[], char **env)
             	else if (chdir(return_env_value(env_list, "HOME")) != 0) //! GERE LE CAS OU HOME EST UNSET ET GERER LE CAS OU HOME EST INCORRECT
                 	printf("bash: cd: %s: No such file or directory\n", return_env_value(env_list, "HOME"));
 			}
+			if (ft_strcmp(skip_spaces_input(input), "export") == 0)
+				ft_export(env_list, NULL);
 			ch_pwd(env_list);
 			free(input);
 			continue;
