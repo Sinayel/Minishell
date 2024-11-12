@@ -92,11 +92,11 @@ void ft_pwd(t_env *env_list, char *arg)
 {
 	char cwd[4096];
 
+	(void)env_list;
 	getcwd(cwd, sizeof(cwd));
-	
 	if (arg == NULL || arg[0] != '-')
 	{
-		ch_pwd(env_list);
+		// ch_pwd(env_list);
 		printf("%s\n", cwd);
 		return;
 	}
@@ -227,13 +227,81 @@ char	*my_getenv(char *name, char **env)
 	return (NULL);
 }
 
+char *cd_handle_dollar(t_env *env_list, char *input)
+{
+	char *name;
+	char *path;
+
+	name = ft_substr(input, 1, ft_strlen(input) - 1);
+	path = return_env_value(env_list, name);
+	if (!path)
+	{
+		printf("bash: cd: %s not set\n", name);
+		free(name);
+		return (NULL);
+	}
+	free(name);
+	return (path);
+}
+
+void ft_cd(t_env *env_list, char *input)
+{
+	char *path;
+
+	if (input == NULL)
+	{
+		path = return_env_value(env_list, "HOME");
+		if (!path)
+			printf("bash: cd: HOME not set\n");
+		else if (path)
+			ch_oldpwd(env_list);
+		else if (chdir(return_env_value(env_list, "HOME")) != 0)
+                	printf("bash: cd: %s: No such file or directory\n", return_env_value(env_list, "HOME"));
+		ch_pwd(env_list);
+	}
+	else
+	{
+		if (input[0] == '$')
+		{
+			path = cd_handle_dollar(env_list, input);
+			if (!path)
+				return;
+		}
+		if (input[0] == '-' || input[0] == '~')
+		{
+			path = return_env_value(env_list, "OLDPWD");
+			if (!path)
+			{
+				printf("bash: cd: OLDPWD not set\n");
+				return;
+			}
+			printf("%s\n", path);
+		}
+		if (input[0] == '-' && input[1] == '-')
+		{
+			printf("bash: cd: --: invalid option\n");
+			return;
+		}
+		if (access(path, X_OK) == 0)
+			ch_oldpwd(env_list);
+		if (chdir(path) != 0)
+		{
+			if (errno == ENOTDIR)
+				printf("bash: cd: %s: Not a directory\n", path);
+			if (errno == ENOENT)
+				printf("bash: cd: %s: No such file or directory\n", path);
+		}
+	}
+	ch_pwd(env_list);
+	return;
+}
+
 int main(int argc, char *argv[], char **env)
 {
     (void)argc;
     (void)argv;
     char *input;
     char **split_input;
-	char *name;
     t_env *env_list = env_import(env); //!Verfifer si env existe avant de l'utiliser
     input = NULL;
     
@@ -283,58 +351,61 @@ int main(int argc, char *argv[], char **env)
 				free(input);
 				continue;
 			}
+			if (ft_strcmp(split_input[0], "export") == 0)
+				ft_export(env_list, split_input[1]);
             if (ft_strcmp(split_input[0], "cd") == 0)
-            {
-				if (ft_strncmp(split_input[1], "$", 1) == 0) //! NOrmalement a enlever
-				{
-					name = ft_substr(split_input[1], 1, ft_strlen(split_input[1]) - 1);
-					free(split_input[1]);
-					split_input[1] = return_env_value(env_list, name);
-					if (split_input[1] == NULL)
-					{
-						printf("bash: cd: %s not set\n", name);
-						free_tabtab(split_input);
-        				free(input);
-        				input = NULL;
-						continue;
-					}
-					free(name);
-				}
-                if (ft_strcmp(split_input[1], "-") == 0 || ft_strcmp(split_input[1], "~") == 0)
-                {
-                    free(split_input[1]);
-                    split_input[1] = return_env_value(env_list, "OLDPWD");
-					if (split_input[1] == NULL)
-					{
-						printf("bash: cd: OLDPWD not set\n");
-						free_tabtab(split_input);
-        				free(input);
-        				input = NULL;
-						continue;
-					}
-					printf("%s\n", split_input[1]);
-                }
-				if (split_input[1][0] == '-' && split_input[1][1] == '-')
-                {
-					printf("bash: cd: --: invalid option\n");
-					free_tabtab(split_input);
-					free(input);
-					continue;
-                }
-				if (access(split_input[1], F_OK) == 0)
-					ch_oldpwd(env_list);
-                if (chdir(split_input[1]) != 0)
-				{
-					if (errno == ENOTDIR)
-						printf("bash: cd: %s: Not a directory\n", split_input[1]);
-					if (errno == ENOENT)
-                    	printf("bash: cd: %s: No such file or directory\n", split_input[1]);
-					else
-						continue;
-				}
+			{
+				ft_cd(env_list, split_input[1]);
+            // {
+			// 	if (ft_strncmp(split_input[1], "$", 1) == 0) //! NOrmalement a enlever
+			// 	{
+			// 		name = ft_substr(split_input[1], 1, ft_strlen(split_input[1]) - 1);
+			// 		free(split_input[1]);
+			// 		split_input[1] = return_env_value(env_list, name);
+			// 		if (split_input[1] == NULL)
+			// 		{
+			// 			printf("bash: cd: %s not set\n", name);
+			// 			free_tabtab(split_input);
+        	// 			free(input);
+        	// 			input = NULL;
+			// 			continue;
+			// 		}
+			// 		free(name);
+			// 	}
+            //     if (ft_strcmp(split_input[1], "-") == 0 || ft_strcmp(split_input[1], "~") == 0)
+            //     {
+            //         free(split_input[1]);
+            //         split_input[1] = return_env_value(env_list, "OLDPWD");
+			// 		if (split_input[1] == NULL)
+			// 		{
+			// 			printf("bash: cd: OLDPWD not set\n");
+			// 			free_tabtab(split_input);
+        	// 			free(input);
+        	// 			input = NULL;
+			// 			continue;
+			// 		}
+			// 		printf("%s\n", split_input[1]);
+            //     }
+			// 	if (split_input[1][0] == '-' && split_input[1][1] == '-')
+            //     {
+			// 		printf("bash: cd: --: invalid option\n");
+			// 		free_tabtab(split_input);
+			// 		free(input);
+			// 		continue;
+            //     }
+			// 	if (access(split_input[1], F_OK) == 0)
+			// 		ch_oldpwd(env_list);
+            //     if (chdir(split_input[1]) != 0)
+			// 	{
+			// 		if (errno == ENOTDIR)
+			// 			printf("bash: cd: %s: Not a directory\n", split_input[1]);
+			// 		if (errno == ENOENT)
+            //         	printf("bash: cd: %s: No such file or directory\n", split_input[1]);
+			// 		else
+			// 			continue;
+			// 	}
             }
         }
-		ch_pwd(env_list);
 		free_tabtab(split_input);
         free(input);
         input = NULL;

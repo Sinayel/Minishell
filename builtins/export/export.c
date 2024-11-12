@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 13:22:36 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/12 14:53:19 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/12 16:10:59 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,20 +42,38 @@ void print_env_export(t_env *head)
     }
 }
 
-void export_to_env(t_env **env_list, char *arg)
+void replace_env_value(t_env **env_list, char **arg)
+{
+    t_env **temp;
+
+    if (*env_list == NULL || env_list == NULL)
+        return;
+    temp = env_list;
+    while (*temp)
+	{
+		if (ft_strcmp((*temp)->name, arg[0]) == 0)
+		{
+            free((*temp)->value);
+            (*temp)->value = ft_strdup(arg[1]);
+            return;
+		}
+		*temp = (*temp)->next;
+	}
+}
+
+void export_to_env(t_env **env_list, char **arg)
 {
     t_env *new;
     t_env **tmp;
-    char **split_arg;
 
     if (*env_list == NULL)
         return;
-    split_arg = ft_split(arg, '=');
+    // printf("name = %s, value = %s", split_arg[0], split_arg[1]);
     new = (t_env *)malloc(sizeof(t_env));
     if (!new)
         return;
-    new->name = split_arg[0];
-    new->value = split_arg[1];
+    new->name = arg[0];
+    new->value = arg[1];
     new->next = NULL;
     tmp = env_list;
     while ((*tmp)->next)
@@ -66,12 +84,17 @@ void export_to_env(t_env **env_list, char *arg)
 
 void ft_export(t_env *env_list, char *arg)
 {
-    printf("test\n");
+    char **split_arg;
+
     if (arg == NULL)
         print_env_export(env_list);
     else
     {
-        export_to_env(&env_list, arg);
+        split_arg = ft_split(arg, '=');
+        if (return_env_value(env_list, split_arg[0]) != NULL)
+            replace_env_value(&env_list, split_arg);
+        else
+            export_to_env(&env_list, split_arg);
     }
 }
 
