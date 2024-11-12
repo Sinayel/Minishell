@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 19:54:24 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/12 13:46:12 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,9 @@ int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 	if (ft_strcmp(str, "exit") == 0)
 	{
 		ft_env_lstclear(&env);
-		free(env);
 		ft_token_lstclear(&list);
 		ft_free_path(path);
     	free(data->input);
-		// free(data);
 		exit(1);
 	}
 	if (ft_strcmp(str, "export") == 0)
@@ -71,7 +69,6 @@ int	check_cmd(t_token *list, t_env *env, t_data *data)
 	t_path	*path;
 
 	path = return_path(env);
-	// printf("%s\n",path->name);
 	tmp = list;
 	while (tmp)
 	{
@@ -79,13 +76,16 @@ int	check_cmd(t_token *list, t_env *env, t_data *data)
 		{
 			if (double_check(path, tmp) == 1)
 			{
-				ft_free_path(path);
+				if(path)
+					ft_free_path(path);
 				printf("Command not found...\n");
 				return (1);
 			}
 		}
 		tmp = tmp->next;
 	}
+	if(path)
+		ft_free_path(path);
 	return (0);
 }
 
@@ -135,14 +135,15 @@ int	parsing(t_token *list, t_env *env, t_data *data)
 		data->error = 2;
 		return (1);
 	}
-	// if(check_dollar(list) != 0)
-	// {
-	// 	data->error = 127;
-	// 	return (1);
-	// }
+	if(!check_dollar(env, list, data) != 0)
+	{
+		data->error = 127;
+		return (1);
+	}
 	if (check_cmd(list, env, data) != 0)
 	{
 		data->error = 127;
+		printf("error\n");
 		return (1);
 	}
 	// ft_env_lstclear(&env);

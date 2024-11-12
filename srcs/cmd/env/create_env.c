@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:08:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 18:05:03 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/12 14:21:43 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ char	*return_env_value(t_env *head, char *name)
 	while (temp)
 	{
 		if (ft_strcmp(temp->name, name) == 0)
-			return (temp->value);
+			return (strdup(temp->value));
 		temp = temp->next;
 	}
 	return (NULL);

@@ -14,6 +14,7 @@ NAME = minishell
 
 PARSING_SRC = srcs/parsing/token/id_token.c \
 			  srcs/parsing/token/tokenization.c \
+			  srcs/parsing/dollar/dollar.c \
 			  srcs/parsing/check.c \
 			  srcs/parsing/path.c \
 			  srcs/parsing/parsing.c

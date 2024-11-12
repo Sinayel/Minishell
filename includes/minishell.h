@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 19:02:47 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/12 13:47:22 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <sys/types.h>
 #include "../libft/libft.h"
 #include <fcntl.h>
 #include <signal.h>
@@ -53,6 +54,7 @@ typedef struct s_token
 typedef struct s_data
 {
 	char			*input;
+	pid_t			pid;
 	int				error;
 }					t_data;
 
@@ -63,6 +65,10 @@ int					openquote(char *line);
 
 // TODO -------------------  Parsing  ----------------------
 int					parsing(t_token *list, t_env *env, t_data *data);
+
+// Check dollar
+bool 				check_dollar(t_env *env, t_token *list, t_data *data);
+int					ft_strlen_dollar(char *str);
 
 // Check pipe,quote,redir
 int					check_pipe(t_token *list);

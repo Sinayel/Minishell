@@ -6,21 +6,33 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 19:45:55 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/12 13:44:14 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
 
-//! ◦ CD with only a relative or absolute path |  (JULIO)
-//! ◦ PWD with no options                      |  (JULIO)
-//! ◦ UNSET with no options                    |  (JULIO)
-//! ◦ PIPEX							             |  (JULIO)
-//! ◦ ENV with no options or arguments         |  (JULIO)
-//! ◦ ECHO                                     |  (JULIO)
-//! ◦ EXIT                                     |  (JULIO)
-//! ◦ EXPORT with no options                   |  (YANS)
-//! ◦ PARSING (99% du projet)                  |  (YANS)
+//! ◦ CD with only a relative or absolute path |  (JULIO) V
+//! ◦ PWD with no options                      |  (JULIO) V
+//! ◦ ENV with no options or arguments         |  (JULIO) V
+//! ◦ PIPEX										 |  (JULIO) X
+//! ◦ UNSET with no options                    |  (JULIO) X
+//! ◦ EXPORT with no options                   |  (JULIO) X
+//! ◦ EXIT                                     |  (YANS) V
+//! ◦ ECHO                                     |  (YANS) X
+//! ◦ PID											|  (YANS) X
+//! ◦ PARSING (99% du projet)                  |  (YANS) X
+
+void	signal_handler(int signum)
+{
+	if (signum == SIGINT)
+	{
+		printf("\n");
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
+}
 
 //! UNIQUEMENT POUR LES STRUCTURE (NE MARCHE PAS AVEC LES LISTE CHAINEE)
 t_data	*get_data(void)
@@ -35,10 +47,24 @@ void	init_variable(int argc, char **argv)
 	t_data	*data;
 
 	data = get_data();
-	(void)argc;
-	(void)argv;
+	data->pid = getpid();
 	data->error = 0;
 	data->input = NULL;
+	(void)argc;
+	(void)argv;
+	signal(SIGINT, signal_handler);
+}
+
+bool	exit_shell(t_data *data, t_env *env)
+{
+	if (!data->input)
+	{
+		printf("exit\n");
+		free(data->input);
+		ft_env_lstclear(&env);
+		return (false);
+	}
+	return (true);
 }
 
 int	main(int argc, char *argv[], char **env)
@@ -54,10 +80,12 @@ int	main(int argc, char *argv[], char **env)
 	while (1)
 	{
 		data->input = readline("Minishell> ");
+		if (!exit_shell(data, env_list))
+			break ;
 		list = tokenization(data->input);
 		if (list)
 			parsing(list, env_list, data);
-		// list = remove_quote(list);
+		list = remove_quote(list);
 		add_history(data->input);
 		print_list(list);
 		ft_token_lstclear(&list);
