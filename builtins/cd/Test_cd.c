@@ -257,7 +257,7 @@ void ft_cd(t_env *env_list, char *input)
 		}
 		initial_path = ft_strdup(path);
 		if (access(path, X_OK) == 0)
-			ch_oldpwd(&env_list);
+			ch_oldpwd(&env_list); //! prend la velur du cwd avant le pwd ?!?!?!?!!?!?!?!?!!?!?
 		if (chdir(initial_path) != 0)
 		{
 			if (errno == ENOTDIR)
