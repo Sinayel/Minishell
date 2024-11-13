@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 13:22:36 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/12 16:10:59 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/13 16:43:57 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void ft_export(t_env *env_list, char *arg)
             replace_env_value(&env_list, split_arg);
         else
             export_to_env(&env_list, split_arg);
+        free_tabtab(split_arg);
     }
 }
 

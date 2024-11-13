@@ -23,6 +23,34 @@ void ft_sig_handler(int sig)
 	}
 }
 
+char	*ft_strjoin(char const *s1, char const *s2)
+{
+	char	*res;
+	int		i;
+	int		j;
+
+	if (!s1 || !s2)
+		return (0);
+	i = 0;
+	res = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	if (!res)
+		return (NULL);
+	while (s1[i])
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	j = 0;
+	while (s2[j])
+	{
+		res[i] = s2[j];
+		i++;
+		j++;
+	}
+	res[i] = 0;
+	return (res);
+}
+
 int	ft_strncmp(char *s1, char *s2, unsigned int n)
 {
 	unsigned int	i;
@@ -62,17 +90,23 @@ void ch_pwd(t_env **env_list)
 {
 	t_env **temp;
 	char cwd[4096];
+	char *cwd_join;
 
-	temp = env_list;
 	getcwd(cwd, sizeof(cwd));
+	cwd_join = ft_strjoin("PWD=", cwd);
+	temp = env_list;
+	if (return_env_value(*env_list, "PWD") == NULL)
+	{
+		ft_export(*env_list, cwd_join);
+		free(cwd_join);
+		return;
+	}
 	while ((*temp)->next)
 	{
 		if (ft_strcmp((*temp)->name, "PWD") == 0)
 			break;
 		*temp = (*temp)->next;
 	}
-	if (cwd == (*temp)->value)
-		return;
 	if (cwd != NULL)
 	{
 		free((*temp)->value);
@@ -80,18 +114,22 @@ void ch_pwd(t_env **env_list)
 	}
 	else
 		printf("Erreur lors de la récupération du répertoire\n");
+	free(cwd_join);
 }
 
 void ch_oldpwd(t_env **env_list)
 {
 	t_env **temp;
 	char cwd[4096];
+	char *cwd_join;
 
-	temp = env_list;
 	getcwd(cwd, sizeof(cwd));
+	cwd_join = ft_strjoin("OLDPWD=", cwd);
+	temp = env_list;
 	if (return_env_value(*env_list, "OLDPWD") == NULL)
 	{
-		env_create_oldpwd(env_list);
+		ft_export(*env_list, cwd_join);
+		free(cwd_join);
 		return;
 	}
 	while ((*temp)->next)
@@ -107,6 +145,7 @@ void ch_oldpwd(t_env **env_list)
 	}
 	else
 		printf("Erreur lors de la récupération du répertoire\n");
+	free(cwd_join);
 }
 
 void ft_pwd(t_env *env_list, char *arg)
@@ -131,34 +170,6 @@ void ft_pwd(t_env *env_list, char *arg)
 		printf("bash: pwd: %s: invalid option\n", arg);
 		return;
 	}
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	char	*res;
-	int		i;
-	int		j;
-
-	if (!s1 || !s2)
-		return (0);
-	i = 0;
-	res = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!res)
-		return (NULL);
-	while (s1[i])
-	{
-		res[i] = s1[i];
-		i++;
-	}
-	j = 0;
-	while (s2[j])
-	{
-		res[i] = s2[j];
-		i++;
-		j++;
-	}
-	res[i] = 0;
-	return (res);
 }
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
@@ -224,30 +235,6 @@ char *skip_spaces_input(char *input)
 	return (input + i);
 }
 
-char	*my_getenv(char *name, char **env)
-{
-	int		i;
-	int		j;
-	char	*sub;
-
-	i = 0;
-	while (env[i])
-	{
-		j = 0;
-		while (env[i][j] && env[i][j] != '=')
-			j++;
-		sub = ft_substr(env[i], 0, j);
-		if (ft_strcmp(sub, name) == 0)
-		{
-			free(sub);
-			return (env[i] + j + 1);
-		}
-		free(sub);
-		i++;
-	}
-	return (NULL);
-}
-
 char *cd_handle_dollar(t_env *env_list, char *input)
 {
 	char *name;
@@ -270,6 +257,8 @@ void ft_cd(t_env *env_list, char *input)
 	char *path;
 	char *initial_path;
 
+	path = NULL;
+	initial_path = NULL;
 	if (input == NULL)
 	{
 		path = return_env_value(env_list, "HOME");
@@ -278,9 +267,10 @@ void ft_cd(t_env *env_list, char *input)
 			printf("bash: cd: HOME not set\n");
 			return;
 		}
+		initial_path = ft_strdup(path);
 		if (access(path, X_OK) == 0)
 			ch_oldpwd(&env_list);
-		if (chdir(path) != 0)
+		if (chdir(initial_path) != 0)
 		{
 			if (errno == ENOTDIR)
 				printf("bash: cd: %s: Not a directory\n", path);
@@ -289,6 +279,7 @@ void ft_cd(t_env *env_list, char *input)
 			else
 				perror("chdir");
 		}
+		free(initial_path);
 	}
 	else
 	{
@@ -318,7 +309,6 @@ void ft_cd(t_env *env_list, char *input)
 		initial_path = ft_strdup(path);
 		if (access(path, X_OK) == 0)
 			ch_oldpwd(&env_list);
-		printf("path : %s\n", path);
 		if (chdir(initial_path) != 0)
 		{
 			if (errno == ENOTDIR)
@@ -369,6 +359,8 @@ int main(int argc, char *argv[], char **env)
 				free(input);
 				continue;
 			}
+			if (ft_strcmp(split_input[0], "unset") == 0)
+				ft_unset(&env_list, split_input[1]);
             if (ft_strcmp(split_input[0], "cd") == 0)
 				ft_cd(env_list, split_input[1]);
 			if (ft_strcmp(split_input[0], "export") == 0)

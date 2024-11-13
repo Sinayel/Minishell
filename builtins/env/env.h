@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:26:28 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/13 14:03:07 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/13 16:44:31 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,7 @@ char *ft_strchr(const char *s, int c);
 void ft_free_env(t_env **lst);
 void ft_export(t_env *env_list, char *arg);
 void replace_env_value(t_env **env_list, char **arg);
+void ft_unset(t_env **env_list, char *arg);
+void free_tabtab(char **tab);
 
 #endif
