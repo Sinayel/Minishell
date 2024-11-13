@@ -99,6 +99,7 @@ void ch_pwd(t_env **env_list)
 			break;
 		*temp = (*temp)->next;
 	}
+	printf("%s & %s\n", (*temp)->name, (*temp)->value);
 	if (cwd != NULL)
 	{
 		free((*temp)->value);
@@ -112,9 +113,16 @@ void ch_oldpwd(t_env **env_list)
 {
 	t_env **temp;
 	char *pwd;
+	char *oldpwd;
+	char *oldpwd_join;
 
 	temp = env_list;
 	pwd = return_env_value(*env_list, "PWD");
+	oldpwd = return_env_value(*env_list, "OLDPWD");
+	oldpwd_join = ft_strjoin("OLDPWD=", pwd);
+	if (oldpwd == NULL)
+		ft_export(*env_list, oldpwd_join);
+	free(oldpwd_join);
 	while ((*temp)->next)
 	{
 		if (ft_strcmp((*temp)->name, "OLDPWD") == 0)
@@ -352,7 +360,7 @@ int main(int argc, char *argv[], char **env)
             if (ft_strcmp(split_input[0], "cd") == 0)
 				ft_cd(env_list, split_input[1]);
 			if (ft_strcmp(split_input[0], "export") == 0)
-				ft_export(env_list, split_input);
+				ft_export(env_list, split_input[1]);
 			if (ft_strcmp(split_input[0], "pwd") == 0)
 				ft_pwd(split_input[1]);
 			free_tabtab(split_input);
