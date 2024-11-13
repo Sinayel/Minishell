@@ -303,6 +303,13 @@ void ft_cd(t_env *env_list, char *input)
 	ch_pwd(&env_list);
 }
 
+void ft_exit(t_env *env_list, char *input)
+{
+	ft_free_env(&env_list);
+	free(input);
+	exit(0);
+}
+
 int main(int argc, char *argv[], char **env)
 {
     (void)argc;
@@ -326,6 +333,8 @@ int main(int argc, char *argv[], char **env)
         	    print_env(env_list);
 			if (ft_strcmp(input, "export") == 0)
 				ft_export(env_list, NULL);
+			if (ft_strcmp(input, "exit") == 0)
+				ft_exit(env_list, input);
 			free(input);
         }
         else
@@ -343,7 +352,7 @@ int main(int argc, char *argv[], char **env)
             if (ft_strcmp(split_input[0], "cd") == 0)
 				ft_cd(env_list, split_input[1]);
 			if (ft_strcmp(split_input[0], "export") == 0)
-				ft_export(env_list, split_input[1]);
+				ft_export(env_list, split_input);
 			if (ft_strcmp(split_input[0], "pwd") == 0)
 				ft_pwd(split_input[1]);
 			free_tabtab(split_input);
