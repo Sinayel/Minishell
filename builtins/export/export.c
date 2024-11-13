@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 13:22:36 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/13 16:43:57 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/13 18:27:51 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ void export_to_env(t_env **env_list, char **arg)
     new = (t_env *)malloc(sizeof(t_env));
     if (!new)
         return;
-    new->name = arg[0];
-    new->value = arg[1];
+    new->name = ft_strdup(arg[0]);
+    new->value = ft_strdup(arg[1]);
     new->next = NULL;
     tmp = env_list;
     while ((*tmp)->next)

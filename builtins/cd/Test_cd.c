@@ -90,17 +90,9 @@ void ch_pwd(t_env **env_list)
 {
 	t_env **temp;
 	char cwd[4096];
-	char *cwd_join;
 
 	getcwd(cwd, sizeof(cwd));
-	cwd_join = ft_strjoin("PWD=", cwd);
 	temp = env_list;
-	if (return_env_value(*env_list, "PWD") == NULL)
-	{
-		ft_export(*env_list, cwd_join);
-		free(cwd_join);
-		return;
-	}
 	while ((*temp)->next)
 	{
 		if (ft_strcmp((*temp)->name, "PWD") == 0)
@@ -114,49 +106,37 @@ void ch_pwd(t_env **env_list)
 	}
 	else
 		printf("Erreur lors de la récupération du répertoire\n");
-	free(cwd_join);
 }
 
 void ch_oldpwd(t_env **env_list)
 {
 	t_env **temp;
-	char cwd[4096];
-	char *cwd_join;
+	char *pwd;
 
-	getcwd(cwd, sizeof(cwd));
-	cwd_join = ft_strjoin("OLDPWD=", cwd);
 	temp = env_list;
-	if (return_env_value(*env_list, "OLDPWD") == NULL)
-	{
-		ft_export(*env_list, cwd_join);
-		free(cwd_join);
-		return;
-	}
+	pwd = return_env_value(*env_list, "PWD");
 	while ((*temp)->next)
 	{
 		if (ft_strcmp((*temp)->name, "OLDPWD") == 0)
 			break;
 		*temp = (*temp)->next;
 	}
-	if (cwd != NULL)
+	if (pwd != NULL)
 	{
 		free((*temp)->value);
-		(*temp)->value = ft_strdup(cwd);
+		(*temp)->value = ft_strdup(pwd);
 	}
 	else
-		printf("Erreur lors de la récupération du répertoire\n");
-	free(cwd_join);
+		(*temp)->value = NULL;
 }
 
-void ft_pwd(t_env *env_list, char *arg)
+void ft_pwd(char *arg)
 {
 	char cwd[4096];
 
 	getcwd(cwd, sizeof(cwd));
-	ch_pwd(&env_list);
 	if (arg == NULL || arg[0] != '-')
 	{
-		// ch_pwd(env_list);
 		printf("%s\n", cwd);
 		return;
 	}
@@ -285,7 +265,7 @@ void ft_cd(t_env *env_list, char *input)
 	{
 		if (input[0] == '$')
 		{
-			path = cd_handle_dollar(env_list, input);
+			path = cd_handle_dollar(env_list, input); //! Noramlement fait par le parsing (heureusement parce ca marche qu'a moitie)
 			if (!path)
 				return;
 		}
@@ -315,11 +295,10 @@ void ft_cd(t_env *env_list, char *input)
 				printf("bash: cd: %s: Not a directory\n", path);
 			if (errno == ENOENT)
 				printf("bash: cd: %s: No such file or directory\n", path);
-			else	
+			else
 				perror("chdir");
 		}
 		free(initial_path);
-		// return;
 	}
 	ch_pwd(&env_list);
 }
@@ -342,7 +321,7 @@ int main(int argc, char *argv[], char **env)
 			if (ft_strcmp(skip_spaces_input(input), "cd") == 0)
 				ft_cd(env_list, NULL);
         	if (ft_strcmp(input, "pwd") == 0)
-        	    ft_pwd(env_list, NULL);
+        	    ft_pwd(NULL);
 			if (ft_strcmp(input, "env") == 0)
         	    print_env(env_list);
 			if (ft_strcmp(input, "export") == 0)
@@ -366,7 +345,7 @@ int main(int argc, char *argv[], char **env)
 			if (ft_strcmp(split_input[0], "export") == 0)
 				ft_export(env_list, split_input[1]);
 			if (ft_strcmp(split_input[0], "pwd") == 0)
-				ft_pwd(env_list, split_input[1]);
+				ft_pwd(split_input[1]);
 			free_tabtab(split_input);
         	free(input);
         }
