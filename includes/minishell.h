@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/12 18:49:01 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/13 16:20:08 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef struct s_token
 typedef struct s_data
 {
 	char			*input;
-	pid_t			pid;
+	int				pid;
 	int				error;
 }					t_data;
 
@@ -67,8 +67,13 @@ int					openquote(char *line);
 int					parsing(t_token *list, t_env *env, t_data *data);
 
 // Check dollar
-bool 				check_dollar(t_env *env, t_token *list, t_data *data);
-int					ft_strlen_dollar(char *str);
+// char	*proccess_dollar(t_token *list, t_env *env);
+int check(t_env *env, t_token *list);
+
+// Pid
+char				*pid_len(int len, char *pid, char *str);
+char				*get_pid(int len, char *str, char *pid);
+char				*proccess_pid(char *str, t_data *data);
 
 // Check pipe,quote,redir
 int					check_pipe(t_token *list);
@@ -124,3 +129,4 @@ void				skip_spaces(char *str, int *i);
 int					ft_strcmp(char *s1, char *s2);
 bool				is_quote(char c);
 int					ft_isspace(int c);
+void				ft_exit(t_token *list, t_data *data, t_env *env, t_path *path);

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 16:09:45 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/12 16:44:55 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/13 13:29:36 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,10 @@ int ft_strlen(char *str)
     return i;
 }
 
-char *get_pid(char *input, t_data *data)
+char *get_pid(char *str)
 {
     char *tmp = malloc(sizeof(char));
-    char *pid = ft_itoa(data->pid);
+    char *pid = "1234";
     int i = 0;
     int j = 0;
     int len = ft_strlen(str);
@@ -103,6 +103,7 @@ char *get_pid(char *input, t_data *data)
 int main(void)
 {
     char *str = "Hello $$$World";
+    char *tmp = get_pid(str);
     printf("str = %s\ntmp = %s\n", str, tmp);
     return 0;
 }

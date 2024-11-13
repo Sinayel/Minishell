@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/08 11:59:42 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/13 14:11:30 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ t_path	*return_path(t_env *env)
 		i++;
 	}
 	i = 0;
+	free(tmp);
 	free(path_breaker);
 	return (path);
 }

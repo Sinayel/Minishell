@@ -6,11 +6,11 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 21:38:04 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/12 18:59:48 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/13 15:13:55 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 bool	is_quote(char c)
 {

@@ -6,11 +6,28 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 17:30:24 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/07 15:57:45 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/13 15:09:30 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+bool	check_unclosed_pipe(t_token *token_list)
+{
+	t_token	*current;
+
+	current = token_list;
+	while (current)
+	{
+		if (current->type == PIPE && current->next == NULL)
+		{
+			printf("Error: Unclosed pipe\n");
+			return (true);
+		}
+		current = current->next;
+	}
+	return (false);
+}
 
 int	check_type(t_token *list)
 {
@@ -21,11 +38,6 @@ int	check_type(t_token *list)
 		return (msg_error(2));
 	return (0);
 }
-
-// bool if_open_redirection(char c)
-// {
-// 	if(c == '>')
-// }
 
 char	*check_quote(t_token *tmp, int *i, int *j)
 {

@@ -14,6 +14,7 @@ NAME = minishell
 
 PARSING_SRC = srcs/parsing/token/id_token.c \
 			  srcs/parsing/token/tokenization.c \
+			  srcs/parsing/dollar/pid.c \
 			  srcs/parsing/dollar/dollar.c \
 			  srcs/parsing/check.c \
 			  srcs/parsing/path.c \
@@ -23,9 +24,9 @@ BUILTIN_SRC = srcs/cmd/env/env.c \
 			  srcs/cmd/env/create_env.c \
 
 UTILS_SRC = srcs/utils/utils.c \
-			srcs/utils/utils_2.c \
 			srcs/utils/free.c \
-			srcs/parsing/token/utils_token.c \
+			srcs/utils/for_list.c \
+			srcs/utils/utils_token.c \
 			srcs/error/msg.c \
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC)
