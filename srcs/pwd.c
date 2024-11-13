@@ -6,23 +6,11 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 20:27:40 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/29 18:08:47 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/13 14:27:01 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-void ft_sig_handler(int sig)
-{
-    if (sig == SIGINT)
-    {
-        printf("\n");
-        rl_replace_line("", 0);
-        rl_on_new_line();
-        rl_redisplay();
-    }
-}
-
 
 t_data *get_data(void)
 {

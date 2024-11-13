@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:23:21 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/12 18:40:48 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/13 14:15:52 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,8 +247,8 @@ void env_create_pwd(t_env **env_list)
 
     getcwd(cwd, sizeof(cwd));
     new = (t_env *)malloc(sizeof(t_env));
-    new->name = "PWD";
-    new->value = cwd;
+    new->name = ft_strdup("PWD");
+    new->value = ft_strdup(cwd);
     new->next = NULL;
     *env_list = new;
 }
