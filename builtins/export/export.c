@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 13:22:36 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/13 18:27:51 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/14 14:31:12 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,22 @@ void replace_env_value(t_env **env_list, char **arg)
 	}
 }
 
+int is_env_name_valid(char *name)
+{
+    int i;
+
+    i = 0;
+    while (name[i])
+    {
+        if (name[i] == '=')
+            return 0;
+        if ((name[i] >= 32 && name[i] < 48) || (name[i] >= 58 && name[i] < 65) || (name[i] >= 91 && name[i] < 95) || name[i] == 96 || name[i] >= 123)
+            return 1;
+        i++;
+    }
+    return 0;
+}
+
 void export_to_env(t_env **env_list, char **arg)
 {
     t_env *new;
@@ -68,7 +84,6 @@ void export_to_env(t_env **env_list, char **arg)
 
     if (*env_list == NULL)
         return;
-    // printf("name = %s, value = %s", split_arg[0], split_arg[1]);
     new = (t_env *)malloc(sizeof(t_env));
     if (!new)
         return;
@@ -88,7 +103,7 @@ void ft_export(t_env *env_list, char *arg)
 
     if (arg == NULL)
         print_env_export(env_list);
-    else
+    else if (is_env_name_valid(arg) == 0)
     {
         split_arg = ft_split(arg, '=');
         if (return_env_value(env_list, split_arg[0]) != NULL)
@@ -97,29 +112,6 @@ void ft_export(t_env *env_list, char *arg)
             export_to_env(&env_list, split_arg);
         free_tabtab(split_arg);
     }
+    else
+        printf("bash: export: `%s': not a valid identifier\n", arg);
 }
-
-// void print_env_export(t_env *head)
-// {
-//     t_env *temp;
-//     char *alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-//     int i;
-
-//     i = 0;
-
-//     if (head == NULL)
-//         return;
-//     while (i < (int)strlen(alphabet))
-//     {
-//         temp = head;
-//         while (temp != NULL)
-//         {
-//             if (temp->name[0] == alphabet[i])
-//             {
-//                 printf("export %s=%s\n", temp->name, temp->value);
-//             }
-//             temp = temp->next;
-//         }
-//         i++;
-//     }
-// }

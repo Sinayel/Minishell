@@ -88,54 +88,63 @@ int	word_count(char *str)
 
 void ch_pwd(t_env **env_list)
 {
-	t_env **temp;
+	t_env *temp;
 	char cwd[4096];
+	int found;
 
+	found = 0;
 	getcwd(cwd, sizeof(cwd));
-	temp = env_list;
-	while ((*temp)->next)
+	temp = *env_list;
+	while (temp != NULL)
 	{
-		if (ft_strcmp((*temp)->name, "PWD") == 0)
+		if (ft_strncmp(temp->name, "PWD", 3) == 0)
+		{
+			found = 1;
 			break;
-		*temp = (*temp)->next;
+		}
+		temp = temp->next;
 	}
-	printf("%s & %s\n", (*temp)->name, (*temp)->value);
+	if (found == 0)
+		return;
 	if (cwd != NULL)
 	{
-		free((*temp)->value);
-		(*temp)->value = ft_strdup(cwd);
+		free(temp->value);
+		temp->value = ft_strdup(cwd);
 	}
 	else
 		printf("Erreur lors de la récupération du répertoire\n");
 }
 
-void ch_oldpwd(t_env **env_list)
+void ch_oldpwd(t_env **env_list) //!LE PROBLEME EST LA !!!!!
 {
-	t_env **temp;
-	char *pwd;
+	t_env *temp;
 	char *oldpwd;
-	char *oldpwd_join;
+	char **oldpwd_join;
+	char cwd[4096];
 
-	temp = env_list;
-	pwd = return_env_value(*env_list, "PWD");
-	oldpwd = return_env_value(*env_list, "OLDPWD");
-	oldpwd_join = ft_strjoin("OLDPWD=", pwd);
+	oldpwd_join = (char **)malloc(sizeof(char *) * 2);
+	getcwd(cwd, sizeof(cwd));
+	temp = *env_list;
+	oldpwd = return_env_value(temp, "OLDPWD");
+	oldpwd_join[0] = ft_strdup("OLDPWD");
+	oldpwd_join[1] = ft_strdup(cwd);
 	if (oldpwd == NULL)
-		ft_export(*env_list, oldpwd_join);
-	free(oldpwd_join);
-	while ((*temp)->next)
+		replace_env_value(env_list, oldpwd_join);
+		// ft_export(*env_list, oldpwd_join);
+	free_tabtab(oldpwd_join);
+	while (temp != NULL)
 	{
-		if (ft_strcmp((*temp)->name, "OLDPWD") == 0)
+		if (ft_strcmp(temp->name, "OLDPWD") == 0)
 			break;
-		*temp = (*temp)->next;
+		temp = temp->next;
 	}
-	if (pwd != NULL)
+	if (cwd != NULL)
 	{
-		free((*temp)->value);
-		(*temp)->value = ft_strdup(pwd);
+		free(temp->value);
+		temp->value = ft_strdup(cwd);
 	}
 	else
-		(*temp)->value = NULL;
+		temp->value = NULL;
 }
 
 void ft_pwd(char *arg)
@@ -257,7 +266,7 @@ void ft_cd(t_env *env_list, char *input)
 		}
 		initial_path = ft_strdup(path);
 		if (access(path, X_OK) == 0)
-			ch_oldpwd(&env_list); //! prend la velur du cwd avant le pwd ?!?!?!?!!?!?!?!?!!?!?
+			ch_oldpwd(&env_list); //! prend la valeur du cwd avant le pwd ?!?!?!?!!?!?!?!?!!?!?
 		if (chdir(initial_path) != 0)
 		{
 			if (errno == ENOTDIR)
