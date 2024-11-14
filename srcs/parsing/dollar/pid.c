@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/14 16:14:18 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/14 16:23:44 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*pid_len(int len, char *pid, char *str)
 	return (tmp);
 }
 
-char *return_is_quoted(char *str, char *tmp, int *j, int *i)
+char *return_quoted_value(char *str, char *tmp, int *j, int *i)
 {
 	tmp[*j] = str[*i];
 	(*i)++;
@@ -68,8 +68,7 @@ char	*get_pid(int len, char *str, char *pid)
 	while (i < len)
 	{
 		if(str[i] == '\'')
-			tmp = return_is_quoted(str, tmp, &j, &i);
-		printf("str : %c\ni : %d\n", str[i], i);
+			tmp = return_quoted_value(str, tmp, &j, &i);
 		if (str[i] == '$' && str[i + 1] == '$')
 		{
 			k = 0;

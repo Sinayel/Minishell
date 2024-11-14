@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/14 13:59:57 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/14 16:29:15 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	main(int argc, char *argv[], char **env)
 		data->input = readline("Minishell> ");
 		if (!exit_shell(data, env_list))
 			break ;
-		list = tokenization(data->input);
+		list = tokenization(data->input, env_list);
 		if (list)
 			parsing(list, env_list, data);
 		list = remove_quote(list);

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/14 16:15:17 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/14 16:33:05 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,8 @@ int	parsing(t_token *list, t_env *env, t_data *data)
 		printf("error redirection\n");
 		return (1);
 	}
-	if (check(env, list))
-		printf("Oui\n");
+	// if (check(env, list))
+	// 	printf("Oui\n");
 	if (check_cmd(list, env, data) != 0)
 	{
 		data->error = 127;

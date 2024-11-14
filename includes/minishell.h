@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 16:20:08 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/14 16:28:46 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ typedef struct s_data
 
 // 5 -------------------  Tokenization  -------------------
 t_token				*id_token(t_token *list);
-t_token				*tokenization(char *str);
+t_token				*tokenization(char *str, t_env *env);
 int					openquote(char *line);
 
 // TODO -------------------  Parsing  ----------------------
@@ -69,6 +69,7 @@ int					parsing(t_token *list, t_env *env, t_data *data);
 // Check dollar
 // char	*proccess_dollar(t_token *list, t_env *env);
 int check(t_env *env, t_token *list);
+char *proccess_dollar_value(char *str, t_env *env);
 
 // Pid
 char				*pid_len(int len, char *pid, char *str);
