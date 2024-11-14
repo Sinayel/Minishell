@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 13:22:36 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/14 17:05:23 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/14 18:47:26 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,11 @@ int is_env_name_valid(char *name)
     while (name[i])
     {
         if (name[i] == '=')
+        {
+            if (name[i + 1] == '\0') //! TEMPORAIRE
+                return 1;            //! JUSTE POUR EVITER LE SEGFAULT
             return 0;
+        }
         if ((name[i] >= 32 && name[i] < 48) || (name[i] >= 58 && name[i] < 65) || (name[i] >= 91 && name[i] < 95) || name[i] == 96 || name[i] >= 123)
             return 1;
         i++;
@@ -89,14 +93,17 @@ void export_to_env(t_env **env_list, char **arg)
     t_env *new;
     t_env **tmp;
 
-    if (*env_list == NULL)
-        return;
     new = (t_env *)malloc(sizeof(t_env));
     if (!new)
         return;
     new->name = ft_strdup(arg[0]);
     new->value = ft_strdup(arg[1]);
     new->next = NULL;
+    if (*env_list == NULL)
+    {
+        *env_list = new;
+        return;
+    }
     tmp = env_list;
     while ((*tmp)->next)
         *tmp = (*tmp)->next;
@@ -104,20 +111,41 @@ void export_to_env(t_env **env_list, char **arg)
     env_list = tmp;
 }
 
-void ft_export(t_env *env_list, char *arg)
+int check_equal_arg(char *arg)
+{
+    int i;
+
+    i = 0;
+    while (arg[i])
+    {
+        if (arg[i] == '=')
+            return 1;
+        i++;
+    }
+    return 0;
+}
+
+void ft_export(t_env **env_list, char *arg)
 {
     char **split_arg;
 
     if (arg == NULL)
-        print_env_export(env_list);
-    
+        print_env_export(*env_list);
+    // else if (check_equal_arg(arg) == 0)
+    else if (!env_list)
+    {
+        printf("test\n");
+        split_arg = ft_split(arg, '=');
+        export_to_env(env_list, split_arg);
+        free_tabtab(split_arg);
+    }
     else if (is_env_name_valid(arg) == 0)
     {
         split_arg = ft_split(arg, '=');
-        if (return_env_value(env_list, split_arg[0]) != NULL)
-            replace_env_value(&env_list, split_arg);
+        if (return_env_value(*env_list, split_arg[0]) != NULL)
+            replace_env_value(env_list, split_arg);
         else
-            export_to_env(&env_list, split_arg);
+            export_to_env(env_list, split_arg);
         free_tabtab(split_arg);
     }
     else

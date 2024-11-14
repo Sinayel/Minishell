@@ -128,7 +128,7 @@ void ch_oldpwd(t_env **env_list) //! LE PROBLEME EST LA !!!!!
 	oldpwd_join = ft_strjoin("OLDPWD=", cwd);
 	if (oldpwd == NULL)
 	{
-		ft_export(*env_list, oldpwd_join);
+		ft_export(env_list, oldpwd_join);
 		// replace_env_value(env_list, oldpwd_join); //! PAS ADAPTE SI !OLDPWD
 		free(oldpwd_join);
 		return;
@@ -147,7 +147,7 @@ void ch_oldpwd(t_env **env_list) //! LE PROBLEME EST LA !!!!!
 		temp->value = ft_strdup(cwd);
 	}
 	else
-		temp->value = NULL;
+		free(temp->value);
 }
 
 void ft_pwd(char *arg)
@@ -352,7 +352,7 @@ int main(int argc, char *argv[], char **env)
 			if (ft_strcmp(input, "env") == 0)
         	    print_env(env_list);
 			if (ft_strcmp(input, "export") == 0)
-				ft_export(env_list, NULL);
+				ft_export(&env_list, NULL);
 			if (ft_strcmp(input, "exit") == 0)
 				ft_exit(env_list, input);
 			free(input);
@@ -372,7 +372,7 @@ int main(int argc, char *argv[], char **env)
             if (ft_strcmp(split_input[0], "cd") == 0)
 				ft_cd(env_list, split_input[1]);
 			if (ft_strcmp(split_input[0], "export") == 0)
-				ft_export(env_list, split_input[1]);
+				ft_export(&env_list, split_input[1]);
 			if (ft_strcmp(split_input[0], "pwd") == 0)
 				ft_pwd(split_input[1]);
 			free_tabtab(split_input);

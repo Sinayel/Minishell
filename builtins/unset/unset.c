@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 16:08:54 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/13 16:28:48 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/14 17:50:34 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void ft_unset(t_env **env_list, char *arg)
                 *env_list = temp->next;
             else
                 prev->next = temp->next;
-
             free(temp->name);
             free(temp->value);
             free(temp);
