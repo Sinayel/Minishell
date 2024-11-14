@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 14:32:20 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/14 16:15:13 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,8 @@ t_token	*tokenization(char *str)
 	{
 		str = proccess_pid(str, data);
 		list = proccess_token(list, str);
-		free(str);
+		if(ft_strcmp(str, str) != 0)
+			free(str);
 	}
 	else if (openquote(str))
 		printf("open quote\n");

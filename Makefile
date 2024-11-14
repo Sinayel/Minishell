@@ -10,6 +10,7 @@ NAMELFT = $(addprefix $(DIRLIB), $(FILELIB))
 
 MAKEFLAGS += --no-print-directory
 RM = rm -f
+VGCORE_FILES = vgcore.*
 NAME = minishell
 
 PARSING_SRC = srcs/parsing/token/id_token.c \
@@ -58,6 +59,7 @@ clean:
 
 fclean: clean
 	@$(MAKE) -C $(DIRLIB) fclean
+	@$(RM) $(VGCORE_FILES)
 
 re: fclean all
 

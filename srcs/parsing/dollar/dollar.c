@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 19:47:39 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/14 11:22:27 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ int	len_dollar(t_env *env, char **wd_split)
 		}
 		i++;
 	}
+	free(value);
 	return (j);
 }
 
@@ -122,7 +123,7 @@ void	proccess_dollar(t_env *env, t_token *list)
 	int		i;
 	int		j;
 	int		v;
-	int		x;
+	// int		x;
 	int		len;
 	char	*value;
 	char	*return_value;
@@ -132,12 +133,14 @@ void	proccess_dollar(t_env *env, t_token *list)
 	i = 0;
 	j = 0;
 	v = 0;
-	x = 0;
+	// x = 0;
 	while (tmp)
 	{
 		wd_split = ft_split(tmp->token, '$');
 		len = len_dollar(env, wd_split);
-		return_value = malloc(sizeof(char) * len + 1);
+		return_value = malloc(sizeof(char) * (len + 1));
+		if (return_value)
+			memset(return_value, 0, len + 1);
 		while (wd_split[i])
 		{
 			v = 0;
@@ -174,7 +177,10 @@ void	proccess_dollar(t_env *env, t_token *list)
 		j = 0;
 		tmp = tmp->next;
 	}
-    free(wd_split);
+	int k = 0;
+	while (wd_split[k])
+		free(wd_split[k++]);
+	free(wd_split);
 }
 
 int	check(t_env *env, t_token *list)

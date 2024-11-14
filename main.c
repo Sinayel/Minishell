@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 14:16:12 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/14 13:59:57 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	main(int argc, char *argv[], char **env)
 		list = tokenization(data->input);
 		if (list)
 			parsing(list, env_list, data);
-		// list = remove_quote(list);
+		list = remove_quote(list);
 		add_history(data->input);
 		print_list(list);
 		ft_token_lstclear(&list);

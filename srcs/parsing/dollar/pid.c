@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dollar.c                                           :+:      :+:    :+:   */
+/*   pid.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 14:32:29 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/14 16:14:18 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,29 @@ char	*pid_len(int len, char *pid, char *str)
 	return (tmp);
 }
 
+char *return_is_quoted(char *str, char *tmp, int *j, int *i)
+{
+	tmp[*j] = str[*i];
+	(*i)++;
+	(*j)++;
+
+	while (str[*i] != '\'' && str[*i] != '\0')
+	{
+		tmp[*j] = str[*i];
+		(*i)++;
+		(*j)++;
+	}
+
+	if (str[*i] == '\'')
+	{
+		tmp[*j] = str[*i];
+		(*i)++;
+		(*j)++;
+	}
+
+	return tmp;
+}
+
 char	*get_pid(int len, char *str, char *pid)
 {
 	int		i;
@@ -44,6 +67,9 @@ char	*get_pid(int len, char *str, char *pid)
 	j = 0;
 	while (i < len)
 	{
+		if(str[i] == '\'')
+			tmp = return_is_quoted(str, tmp, &j, &i);
+		printf("str : %c\ni : %d\n", str[i], i);
 		if (str[i] == '$' && str[i + 1] == '$')
 		{
 			k = 0;

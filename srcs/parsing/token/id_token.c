@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 18:21:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/12 18:55:45 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/14 14:23:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ t_token	*cmd_token(t_token *list)
 
 	tmp = list;
 	tmp->first = 1;
-	tmp->type = CMD;
+	if(tmp->type > PIPE)
+		tmp->type = CMD;
 	last = tmp;
 	tmp = tmp->next;
 	while (tmp != NULL)
