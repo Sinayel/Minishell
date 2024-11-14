@@ -115,23 +115,26 @@ void ch_pwd(t_env **env_list)
 		printf("Erreur lors de la récupération du répertoire\n");
 }
 
-void ch_oldpwd(t_env **env_list) //!LE PROBLEME EST LA !!!!!
+void ch_oldpwd(t_env **env_list) //! LE PROBLEME EST LA !!!!!
 {
 	t_env *temp;
 	char *oldpwd;
-	char **oldpwd_join;
+	char *oldpwd_join;
 	char cwd[4096];
 
-	oldpwd_join = (char **)malloc(sizeof(char *) * 2);
 	getcwd(cwd, sizeof(cwd));
 	temp = *env_list;
 	oldpwd = return_env_value(temp, "OLDPWD");
-	oldpwd_join[0] = ft_strdup("OLDPWD");
-	oldpwd_join[1] = ft_strdup(cwd);
+	oldpwd_join = ft_strjoin("OLDPWD=", cwd);
 	if (oldpwd == NULL)
-		replace_env_value(env_list, oldpwd_join);
+	{
+		ft_export(*env_list, oldpwd_join);
+		// replace_env_value(env_list, oldpwd_join); //! PAS ADAPTE SI !OLDPWD
+		free(oldpwd_join);
+		return;
+	}
 		// ft_export(*env_list, oldpwd_join);
-	free_tabtab(oldpwd_join);
+	free(oldpwd_join);
 	while (temp != NULL)
 	{
 		if (ft_strcmp(temp->name, "OLDPWD") == 0)

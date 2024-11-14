@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 13:22:36 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/14 14:31:12 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/14 17:05:23 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,11 @@ void print_env_export(t_env *head)
 
     while ((next = find_next_alphabetically(head, last_printed)) != NULL)
     {
+        if (ft_strcmp(next->name, "_") == 0)
+        {
+            last_printed = next;
+            continue;
+        }
         printf("export %s=%s\n", next->name, next->value);
         last_printed = next;
     }
@@ -66,6 +71,8 @@ int is_env_name_valid(char *name)
     int i;
 
     i = 0;
+    if (name[0] >= '0' && name[0] <= '9')
+        return 1;
     while (name[i])
     {
         if (name[i] == '=')
@@ -103,6 +110,7 @@ void ft_export(t_env *env_list, char *arg)
 
     if (arg == NULL)
         print_env_export(env_list);
+    
     else if (is_env_name_valid(arg) == 0)
     {
         split_arg = ft_split(arg, '=');
