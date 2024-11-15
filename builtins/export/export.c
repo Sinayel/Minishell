@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 13:22:36 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/14 18:47:26 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/15 13:22:01 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,43 +111,43 @@ void export_to_env(t_env **env_list, char **arg)
     env_list = tmp;
 }
 
-int check_equal_arg(char *arg)
-{
-    int i;
+// int check_equal_arg(char *arg)
+// {
+//     int i;
 
-    i = 0;
-    while (arg[i])
-    {
-        if (arg[i] == '=')
-            return 1;
-        i++;
-    }
-    return 0;
-}
+//     i = 0;
+//     while (arg[i])
+//     {
+//         if (arg[i] == '=')
+//             return 1;
+//         i++;
+//     }
+//     return 0;
+// }
 
-void ft_export(t_env **env_list, char *arg)
-{
-    char **split_arg;
+// void ft_export(t_env **env_list, char *arg)
+// {
+//     char **split_arg;
 
-    if (arg == NULL)
-        print_env_export(*env_list);
-    // else if (check_equal_arg(arg) == 0)
-    else if (!env_list)
-    {
-        printf("test\n");
-        split_arg = ft_split(arg, '=');
-        export_to_env(env_list, split_arg);
-        free_tabtab(split_arg);
-    }
-    else if (is_env_name_valid(arg) == 0)
-    {
-        split_arg = ft_split(arg, '=');
-        if (return_env_value(*env_list, split_arg[0]) != NULL)
-            replace_env_value(env_list, split_arg);
-        else
-            export_to_env(env_list, split_arg);
-        free_tabtab(split_arg);
-    }
-    else
-        printf("bash: export: `%s': not a valid identifier\n", arg);
-}
+//     if (arg == NULL)
+//         print_env_export(*env_list);
+//     // else if (check_equal_arg(arg) == 0)
+//     else if (!env_list)
+//     {
+//         printf("test\n");
+//         split_arg = ft_split(arg, '=');
+//         export_to_env(env_list, split_arg);
+//         free_tabtab(split_arg);
+//     }
+//     else if (is_env_name_valid(arg) == 0)
+//     {
+//         split_arg = ft_split(arg, '=');
+//         if (return_env_value(*env_list, split_arg[0]) != NULL)
+//             replace_env_value(env_list, split_arg);
+//         else
+//             export_to_env(env_list, split_arg);
+//         free_tabtab(split_arg);
+//     }
+//     else
+//         printf("bash: export: `%s': not a valid identifier\n", arg);
+// }

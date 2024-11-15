@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:26:28 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/14 18:45:35 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/15 13:15:34 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,5 +48,8 @@ void ft_export(t_env **env_list, char *arg);
 void replace_env_value(t_env **env_list, char **arg);
 void ft_unset(t_env **env_list, char *arg);
 void free_tabtab(char **tab);
+char	*ft_strjoin(char const *s1, char const *s2);
+int is_env_name_valid(char *name);
+void export_to_env(t_env **env_list, char **arg);
 
 #endif
