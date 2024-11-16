@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/15 13:23:18 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/16 18:45:39 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,33 +46,34 @@ char	*dollar_value(t_env *env, char *token)
 	tmp = (char *)malloc(sizeof(char) * (len + 1));
 	value = NULL;
 	while (token[i] && verif_token(token[i]))
-		tmp[j++] = token[i++];
+	{
+		tmp[j] = token[i];
+		i++;
+		j++;
+	}
 	tmp[j] = '\0';
 	value = return_env_value(env, tmp);
-	printf("value = %s\n", value);
+	// printf("value = %s\n", value);
 	free(tmp);
 	return (value);
 }
 
-bool if_is_quoted(char *str, int *j, int *i)
+bool if_is_quoted(char *str, int j, int i)
 {
-	if (str[*i] == '\'')
+	if (str[i] == '\'')
 		return true;
-	(*i)++;
-	(*j)++;
+	i++;
+	j++;
 	bool is_quote = false;
 
-	while (str[*i] != '\'' && str[*i] != '\0')
+	while (str[i] != '\'' && str[i] != '\0')
 	{
-		(*i)++;
-		(*j)++;
+		i++;
+		j++;
 	}
 
-	if (str[*i] == '\'')
-	{
-		(*i)++;
-		(*j)++;
-	}
+	if (str[i] == '\'')
+		return true;
 	return is_quote;
 }
 
@@ -144,67 +145,55 @@ int len_for_dollar(char *str, t_env *env)
 	return y;
 }
 
+void	init_dollar_var(t_dollar *var, t_env *env, char *str)
+{
+	var->i = 0;
+	var->y = 0;
+	var->x = 0;
+	var->j = 0;
+	var->in_single_quotes = false;
+	var->len_finale = len_for_dollar(str, env);
+	var->len_tmp = len_for_tmp(str);
+	var->finale = (char *)malloc(sizeof(char) * (var->len_finale + 1));
+}
+
 char *proccess_dollar_value(char *str, t_env *env)
 {
-	int i;
-	int j;
-	int y;
-	int x;
-	int len_tmp;
-	int len_finale;
+	t_dollar *var = (t_dollar *)malloc(sizeof(t_dollar));
+	init_dollar_var(var, env, str);
 	char *tmp;
-	char *finale;
-	char *return_value;
-
-	len_tmp = len_for_tmp(str);
-	len_finale = len_for_dollar(str, env);
-	tmp = (char *)malloc(sizeof(char) * (len_tmp + 1));
+	tmp = (char *)malloc(sizeof(char) * (var->len_tmp + 1));
 	if(tmp)
-		memset(tmp, '\0', len_tmp + 1);
-	finale = (char *)malloc(sizeof(char) * (len_finale + 1));
-	i = 0;
-	j = 0;
-	y = 0;
-	x = 0;
-	while(str[i])
-	{
-		while(str[i] && str[i] != '$' || if_is_quoted(str, &y, &i))
-		{
-			finale[y] = str[i];
-			y++;
-			i++;
-		}
-		if(str[i] == '$' && str[i+1])
-		{
-			i++;
-			j = 0;
-			while(str[i] && str[i] != '$' && verif_token(str[i]))
-			{
-				tmp[j] = str[i];
-				i++;
-				j++;
-			}
-			return_value = return_env_value(env, tmp);
-			if(return_value)
-			{
-				while(return_value[x])
-				{
-					finale[y] = return_value[x];
-					y++;
-					x++;
-				}
-			}
-			x = 0;
-		}
-		if(str[i] == '$')
-		{
-			finale[y] = str[i];
-			y++;
-			i++;
-		}
-	}
+		memset(tmp, '\0', var->len_tmp + 1);
+    while (str[var->i])
+    {
+        if (str[var->i] == '\'')
+        {
+            var->in_single_quotes = !var->in_single_quotes;
+            var->finale[var->y++] = str[var->i++];
+        }
+        else if (var->in_single_quotes)
+            var->finale[var->y++] = str[var->i++];
+        else if (str[var->i] == '$' && verif_token(str[var->i + 1]))
+        {
+            var->i++;
+            var->j = 0;
+            while (str[var->i] && verif_token(str[var->i]))
+                tmp[var->j++] = str[var->i++];
+            tmp[var->j] = '\0';
+
+            var->return_value = return_env_value(env, tmp);
+            if (var->return_value)
+            {
+                var->x = 0;
+                while (var->return_value[var->x])
+                    var->finale[var->y++] = var->return_value[var->x++];
+            }
+        }
+        else
+            var->finale[var->y++] = str[var->i++];
+    }
 	free(tmp);
-	finale[y] = '\0';
-	printf("finale = %s\n", finale);
-	return str;
+	var->finale[var->y] = '\0';
+	return var->finale;
 }

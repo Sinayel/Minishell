@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/14 16:28:46 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/16 18:32:04 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+typedef struct s_dollar
+{
+	int i;
+	int j;
+	int y;
+	int x;
+	int len_tmp;
+	int len_finale;
+	char *finale;
+	char *return_value;
+	bool in_single_quotes;
+}					t_dollar;
 
 typedef struct s_path
 {
@@ -67,9 +80,7 @@ int					openquote(char *line);
 int					parsing(t_token *list, t_env *env, t_data *data);
 
 // Check dollar
-// char	*proccess_dollar(t_token *list, t_env *env);
-int check(t_env *env, t_token *list);
-char *proccess_dollar_value(char *str, t_env *env);
+char 				*proccess_dollar_value(char *str, t_env *env);
 
 // Pid
 char				*pid_len(int len, char *pid, char *str);
