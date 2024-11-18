@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:58:53 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 15:12:28 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/18 20:49:03 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	ft_exit(t_token *list, t_data *data, t_env *env, t_path *path)
 	ft_token_lstclear(&list);
 	ft_free_path(path);
 	free(data->input);
+	exit(2);
 }
 
 void	free_token(t_token **token)

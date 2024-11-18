@@ -17,15 +17,18 @@ PARSING_SRC = srcs/parsing/token/id_token.c \
 			  srcs/parsing/token/tokenization.c \
 			  srcs/parsing/dollar/pid.c \
 			  srcs/parsing/dollar/dollar.c \
+			  srcs/parsing/dollar/len_dollar.c \
 			  srcs/parsing/check.c \
 			  srcs/parsing/path.c \
 			  srcs/parsing/parsing.c
 
-BUILTIN_SRC = srcs/cmd/env/env.c \
-			  srcs/cmd/env/create_env.c \
+BUILTIN_SRC = srcs/builtins/env/env.c \
+			  srcs/builtins/env/create_env.c \
+			  srcs/builtins/echo/echo.c \
 
 UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/free.c \
+			srcs/utils/utils_dollar.c \
 			srcs/utils/for_list.c \
 			srcs/utils/utils_token.c \
 			srcs/error/msg.c \

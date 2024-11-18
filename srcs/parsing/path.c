@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 14:11:30 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/18 20:47:45 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	double_check(t_path *path, t_token *tmp)
 		is_ok = access(word, X_OK | X_OK | X_OK);
 		if (is_ok == 0)
 		{
-			printf("Dans ta petite mere <3\n");
+			// printf("Dans ta petite mere <3\n");
 			free(word);
 			return (0);
 		}

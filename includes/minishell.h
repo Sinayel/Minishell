@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/16 18:32:04 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/18 19:49:07 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,24 @@ typedef struct s_dollar
 	int j;
 	int y;
 	int x;
+	int tmp_y;
 	int len_tmp;
 	int len_finale;
 	char *finale;
 	char *return_value;
 	bool in_single_quotes;
 }					t_dollar;
+
+typedef struct s_dollar_len
+{
+	int i;
+	int j;
+	int y;
+	int x;
+	int len_tmp;
+	bool in_single_quotes;
+	char *return_value;
+}					t_dollar_len;
 
 typedef struct s_path
 {
@@ -81,6 +93,9 @@ int					parsing(t_token *list, t_env *env, t_data *data);
 
 // Check dollar
 char 				*proccess_dollar_value(char *str, t_env *env);
+int 				len_for_dollar(char *str, t_env *env, t_dollar_len *var);
+bool 				verif_token(char c);
+int 				len_for_tmp(char *str);
 
 // Pid
 char				*pid_len(int len, char *pid, char *str);
@@ -116,6 +131,7 @@ t_env				*create_env_var(char *name, char *value);
 //* -----------------------  Exit  ------------------------
 
 //* -----------------------  Echo  ------------------------
+void 				echo(t_token *list);
 
 //* -----------------------  Unset  -----------------------
 
@@ -142,3 +158,9 @@ int					ft_strcmp(char *s1, char *s2);
 bool				is_quote(char c);
 int					ft_isspace(int c);
 void				ft_exit(t_token *list, t_data *data, t_env *env, t_path *path);
+// Dollar
+char  				*free_dollar(t_dollar *var, char *tmp);
+void 				return_quote(char *str, t_dollar *var);
+void 				env_return_value(char *str, t_dollar *var, t_env *env, char *tmp);
+void 				init_dollar_var(t_dollar *var, t_env *env, char *str);
+char 				*proccess_dollar_1_on_2(t_dollar *var, char *tmp);

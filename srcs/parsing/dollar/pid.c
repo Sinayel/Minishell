@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/14 16:23:44 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/18 17:09:49 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ char	*get_pid(int len, char *str, char *pid)
 				tmp[j++] = pid[k++];
 			i += 2;
 		}
-		else
+		else if(str[i])
 			tmp[j++] = str[i++];
 	}
 	tmp[j] = '\0';

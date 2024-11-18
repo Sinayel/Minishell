@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/14 16:29:15 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/18 20:56:42 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,14 @@ bool	exit_shell(t_data *data, t_env *env)
 	return (true);
 }
 
+void cleanup(t_data *data, t_env *env_list)
+{
+    if (data->input)
+        free(data->input);
+    ft_env_lstclear(&env_list);
+    free(data); // Si data est alloué dynamiquement
+}
+
 int	main(int argc, char *argv[], char **env)
 {
 	t_token	*list;
@@ -83,14 +91,17 @@ int	main(int argc, char *argv[], char **env)
 		if (!exit_shell(data, env_list))
 			break ;
 		list = tokenization(data->input, env_list);
+		if(data->input)
+			add_history(data->input);
 		if (list)
 			parsing(list, env_list, data);
-		list = remove_quote(list);
-		add_history(data->input);
 		print_list(list);
 		ft_token_lstclear(&list);
-		if (data->input)
+		if(data->input)
+		{
 			free(data->input);
+			data->input = NULL;
+		}
 	}
 	return (0);
 }

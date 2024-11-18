@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/14 16:43:25 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/18 19:55:16 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ t_token	*tokenization(char *str, t_env *env)
 	t_token	*list;
 	int		i;
 	t_data	*data;
+	char	*tmp;
 
 	data = get_data();
 	i = 0;
@@ -104,12 +105,22 @@ t_token	*tokenization(char *str, t_env *env)
 	(void)env;
 	while (str[i] == ' ')
 		i++;
-	if (str[i] && !openquote(str))
+	if (str[i] && !openquote(str))	//! LA CON DE TA MERE Y'A PLUS DE LEAKS !!!
 	{
-		str = proccess_pid(str, data);
-		str = proccess_dollar_value(str, env);
-		list = proccess_token(list, str);
-		free(str);
+		tmp = proccess_pid(str, data);
+		if(tmp != str)
+			str = tmp;
+		tmp = proccess_dollar_value(str, env);
+		if(tmp != str)
+		{
+			free(str);
+			str = tmp;
+		}
+		if(str)
+		{
+			list = proccess_token(list, str);
+			free(str);
+		}
 	}
 	else if (openquote(str))
 		printf("open quote\n");

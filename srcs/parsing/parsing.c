@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/14 16:33:05 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/18 20:58:07 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 {
-	if (ft_strcmp(str, "?") == 0)
+	if (ft_strcmp(str, "$?") == 0)
 	{
-		printf("[%d]\n", data->error);
+		printf("%d\n", data->error);
 		return (1);
 	}
 	if (ft_strcmp(str, "cd") == 0)
@@ -28,12 +28,13 @@ int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 	if (ft_strcmp(str, "env") == 0)
 		return (1);
 	if (ft_strcmp(str, "echo") == 0)
-		return (1);
-	if (ft_strcmp(str, "exit") == 0)
 	{
-		ft_exit(list, data, env, path);
-		exit(1);
+		list = remove_quote(list);
+		// printf("dede");
+		echo(list);
 	}
+	if (ft_strcmp(str, "exit") == 0)
+		ft_exit(list, data, env, path);
 	if (ft_strcmp(str, "export") == 0)
 		return (1);
 	return (0);
@@ -81,7 +82,7 @@ int	check_cmd(t_token *list, t_env *env, t_data *data)
 			{
 				if (path)
 					ft_free_path(path);
-				printf("Command not found...\n");
+				// printf("Command not found...\n");
 				return (1);
 			}
 		}
@@ -132,12 +133,10 @@ int	parsing(t_token *list, t_env *env, t_data *data)
 		printf("error redirection\n");
 		return (1);
 	}
-	// if (check(env, list))
-	// 	printf("Oui\n");
 	if (check_cmd(list, env, data) != 0)
 	{
 		data->error = 127;
-		printf("error cmd\n");
+		// printf("error cmd\n");
 		return (1);
 	}
 	data->error = 0;

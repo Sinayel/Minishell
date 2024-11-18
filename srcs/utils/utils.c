@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 15:12:25 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/18 10:52:40 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ int	ft_strcmp(char *s1, char *s2)
 	size_t	i;
 
 	i = 0;
-	if (!s1)
+	if (!s1 || !s2)
 		return (1);
-	while (s1[i] || s2[i])
+	while (s1[i])
 	{
 		if (s1[i] != s2[i])
 			return (s1[i] - s2[i]);
