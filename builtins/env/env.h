@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:26:28 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/18 18:49:09 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/18 20:14:19 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@
 # include <string.h>
 # include <unistd.h>
 # include <errno.h>
+
+typedef struct s_export
+{
+    char **content;
+}        t_export;
 
 typedef struct s_env
 {
@@ -51,5 +56,7 @@ void free_tabtab(char **tab);
 char	*ft_strjoin(char const *s1, char const *s2);
 int is_env_name_valid(char *name);
 void export_to_env(t_env **env_list, char **arg);
+t_export *get_export(t_env *envlist);
+int cmb_export(char **env_export);
 
 #endif

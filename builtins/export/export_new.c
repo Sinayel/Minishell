@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:46:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/18 18:57:28 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/18 20:16:28 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void printf_export(char **env_export)
     char *temp;
     i = 0;
     temp = NULL;
-    while (env_export[i] && env_export[i+1])
+    while (env_export && env_export[i] && env_export[i+1])
     {
         if (ft_strcmp(env_export[i], env_export[i+1]) > 0)
         {
@@ -144,6 +144,8 @@ void printf_export(char **env_export)
             i++;
     }
     i = 0;
+    if (!env_export || !env_export[0])
+        return;
     while (env_export[i])
     {
         is_open_quote = 0;
@@ -213,37 +215,43 @@ char *pipeline_to_env_value(t_env *envlist, char *name)
 //     return (value);
 // }
 
+t_export *get_export(t_env *envlist)
+{
+    static t_export export;
+    if (!export.content)
+        export.content = env_to_export(envlist);
+    return (&export);
+}
+
 void ft_export(t_env *env_list, char *arg)
 {
-    static char **env_export;
+    t_export *export = get_export(env_list);
     char **split_arg;
     char *env_value = NULL;
 
-    if (!env_export)
-        env_export = env_to_export(env_list);
     env_value = pipeline_to_env_value(env_list, arg);
     split_arg = NULL;
     if (!arg)
     {
-        printf_export(env_export);
+        printf_export(export->content);
     }
     else if ((check_equal_arg(arg) == 0 || check_equal_arg(arg) == 2) && is_env_name_valid(arg) == 0 && env_value == NULL)
     {
-        env_export = append_to_export(env_export, arg);
+        export->content = append_to_export(export->content, arg);
     }
     else if ((check_equal_arg(arg) == 0 || check_equal_arg(arg) == 2) && is_env_name_valid(arg) == 0 && env_value != NULL)
         return;
     else if (check_equal_arg(arg) == 1 && is_env_name_valid(arg) == 0 && env_value == NULL)
     {
         split_arg = ft_split(arg, '=');
-        env_export = append_to_export(env_export, arg);
+        export->content = append_to_export(export->content, arg);
         export_to_env(&env_list, split_arg);
         free_tabtab(split_arg);
     }
     else if (check_equal_arg(arg) == 1 && is_env_name_valid(arg) == 0 && env_value != NULL)
     {
         split_arg = ft_split(arg, '=');
-        env_export = replace_export(env_export, split_arg);
+        export->content = replace_export(export->content, split_arg);
         replace_env_value(&env_list, split_arg);
         free_tabtab(split_arg);
     }
