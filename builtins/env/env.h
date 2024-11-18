@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:26:28 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/15 13:15:34 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/18 18:49:09 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void env_create_oldpwd(t_env **env_list);
 void print_env_export(t_env *head);
 char *ft_strchr(const char *s, int c);
 void ft_free_env(t_env **lst);
-void ft_export(t_env **env_list, char *arg);
+void ft_export(t_env *env_list, char *arg);
 void replace_env_value(t_env **env_list, char **arg);
 void ft_unset(t_env **env_list, char *arg);
 void free_tabtab(char **tab);
