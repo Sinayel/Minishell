@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 16:08:54 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/18 20:09:26 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/19 14:35:40 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,22 @@
 t_export *unset_export(t_export *export, char *arg)
 {
     int i;
+    int j;
     char **dest;
 
     i = 0;
-    dest = (char **)malloc(sizeof(char *) * (cmb_export(export->content) + 1));
+    j = 0;
+    dest = (char **)malloc(sizeof(char *) * cmb_export(export->content));
     if (!dest)
         return (NULL);
     while (export->content[i])
     {
-        if (ft_strncmp(export->content[i], arg, ft_strlen(arg)) == 0)
-            i++;
-        else
-        {
-            dest[i] = ft_strdup(export->content[i]);
-            i++;
-        }
+        if (ft_strncmp(export->content[i], arg, ft_strlen(arg)) != 0)
+            dest[j++] = ft_strdup(export->content[i]);
+        i++;
     }
     free_tabtab(export->content);
-    dest[i] = NULL;
+    dest[j] = NULL;
     export->content = dest;
     free_tabtab(dest);
     return (export);
@@ -47,6 +45,8 @@ void ft_unset(t_env **env_list, char *arg)
     temp = *env_list;
     prev = NULL;
     export = unset_export(export, arg);
+    if (!temp)
+        return;
     while (temp)
     {
         if (ft_strcmp(temp->name, arg) == 0)
@@ -64,6 +64,7 @@ void ft_unset(t_env **env_list, char *arg)
         temp = temp->next;
     }
 }
+
 // {
 //     t_env **temp;
     

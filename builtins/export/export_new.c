@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:46:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/18 20:16:28 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/19 15:15:37 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,10 @@ static char **env_to_export(t_env *env_list)
     {
         if (temp->name)
         {
-            env_export[i] = ft_strjoin(temp->name, "=");
             if (temp->value)
-                env_export[i] = ft_strjoin(env_export[i], temp->value);
+                env_export[i] = ft_strjoin(temp->name, temp->value);
+            else
+                env_export[i] = ft_strjoin(temp->name, ft_strjoin("=", temp->value));
             i++;
         }
         temp = temp->next;
@@ -55,7 +56,7 @@ static char **env_to_export(t_env *env_list)
     env_export[i] = NULL;
     return (env_export);
 }
-
+// return 1 ou 2 lorsqu'un espace est trouve
 int check_equal_arg(char *arg)
 {
     int i;
@@ -109,7 +110,6 @@ static char **append_to_export(char **env_export, char *arg)
     int i;
 
     i = 0;
-    printf("cmb_export(env_export) = %d\n", 50);
     temp = (char **)malloc(sizeof(char *) * (cmb_export(env_export) + 2));
     if (!temp)
         return (NULL);
@@ -122,28 +122,42 @@ static char **append_to_export(char **env_export, char *arg)
     return (temp);
 }
 
-void printf_export(char **env_export)
+char **sort_env_export(char **env_export)
 {
-    int is_open_quote;
     int i;
-    int j;
-
     char *temp;
+    char **env_export_sorted;
     i = 0;
     temp = NULL;
-    while (env_export && env_export[i] && env_export[i+1])
+    if (env_export == NULL)
+        return NULL;
+    env_export_sorted = env_export;
+    while (env_export_sorted && env_export_sorted[i] && env_export_sorted[i+1])
     {
-        if (ft_strcmp(env_export[i], env_export[i+1]) > 0)
+        if (ft_strcmp(env_export_sorted[i], env_export_sorted[i+1]) > 0)
         {
-            temp = env_export[i];
-            env_export[i] = env_export[i+1];
-            env_export[i+1] = temp;
+            temp = env_export_sorted[i];
+            env_export_sorted[i] = env_export_sorted[i+1];
+            env_export_sorted[i+1] = temp;
             i = 0;
         }
         else
             i++;
     }
+    return env_export_sorted;
+}
+
+void printf_export(char **env_export)
+{
+    char **env_export_sorted;
+    int is_open_quote;
+    int i;
+    int j;
+
     i = 0;
+    j = 0;
+    is_open_quote = 0;
+    env_export_sorted = sort_env_export(env_export);
     if (!env_export || !env_export[0])
         return;
     while (env_export[i])
@@ -169,6 +183,7 @@ void printf_export(char **env_export)
         printf("\n");
         i++;
     }
+    free_tabtab(env_export_sorted);
 }
 
 char *pipeline_to_env_value(t_env *envlist, char *name)
@@ -223,6 +238,44 @@ t_export *get_export(t_env *envlist)
     return (&export);
 }
 
+int verif_if_in_export(char **export, char *arg)
+{
+    int i;
+    char **split_arg;
+
+    i = 0;
+    split_arg = ft_split(arg, '=');
+    while (export[i])
+    {
+        if (ft_strncmp(export[i], split_arg[0], ft_strlen(split_arg[0])) == 0)
+        {
+            free_tabtab(split_arg);
+            return 1;
+        }
+        i++;
+    }
+    return 0;
+}
+
+char **replace_one_in_export(char **export, char *arg)
+{
+    int i;
+    char **split_arg;
+
+    i = 0;
+    split_arg = ft_split(arg, '=');
+    while (export[i])
+    {
+        if (ft_strncmp(export[i], split_arg[0], ft_strlen(split_arg[0])) == 0)
+        {
+            free(export[i]);
+            export[i] = ft_strdup(arg);
+        }
+        i++;
+    }
+    return export;
+}
+
 void ft_export(t_env *env_list, char *arg)
 {
     t_export *export = get_export(env_list);
@@ -232,13 +285,11 @@ void ft_export(t_env *env_list, char *arg)
     env_value = pipeline_to_env_value(env_list, arg);
     split_arg = NULL;
     if (!arg)
-    {
         printf_export(export->content);
-    }
-    else if ((check_equal_arg(arg) == 0 || check_equal_arg(arg) == 2) && is_env_name_valid(arg) == 0 && env_value == NULL)
-    {
+    else if (verif_if_in_export(export->content, arg) == 1 && (check_equal_arg(arg) == 1 || check_equal_arg(arg) == 2))
+        replace_one_in_export(export->content, arg);
+    else if ((check_equal_arg(arg) == 0 || check_equal_arg(arg) == 2) && is_env_name_valid(arg) == 0 && env_value == NULL && verif_if_in_export(export->content, arg) == 0)
         export->content = append_to_export(export->content, arg);
-    }
     else if ((check_equal_arg(arg) == 0 || check_equal_arg(arg) == 2) && is_env_name_valid(arg) == 0 && env_value != NULL)
         return;
     else if (check_equal_arg(arg) == 1 && is_env_name_valid(arg) == 0 && env_value == NULL)

@@ -217,7 +217,9 @@ void free_tabtab(char **tab)
 	int	i;
 
 	i = 0;
-	while (tab[i])
+	if (!tab)
+		return;
+	while (tab[i] != NULL)
 	{
 		free(tab[i]);
 		i++;
@@ -325,6 +327,10 @@ void ft_cd(t_env *env_list, char *input)
 
 void ft_exit(t_env *env_list, char *input)
 {
+	t_export *export;
+	export = get_export(env_list);
+	if (export->content)
+		free_tabtab(export->content);
 	ft_free_env(&env_list);
 	free(input);
 	exit(0);
