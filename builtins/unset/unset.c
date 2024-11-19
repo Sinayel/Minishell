@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 16:08:54 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/19 14:35:40 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/19 16:21:01 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void ft_unset(t_env **env_list, char *arg)
 {
     t_env *temp;
     t_env *prev;
-    t_export *export = get_export(*env_list);
+    t_export *export = get_export();
 
     temp = *env_list;
     prev = NULL;

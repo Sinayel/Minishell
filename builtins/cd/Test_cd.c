@@ -328,7 +328,7 @@ void ft_cd(t_env *env_list, char *input)
 void ft_exit(t_env *env_list, char *input)
 {
 	t_export *export;
-	export = get_export(env_list);
+	export = get_export();
 	if (export->content)
 		free_tabtab(export->content);
 	ft_free_env(&env_list);

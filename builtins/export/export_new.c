@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:46:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/19 15:15:37 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/19 16:27:49 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int cmb_env(t_env *envlist)
     return (len);
 }
 
-static char **env_to_export(t_env *env_list)
+char **env_to_export(t_env *env_list)
 {
     char **env_export;
     int len;
@@ -46,7 +46,7 @@ static char **env_to_export(t_env *env_list)
         if (temp->name)
         {
             if (temp->value)
-                env_export[i] = ft_strjoin(temp->name, temp->value);
+                env_export[i] = ft_strjoin(temp->name, ft_strjoin("=", temp->value));
             else
                 env_export[i] = ft_strjoin(temp->name, ft_strjoin("=", temp->value));
             i++;
@@ -75,7 +75,7 @@ int check_equal_arg(char *arg)
     return 0;
 }
 
-static char **replace_export(char **env_export, char **split_arg)
+char **replace_export(char **env_export, char **split_arg)
 {
     int i = 0;
     
@@ -104,7 +104,7 @@ int cmb_export(char **env_export)
     return (i);
 }
 
-static char **append_to_export(char **env_export, char *arg)
+char **append_to_export(char **env_export, char *arg)
 {
     char **temp;
     int i;
@@ -158,32 +158,31 @@ void printf_export(char **env_export)
     j = 0;
     is_open_quote = 0;
     env_export_sorted = sort_env_export(env_export);
-    if (!env_export || !env_export[0])
+    if (!env_export_sorted || !env_export_sorted[0])
         return;
-    while (env_export[i])
+    while (env_export_sorted[i])
     {
         is_open_quote = 0;
         j = 0;
-        if (env_export[i][0])
+        if (env_export_sorted[i][0])
             printf("export ");
-        while (env_export[i][j])
+        while (env_export_sorted[i][j])
         {
             // if (env_export[i][0] == '_')
             //     break;
-            printf("%c", env_export[i][j]);
-            if (env_export[i][j] == '=')
+            printf("%c", env_export_sorted[i][j]);
+            if (env_export_sorted[i][j] == '=')
             {
                 printf("\"");
                 is_open_quote = 1;
             }
-            if (!env_export[i][j+1] && is_open_quote == 1)
+            if (!env_export_sorted[i][j+1] && is_open_quote == 1)
                 printf("\"");
             j++;
         }
         printf("\n");
         i++;
     }
-    free_tabtab(env_export_sorted);
 }
 
 char *pipeline_to_env_value(t_env *envlist, char *name)
@@ -230,11 +229,9 @@ char *pipeline_to_env_value(t_env *envlist, char *name)
 //     return (value);
 // }
 
-t_export *get_export(t_env *envlist)
+t_export *get_export(void)
 {
     static t_export export;
-    if (!export.content)
-        export.content = env_to_export(envlist);
     return (&export);
 }
 
@@ -242,16 +239,31 @@ int verif_if_in_export(char **export, char *arg)
 {
     int i;
     char **split_arg;
+    int is_equal;
 
     i = 0;
-    split_arg = ft_split(arg, '=');
+    is_equal = 0;
+    split_arg = NULL;
+    while (arg[i])
+    {
+        if (arg[i] == '=')
+            is_equal = 1;
+        i++;
+    }
+    if (is_equal == 1)
+        split_arg = ft_split(arg, '=');
+    i = 0;
     while (export[i])
     {
-        if (ft_strncmp(export[i], split_arg[0], ft_strlen(split_arg[0])) == 0)
+        if (split_arg != NULL)
         {
-            free_tabtab(split_arg);
-            return 1;
+            if (ft_strncmp(export[i], split_arg[0], ft_strlen(split_arg[0])) == 0)
+            {
+                free_tabtab(split_arg);
+                return 1;
+            }
         }
+        else if (ft_strncmp(export[i], arg, ft_strlen(arg)) == 0)
         i++;
     }
     return 0;
@@ -273,15 +285,25 @@ char **replace_one_in_export(char **export, char *arg)
         }
         i++;
     }
+    free_tabtab(split_arg);
     return export;
+}
+
+void init_export(t_export *export_list, t_env *envlist)
+{
+    if (!export_list->content)
+        export_list->content = env_to_export(envlist);
 }
 
 void ft_export(t_env *env_list, char *arg)
 {
-    t_export *export = get_export(env_list);
+    t_export *export = get_export();
     char **split_arg;
     char *env_value = NULL;
 
+    init_export(export, env_list);
+    if (!export->content || !export->content[0])
+        return;
     env_value = pipeline_to_env_value(env_list, arg);
     split_arg = NULL;
     if (!arg)
