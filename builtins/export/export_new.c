@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:46:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/19 18:27:22 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/19 19:42:21 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,19 @@ int cmb_env(t_env *envlist)
     return (len);
 }
 
+char *ft_magouilles(t_env *head)
+{
+    t_env *temp;
+    char *str1;
+    char *str2;
+
+    temp = head;
+    str1 = ft_strjoin(temp->name, "=");
+    str2 = ft_strjoin(str1, temp->value);
+    free(str1);
+    return (str2);
+}
+
 char **env_to_export(t_env *env_list)
 {
     char **env_export;
@@ -43,7 +56,7 @@ char **env_to_export(t_env *env_list)
         return (NULL);
     while (temp)
     {
-        env_export[i] = ft_strjoin(temp->name, (ft_strjoin("=", temp->value)));
+        env_export[i] = ft_magouilles(temp);
         temp = temp->next;
         i++;
     }
@@ -100,8 +113,10 @@ int cmb_export(char **env_export)
 char **append_to_export(char **env_export, char *arg)
 {
     char **temp;
+    char **sorted;
     int i;
 
+    sorted = NULL;
     i = 0;
     printf("EST CE QUE JE PASSE LA ?????\n");
     while (env_export[i])
@@ -117,7 +132,8 @@ char **append_to_export(char **env_export, char *arg)
     }
     temp[i] = ft_strdup(arg);
     temp[i + 1] = NULL;
-    return (sort_env_export(temp));
+    sorted = sort_env_export(temp);
+    return (sorted);
 }
 
 char **sort_env_export(char **env_export)
@@ -302,7 +318,6 @@ void ft_export(t_env *env_list, char *arg)
 {
     t_export *export = get_export();
     char **split_arg;
-    char *sub_arg = NULL;
     char *env_value = NULL;
 
     init_export(export, env_list);
@@ -314,28 +329,22 @@ void ft_export(t_env *env_list, char *arg)
         printf_export(export->content);
     else if (is_env_name_valid(arg) == 1)
         printf("bash: export: `%s': not a valid identifier\n", arg);
-    else if (verif_if_in_export(export->content, arg) == 1)
-    {
-        replace_one_in_export(export->content, arg);
-        if ((check_equal_arg(arg) == 0 || check_equal_arg(arg) == 2) && env_value != NULL)
-        {
-            sub_arg = ft_substr(arg, arg[0], len_before_space(arg));
-            ft_unset(&env_list, sub_arg);
-            free(sub_arg);
-        }
-    }
     else if (check_equal_arg(arg) == 1)
     {
         split_arg = ft_split(arg, '=');
         if (env_value == NULL)
         {
-            export->content = append_to_export(export->content, arg);
+            if (verif_if_in_export(export->content, arg) == 1)
+                export->content = replace_one_in_export(export->content, arg);
+            else
+                export->content = append_to_export(export->content, arg);
             export_to_env(&env_list, split_arg);
         }
         else
         {
             export->content = replace_export(export->content, split_arg);
-            replace_env_value(&env_list, split_arg);
+            if (strcmp(env_value, split_arg[1]) != 0)
+                replace_env_value(&env_list, split_arg);
         }
         free_tabtab(split_arg);
     }

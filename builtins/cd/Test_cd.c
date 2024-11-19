@@ -325,15 +325,28 @@ void ft_cd(t_env *env_list, char *input)
 	ch_pwd(&env_list);
 }
 
-void ft_exit(t_env *env_list, char *input)
+void free_export(t_export *export)
 {
-	t_export *export;
-	export = get_export();
 	if (export->content)
 		free_tabtab(export->content);
-	ft_free_env(&env_list);
-	free(input);
-	exit(0);
+	free(export);
+}
+
+void ft_exit(t_env *env_list, char *input)
+{
+    t_export *export;
+
+    export = get_export();
+    if (export && export->content)
+        free_tabtab(export->content);
+    
+    if (env_list)
+        ft_free_env(&env_list);
+    
+    if (input)
+        free(input);
+    
+    exit(0);
 }
 
 int main(int argc, char *argv[], char **env)
