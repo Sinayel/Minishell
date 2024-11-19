@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/18 19:49:07 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/19 13:50:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,8 @@ typedef struct s_data
 }					t_data;
 
 // 5 -------------------  Tokenization  -------------------
-t_token				*id_token(t_token *list);
 t_token				*tokenization(char *str, t_env *env);
+t_token				*id_token(t_token *list);
 int					openquote(char *line);
 
 // TODO -------------------  Parsing  ----------------------
@@ -148,19 +148,24 @@ t_path				*add_env(t_path *list, char *value);
 
 // 2 ------------------------  Error  ------------------------
 int					msg_error(int value);
+char				*proccess_error(char *str, t_data *data);
 
 // 4 ------------------------  Utils  ------------------------
 t_data				*get_data(void);
-bool				is_separator(char c);
-bool				is_redirection(char *c);
 void				skip_spaces(char *str, int *i);
 int					ft_strcmp(char *s1, char *s2);
+void				ft_exit(t_token *list, t_data *data, t_env *env, t_path *path);
+
+// Is ...
+bool				is_separator(char c);
+bool				is_redirection(char *c);
 bool				is_quote(char c);
 int					ft_isspace(int c);
-void				ft_exit(t_token *list, t_data *data, t_env *env, t_path *path);
+
 // Dollar
 char  				*free_dollar(t_dollar *var, char *tmp);
 void 				return_quote(char *str, t_dollar *var);
+char 				*return_quoted_value(char *str, char *tmp, int *j, int *i);
 void 				env_return_value(char *str, t_dollar *var, t_env *env, char *tmp);
 void 				init_dollar_var(t_dollar *var, t_env *env, char *str);
 char 				*proccess_dollar_1_on_2(t_dollar *var, char *tmp);

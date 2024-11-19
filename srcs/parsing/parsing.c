@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/18 20:58:07 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/19 15:12:10 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 
 int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 {
-	if (ft_strcmp(str, "$?") == 0)
-	{
-		printf("%d\n", data->error);
-		return (1);
-	}
 	if (ft_strcmp(str, "cd") == 0)
 		return (1);
 	if (ft_strcmp(str, "pwd") == 0)
@@ -28,11 +23,7 @@ int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 	if (ft_strcmp(str, "env") == 0)
 		return (1);
 	if (ft_strcmp(str, "echo") == 0)
-	{
-		list = remove_quote(list);
-		// printf("dede");
 		echo(list);
-	}
 	if (ft_strcmp(str, "exit") == 0)
 		ft_exit(list, data, env, path);
 	if (ft_strcmp(str, "export") == 0)
@@ -124,19 +115,19 @@ int	parsing(t_token *list, t_env *env, t_data *data)
 	if (check_pipe(list) != 0)
 	{
 		data->error = 2;
-		printf("error pipe\n");
+		// printf("error pipe\n");
 		return (1);
 	}
 	if (check_redirection(list) != 0)
 	{
 		data->error = 2;
-		printf("error redirection\n");
+		// printf("error redirection\n");
 		return (1);
 	}
 	if (check_cmd(list, env, data) != 0)
 	{
 		data->error = 127;
-		// printf("error cmd\n");
+		// printf("command: %s: not found\n", list->token);
 		return (1);
 	}
 	data->error = 0;

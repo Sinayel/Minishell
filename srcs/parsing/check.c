@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 17:30:24 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/18 20:42:40 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/19 13:43:15 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ char	*check_quote(t_token *tmp, int *i, int *j)
 		if (tmp->token[*i] == '\"' || tmp->token[*i] == '\'')
 		{
 			(*i)++;
+			continue;
 		}
 		if (tmp->token[*i] != '\"' || tmp->token[*i] != '\'')
 		{

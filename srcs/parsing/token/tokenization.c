@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/18 19:55:16 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/19 15:19:53 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,28 @@ static char	*extract_separator_token(char *str, int *i)
 	return (ft_substr(str, start, 1));
 }
 
+char *return_quoted_value_for_token(char *str, int *i)
+{
+	int len;
+	char *tmp;
+	(*i)++;
+	len = *i;
+	while ((str[len] != '\"' && str[len] != '\'') && str[len] != '\0')
+		len++;
+	tmp = (char *)malloc(sizeof(char) * (len + 1));
+	len = 0;
+	while ((str[*i] != '\"' && str[*i] != '\'') && str[*i] != '\0')
+	{
+		tmp[len] = str[*i];
+		len++;
+		(*i)++;
+	}
+	if (str[*i] == '\"' || str[*i] == '\'')
+		(*i)++;
+	tmp[len] = '\0';
+	return tmp;
+}
+
 t_token	*proccess_token(t_token *list, char *str)
 {
 	int		i;
@@ -81,13 +103,19 @@ t_token	*proccess_token(t_token *list, char *str)
 		skip_spaces(str, &i);
 		if (!str[i])
 			break ;
-		if (is_separator(str[i]))
-			token = extract_separator_token(str, &i);
+		if(str[i] == '\"' || str[i] == '\'')
+			token = return_quoted_value_for_token(str, &i);
 		else
-			token = extract_token(str, &i);
+		{
+			if (is_separator(str[i]))
+				token = extract_separator_token(str, &i);
+			else
+				token = extract_token(str, &i);
+		}
 		if (token)
 			list = add_last(list, token);
 	}
+	printf("token  = %s\n", token);
 	list = id_token(list);
 	return (list);
 }
@@ -105,11 +133,17 @@ t_token	*tokenization(char *str, t_env *env)
 	(void)env;
 	while (str[i] == ' ')
 		i++;
-	if (str[i] && !openquote(str))	//! LA CON DE TA MERE Y'A PLUS DE LEAKS !!!
+	if (str[i] && !openquote(str))
 	{
 		tmp = proccess_pid(str, data);
 		if(tmp != str)
 			str = tmp;
+		tmp = proccess_error(str, data);
+		if(tmp != str)
+		{
+			free(str);
+			str = tmp;
+		}
 		tmp = proccess_dollar_value(str, env);
 		if(tmp != str)
 		{

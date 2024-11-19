@@ -13,11 +13,13 @@ RM = rm -f
 VGCORE_FILES = vgcore.*
 NAME = minishell
 
-PARSING_SRC = srcs/parsing/token/id_token.c \
-			  srcs/parsing/token/tokenization.c \
-			  srcs/parsing/dollar/pid.c \
+DOLLAR_SRC =  srcs/parsing/dollar/pid.c \
 			  srcs/parsing/dollar/dollar.c \
 			  srcs/parsing/dollar/len_dollar.c \
+			  srcs/parsing/dollar/code_error.c \
+
+PARSING_SRC = srcs/parsing/token/id_token.c \
+			  srcs/parsing/token/tokenization.c \
 			  srcs/parsing/check.c \
 			  srcs/parsing/path.c \
 			  srcs/parsing/parsing.c
@@ -33,7 +35,7 @@ UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/utils_token.c \
 			srcs/error/msg.c \
 
-MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC)
+MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC) $(DOLLAR_SRC)
 
 ASCII_LOGO = -e "\
 	███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗     \n\
