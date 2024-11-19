@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 16:08:54 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/19 16:21:01 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/19 18:09:24 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,12 @@ t_export *unset_export(t_export *export, char *arg)
 
     i = 0;
     j = 0;
-    dest = (char **)malloc(sizeof(char *) * cmb_export(export->content));
+    while (export->content[i])
+        i++;
+    dest = (char **)malloc(sizeof(char *) * (i + 1));
     if (!dest)
         return (NULL);
+    i = 0;
     while (export->content[i])
     {
         if (ft_strncmp(export->content[i], arg, ft_strlen(arg)) != 0)
@@ -32,7 +35,6 @@ t_export *unset_export(t_export *export, char *arg)
     free_tabtab(export->content);
     dest[j] = NULL;
     export->content = dest;
-    free_tabtab(dest);
     return (export);
 }
 
