@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 15:19:53 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/19 18:28:00 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,22 +37,32 @@ int	openquote(char *line)
 static char	*extract_token(char *str, int *i)
 {
 	int		start;
+	int		j;
+	int		v;
 	char	quote_type;
+	char	*tmp = (char *)malloc(sizeof(char) * 100);
 
 	start = *i;
+	j = 0;
+	v = 0;
 	quote_type = '\0';
-	while (str[*i] && (!ft_isspace(str[*i]) || quote_type != '\0')
-		&& !is_separator(str[*i]))
+	while (str[*i] && (!ft_isspace(str[*i]) && !is_separator(str[*i])))
 	{
+		if(str[*i] != '\"' && str[*i] != '\"')
+			tmp[j] = str[v];
 		if (is_quote(str[*i]))
 		{
 			if (quote_type == '\0')
 				quote_type = str[*i];
 			else if (str[*i] == quote_type)
 				quote_type = '\0';
+			v++;
 		}
+		v++;
 		(*i)++;
 	}
+	printf("tmp = %s\nstr = %s\n", tmp, str);
+	// printf("i = %d\nstart = %d\n", *i, start);
 	return (ft_substr(str, start, *i - start));
 }
 
@@ -70,23 +80,68 @@ static char	*extract_separator_token(char *str, int *i)
 	return (ft_substr(str, start, 1));
 }
 
+int len_for_quoted_token(char *str, int i)
+{
+	int len;
+	len = 0;
+	while(str[i] != '\'' && str[i] != '\"')
+		i++;
+	if(str[i] == '\"')
+	{
+		len = 0;
+		i++;
+		while (str[i] != '\"' && str[i] != '\0')
+		{
+			len++;
+			i++;
+		}
+	}
+	else if (str[i] == '\'')
+	{
+		len = 0;
+		i++;
+		while (str[i] != '\'' && str[i] != '\0')
+		{
+			len++;
+			i++;
+		}
+	}
+	return len;
+}
+
 char *return_quoted_value_for_token(char *str, int *i)
 {
 	int len;
 	char *tmp;
-	(*i)++;
-	len = *i;
-	while ((str[len] != '\"' && str[len] != '\'') && str[len] != '\0')
-		len++;
-	tmp = (char *)malloc(sizeof(char) * (len + 1));
 	len = 0;
-	while ((str[*i] != '\"' && str[*i] != '\'') && str[*i] != '\0')
-	{
-		tmp[len] = str[*i];
-		len++;
+	len = len_for_quoted_token(str, len);
+	tmp = (char *)malloc(sizeof(char) * (len + 1));
+	memset(tmp, '\0', len + 1);
+	if(str[*i] == '\'' || str[*i] == '\"')
 		(*i)++;
+	len = *i;
+	len--;
+	if(str[len] == '\"')
+	{
+		len = 0;
+		while (str[*i] != '\"' && str[*i] != '\0')
+		{
+			tmp[len] = str[*i];
+			len++;
+			(*i)++;
+		}
 	}
-	if (str[*i] == '\"' || str[*i] == '\'')
+	else if (str[len] == '\'')
+	{
+		len = 0;
+		while (str[*i] != '\'' && str[*i] != '\0')
+		{
+			tmp[len] = str[*i];
+			len++;
+			(*i)++;
+		}
+	}
+	while (str[*i] == '\"' || str[*i] == '\'')
 		(*i)++;
 	tmp[len] = '\0';
 	return tmp;
@@ -112,10 +167,10 @@ t_token	*proccess_token(t_token *list, char *str)
 			else
 				token = extract_token(str, &i);
 		}
+		printf("token = %s\n", token);
 		if (token)
 			list = add_last(list, token);
 	}
-	printf("token  = %s\n", token);
 	list = id_token(list);
 	return (list);
 }

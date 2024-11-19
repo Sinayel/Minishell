@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 19:43:50 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 13:42:04 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/19 17:25:27 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,14 @@
 void echo(t_token *list)
 {
     t_token *tmp = list;
-    tmp = tmp->next;
-    tmp = remove_quote(tmp);
+    while(tmp)
+    {
+        if(ft_strcmp(tmp->token, "echo") == 0)
+            break;
+        tmp = tmp->next;
+    }
+    if(tmp->next)
+        tmp = tmp->next;
     while(tmp && tmp->type == ARG)
     {
         if(tmp->type == ARG)

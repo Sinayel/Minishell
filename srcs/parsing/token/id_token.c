@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 18:21:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 15:21:05 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/19 17:48:56 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,15 @@ t_token	*id_token(t_token *list)
 	{
 		if (ft_strcmp(tmp->token, "|") == 0)
 			tmp->type = PIPE;
-		else if (ft_strcmp(tmp->token, ">>") == 0)
+		if (ft_strcmp(tmp->token, ">>") == 0)
 			tmp->type = APPEND;
-		else if (ft_strcmp(tmp->token, "<<") == 0)
+		if (ft_strcmp(tmp->token, "<<") == 0)
 			tmp->type = HEREDOC;
-		else if (ft_strcmp(tmp->token, ">") == 0)
+		if (ft_strcmp(tmp->token, ">") == 0)
 			tmp->type = TRUNC;
-		else if (ft_strcmp(tmp->token, "<") == 0)
+		if (ft_strcmp(tmp->token, "<") == 0)
 			tmp->type = INPUT;
-		else
+		if (tmp->type == 0 || ft_strcmp(tmp->token, " ") == 0)
 			tmp->type = ARG;
 		tmp = tmp->next;
 	}

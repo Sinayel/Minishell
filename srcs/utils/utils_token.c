@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 21:38:04 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 15:13:55 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/19 17:56:43 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	is_quote(char c)
 {
-	return (c == '"' || c == '\'');
+	return (c == '\"' || c == '\'');
 }
 
 bool	is_separator(char c)

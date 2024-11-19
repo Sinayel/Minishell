@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 15:12:10 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/19 17:40:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,6 @@ int	check_pipe(t_token *list)
 	t_token	*tmp;
 
 	tmp = list;
-	if (check_unclosed_pipe(list))
-		return (1);
 	if (tmp && ft_strcmp(tmp->token, "|") == 0)
 		return (msg_error(2));
 	while (tmp)
