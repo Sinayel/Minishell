@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:46:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/19 19:42:21 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/20 17:50:45 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,35 +319,55 @@ void ft_export(t_env *env_list, char *arg)
     t_export *export = get_export();
     char **split_arg;
     char *env_value = NULL;
+    char **arg_tabtab;
+    int i;
 
+    i = 0;
     init_export(export, env_list);
     if (!export->content)
         return;
     env_value = pipeline_to_env_value(env_list, arg);
     split_arg = NULL;
+    arg_tabtab = NULL;
     if (!arg)
-        printf_export(export->content);
-    else if (is_env_name_valid(arg) == 1)
-        printf("bash: export: `%s': not a valid identifier\n", arg);
-    else if (check_equal_arg(arg) == 1)
     {
-        split_arg = ft_split(arg, '=');
-        if (env_value == NULL)
-        {
-            if (verif_if_in_export(export->content, arg) == 1)
-                export->content = replace_one_in_export(export->content, arg);
-            else
-                export->content = append_to_export(export->content, arg);
-            export_to_env(&env_list, split_arg);
-        }
-        else
-        {
-            export->content = replace_export(export->content, split_arg);
-            if (strcmp(env_value, split_arg[1]) != 0)
-                replace_env_value(&env_list, split_arg);
-        }
-        free_tabtab(split_arg);
+        printf_export(export->content);
+        return;
     }
-    else if ((check_equal_arg(arg) == 0 || check_equal_arg(arg) == 2) && env_value == NULL)
-        export->content = append_to_export(export->content, arg);
+    else if (cmb_word(arg) > 1)
+        arg_tabtab = ft_split(arg, ' ');
+    else
+    {
+        arg_tabtab = (char **)malloc(sizeof(char *) * 2);
+        arg_tabtab[0] = ft_strdup(arg);
+        arg_tabtab[1] = NULL;
+    }
+    while (arg_tabtab[i] && i < cmb_word(arg))
+    {
+        if (is_env_name_valid(arg_tabtab[i]) == 1)
+            printf("bash: export: `%s': not a valid identifier\n", arg_tabtab[i]);
+        else if (check_equal_arg(arg_tabtab[i]) == 1)
+        {
+            split_arg = ft_split(arg_tabtab[i], '=');
+            if (env_value == NULL)
+            {
+                if (verif_if_in_export(export->content, arg_tabtab[i]) == 1)
+                    export->content = replace_one_in_export(export->content, arg_tabtab[i]);
+                else
+                    export->content = append_to_export(export->content, arg_tabtab[i]);
+                export_to_env(&env_list, split_arg);
+            }
+            else
+            {
+                export->content = replace_export(export->content, split_arg);
+                if (strcmp(env_value, split_arg[1]) != 0)
+                    replace_env_value(&env_list, split_arg);
+            }
+            free_tabtab(split_arg);
+        }
+        else if ((check_equal_arg(arg_tabtab[i]) == 0 || check_equal_arg(arg_tabtab[i]) == 2) && env_value == NULL)
+            export->content = append_to_export(export->content, arg_tabtab[i]);
+        i++;
+    }
+    free_tabtab(arg_tabtab);
 }

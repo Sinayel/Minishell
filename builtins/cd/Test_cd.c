@@ -67,7 +67,7 @@ int	ft_strncmp(char *s1, char *s2, unsigned int n)
 	return (0);
 }
 
-int	word_count(char *str)
+int	cmb_word(char *str)
 {
 	int	i;
 	int	wc;
@@ -362,7 +362,7 @@ int main(int argc, char *argv[], char **env)
     while (1)
     {
         input = readline("$> ");
-        if (word_count(input) == 1)
+        if (cmb_word(input) == 1)
         {
 			if (ft_strcmp(skip_spaces_input(input), "cd") == 0)
 				ft_cd(env_list, NULL);
@@ -379,7 +379,7 @@ int main(int argc, char *argv[], char **env)
         else
         {
             split_input = ft_split(input, ' ');
-			if (ft_strcmp(split_input[0], "cd") == 0 && word_count(input) > 2)
+			if (ft_strcmp(split_input[0], "cd") == 0 && cmb_word(input) > 2)
 			{
 				printf("bash: cd: too many arguments\n");
 				free_tabtab(split_input);

@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:26:28 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/19 18:19:32 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/20 17:20:07 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,6 @@ t_export *get_export(void);
 int cmb_export(char **env_export);
 char **sort_env_export(char **env_export);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+int	cmb_word(char *str);
 
 #endif
