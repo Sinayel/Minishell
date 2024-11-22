@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 13:22:36 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/15 13:22:01 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/22 15:26:26 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,25 @@ void print_env_export(t_env *head)
         printf("export %s=%s\n", next->name, next->value);
         last_printed = next;
     }
+}
+
+void replace_env_value_ez(t_env **env_list,char *name, char *arg)
+{
+    t_env **temp;
+
+    if (*env_list == NULL || env_list == NULL)
+        return;
+    temp = env_list;
+    while (*temp)
+	{
+		if (ft_strcmp((*temp)->name, name) == 0)
+		{
+            free((*temp)->value);
+            (*temp)->value = ft_strdup(arg);
+            return;
+		}
+		*temp = (*temp)->next;
+	}
 }
 
 void replace_env_value(t_env **env_list, char **arg)

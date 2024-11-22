@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:46:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/20 17:50:45 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/22 15:03:36 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,8 +342,9 @@ void ft_export(t_env *env_list, char *arg)
         arg_tabtab[0] = ft_strdup(arg);
         arg_tabtab[1] = NULL;
     }
-    while (arg_tabtab[i] && i < cmb_word(arg))
+    while (arg_tabtab[i])
     {
+        printf("JE PPASSE CMB DE FOIS ICI ?????\ni = %d\n", i);
         if (is_env_name_valid(arg_tabtab[i]) == 1)
             printf("bash: export: `%s': not a valid identifier\n", arg_tabtab[i]);
         else if (check_equal_arg(arg_tabtab[i]) == 1)

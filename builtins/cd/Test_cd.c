@@ -88,28 +88,17 @@ int	cmb_word(char *str)
 
 void ch_pwd(t_env **env_list)
 {
-	t_env *temp;
+	t_export *export;
 	char cwd[4096];
-	int found;
+	char *join_value;
 
-	found = 0;
+	export = get_export();
 	getcwd(cwd, sizeof(cwd));
-	temp = *env_list;
-	while (temp != NULL)
-	{
-		if (ft_strncmp(temp->name, "PWD", 3) == 0)
-		{
-			found = 1;
-			break;
-		}
-		temp = temp->next;
-	}
-	if (found == 0)
-		return;
+	join_value = ft_strjoin("PWD=", cwd);
 	if (cwd != NULL)
 	{
-		free(temp->value);
-		temp->value = ft_strdup(cwd);
+		replace_env_value_ez(env_list, "PWD", cwd);
+		replace_one_in_export(export->content, join_value);
 	}
 	else
 		printf("Erreur lors de la récupération du répertoire\n");
@@ -118,36 +107,32 @@ void ch_pwd(t_env **env_list)
 void ch_oldpwd(t_env **env_list) //! LE PROBLEME EST LA !!!!!
 {
 	t_env *temp;
+	t_export *export;
 	char *oldpwd;
 	char *oldpwd_join;
 	char cwd[4096];
 
+	export = get_export();
 	getcwd(cwd, sizeof(cwd));
 	temp = *env_list;
 	oldpwd = return_env_value(temp, "OLDPWD");
 	oldpwd_join = ft_strjoin("OLDPWD=", cwd);
+	
 	if (oldpwd == NULL)
 	{
 		ft_export(*env_list, oldpwd_join);
-		// replace_env_value(env_list, oldpwd_join); //! PAS ADAPTE SI !OLDPWD
+		append_to_export(export->content, oldpwd_join);
 		free(oldpwd_join);
 		return;
 	}
-		// ft_export(*env_list, oldpwd_join);
-	free(oldpwd_join);
-	while (temp != NULL)
-	{
-		if (ft_strcmp(temp->name, "OLDPWD") == 0)
-			break;
-		temp = temp->next;
-	}
-	if (cwd != NULL)
-	{
-		free(temp->value);
-		temp->value = ft_strdup(cwd);
-	}
 	else
-		free(temp->value);
+	{
+		if (verif_if_in_export(export->content, oldpwd_join) == 0)
+			export->content = append_to_export(export->content, oldpwd_join);
+		export->content = replace_one_in_export(export->content, oldpwd_join);
+		replace_env_value_ez(env_list, "OLDPWD", cwd);
+	}
+	free(oldpwd_join);
 }
 
 void ft_pwd(char *arg)
@@ -261,7 +246,7 @@ void ft_cd(t_env *env_list, char *input)
 
 	path = NULL;
 	initial_path = NULL;
-	if (input == NULL)
+	if (input == NULL || input[0] == '~' || (input[0] == '-' && input[1] == '-'))
 	{
 		path = return_env_value(env_list, "HOME");
 		if (!path)
@@ -285,18 +270,7 @@ void ft_cd(t_env *env_list, char *input)
 	}
 	else
 	{
-		if (input[0] == '$')
-		{
-			path = cd_handle_dollar(env_list, input); //! Noramlement fait par le parsing (heureusement parce ca marche qu'a moitie)
-			if (!path)
-				return;
-		}
-		else if (input[0] == '-' && input[1] == '-')
-		{
-			printf("bash: cd: --: invalid option\n");
-			return;
-		}
-		else if (input[0] == '-' || input[0] == '~')
+		if (input[0] == '-')
 		{
 			path = return_env_value(env_list, "OLDPWD");
 			if (!path)
@@ -355,8 +329,11 @@ int main(int argc, char *argv[], char **env)
     (void)argv;
     char *input;
     char **split_input;
+	t_export *export;
     t_env *env_list = env_import(env);
     input = NULL;
+	export = get_export();
+	init_export(export, env_list);
 	signal(SIGINT, ft_sig_handler);
     
     while (1)
