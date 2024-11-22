@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 16:08:54 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/19 18:09:24 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/22 19:53:54 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,27 +43,47 @@ void ft_unset(t_env **env_list, char *arg)
     t_env *temp;
     t_env *prev;
     t_export *export = get_export();
+    char **arg_split;
+    int i ;
 
-    temp = *env_list;
-    prev = NULL;
-    export = unset_export(export, arg);
-    if (!temp)
-        return;
-    while (temp)
+    i = 0;
+    if (cmb_word(arg) > 1)
+        arg_split = ft_split(arg, ' ');
+    else
     {
-        if (ft_strcmp(temp->name, arg) == 0)
-        {
-            if (prev == NULL)
-                *env_list = temp->next;
-            else
-                prev->next = temp->next;
-            free(temp->name);
-            free(temp->value);
-            free(temp);
+        arg_split = (char **)malloc(sizeof(char *) * 2);
+        arg_split[0] = ft_strdup(arg);
+        arg_split[1] = NULL;
+    }
+    while (arg_split[i])
+    {
+        export = unset_export(export, arg_split[i]);
+        i++;
+    }
+    i = 0;
+    while (arg_split[i]) //! A REVOIR
+    {
+        temp = *env_list;
+        if (!temp)
             return;
+        prev = NULL;
+        while (temp)
+        {
+            if (ft_strcmp(temp->name, arg_split[i]) == 0)
+            {
+                if (prev == NULL)
+                    *env_list = temp->next;
+                else
+                    prev->next = temp->next;
+                free(temp->name);
+                free(temp->value);
+                free(temp);
+                return;
+            }
+            prev = temp;
+            temp = temp->next;
         }
-        prev = temp;
-        temp = temp->next;
+        i++;
     }
 }
 

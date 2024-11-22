@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:46:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/22 15:03:36 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/22 18:58:53 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,6 +317,7 @@ void init_export(t_export *export_list, t_env *envlist)
 void ft_export(t_env *env_list, char *arg)
 {
     t_export *export = get_export();
+    t_data *data = get_data();
     char **split_arg;
     char *env_value = NULL;
     char **arg_tabtab;
@@ -344,9 +345,12 @@ void ft_export(t_env *env_list, char *arg)
     }
     while (arg_tabtab[i])
     {
-        printf("JE PPASSE CMB DE FOIS ICI ?????\ni = %d\n", i);
+        printf("JE PPASSE CMB DE FOIS ICI ?????\ni = %d\n", check_equal_arg(arg_tabtab[i]));
         if (is_env_name_valid(arg_tabtab[i]) == 1)
+        {
             printf("bash: export: `%s': not a valid identifier\n", arg_tabtab[i]);
+            data->error = 1;
+        }
         else if (check_equal_arg(arg_tabtab[i]) == 1)
         {
             split_arg = ft_split(arg_tabtab[i], '=');

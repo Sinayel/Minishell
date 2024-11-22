@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:23:21 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/18 12:54:21 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/22 19:17:35 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,18 +166,32 @@ void print_env_vars(t_env *head, char *name)
 	}
 }
 
-void print_env(t_env *head)
+void print_env(t_env *head, char *arg)
 {
     t_env *temp;
+    t_data *data;
 
-    if (head == NULL)
+    data = get_data();
+    if (!arg)
+    {
+        if (head == NULL)
+            return;
+        temp = head;
+        while (temp != NULL)
+	    {
+            printf("%s=%s\n", temp->name, temp->value);
+	    	temp = temp->next;
+	    }
         return;
-    temp = head;
-    while (temp != NULL)
-	{
-        printf("%s=%s\n", temp->name, temp->value);
-		temp = temp->next;
-	}
+    }
+    if (arg[0] == '-' && (arg[1] != '-' && arg[1] != '\0'))
+        return;
+    if (arg[0] == '-' && arg[1] == '-' && arg[2] == '-')
+    {
+        data->error = 125;
+        printf("env: unrecognized option '%s'\n", arg);
+        return;
+    }
 }
 
 char *return_env_value(t_env *head, char *name)

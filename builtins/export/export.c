@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/12 13:22:36 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/22 15:26:26 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/22 18:35:07 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,13 +94,13 @@ int is_env_name_valid(char *name)
         return 1;
     while (name[i])
     {
-        if (name[i] == '=')
-        {
-            if (name[i + 1] == '\0') //! TEMPORAIRE
-                return 1;            //! JUSTE POUR EVITER LE SEGFAULT
-            return 0;
-        }
-        if ((name[i] >= 32 && name[i] < 48) || (name[i] >= 58 && name[i] < 65) || (name[i] >= 91 && name[i] < 95) || name[i] == 96 || name[i] >= 123)
+        // if (name[i] == '=')
+        // {
+        //     if (name[i + 1] == '\0') //! TEMPORAIRE
+        //         return 1;            //! JUSTE POUR EVITER LE SEGFAULT
+        //     return 0;
+        // }
+        if ((name[i] >= 32 && name[i] < 48) || (name[i] >= 58 && name[i] < 61) || (name[i] >= 62 && name[i] < 65) || (name[i] >= 91 && name[i] < 95) || name[i] == 96 || name[i] >= 123)
             return 1;
         i++;
     }

@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 18:26:28 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/22 16:14:15 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/22 17:49:46 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,13 @@
 # include <unistd.h>
 # include <errno.h>
 
+typedef struct s_data
+{
+	char			*input;
+	int				pid;
+	int				error;
+}					t_data;
+
 typedef struct s_export
 {
     char **content;
@@ -38,7 +45,7 @@ typedef struct s_env
 char	*ft_strdup(const char *src);
 void print_env_vars(t_env *head, char *name);
 char *return_env_value(t_env *head, char *name);
-void print_env(t_env *head);
+void print_env(t_env *head, char *arg);
 t_env *env_import(char **envp);
 size_t	ft_strlen(const char *str);
 int	ft_strcmp(char *s1, char *s2);
@@ -67,5 +74,6 @@ char **append_to_export(char **env_export, char *arg);
 char **replace_one_in_export(char **export, char *arg);
 int verif_if_in_export(char **export, char *arg);
 void init_export(t_export *export_list, t_env *envlist);
+t_data	*get_data(void);
 
 #endif

@@ -102,6 +102,7 @@ void ch_pwd(t_env **env_list)
 	}
 	else
 		printf("Erreur lors de la récupération du répertoire\n");
+	free(join_value);
 }
 
 void ch_oldpwd(t_env **env_list) //! LE PROBLEME EST LA !!!!!
@@ -138,21 +139,25 @@ void ch_oldpwd(t_env **env_list) //! LE PROBLEME EST LA !!!!!
 void ft_pwd(char *arg)
 {
 	char cwd[4096];
+	t_data *data;
 
+	data = get_data();
 	getcwd(cwd, sizeof(cwd));
 	if (arg == NULL || arg[0] != '-')
 	{
 		printf("%s\n", cwd);
 		return;
 	}
-	if (arg[0] == '-' && arg[1] == '-')
+	if (arg[0] == '-' && arg[1] == '-' && arg[2] == '-')
 	{
 		printf("bash: pwd: --: invalid option\n");
+		data->error = 1;
 		return;
 	}
 	if (arg[0] == '-' && arg[1])
 	{
-		printf("bash: pwd: %s: invalid option\n", arg);
+		printf("bash: pwd: -%c: invalid option\n", arg[1]);
+		data->error = 2;
 		return;
 	}
 }
@@ -239,11 +244,20 @@ char *cd_handle_dollar(t_env *env_list, char *input)
 	return (path);
 }
 
+t_data	*get_data(void)
+{
+	static t_data	data;
+
+	return (&data);
+}
+
 void ft_cd(t_env *env_list, char *input)
 {
 	char *path;
 	char *initial_path;
+	t_data *data;
 
+	data = get_data();
 	path = NULL;
 	initial_path = NULL;
 	if (input == NULL || input[0] == '~' || (input[0] == '-' && input[1] == '-'))
@@ -252,6 +266,7 @@ void ft_cd(t_env *env_list, char *input)
 		if (!path)
 		{
 			printf("bash: cd: HOME not set\n");
+			data->error = 1;
 			return;
 		}
 		initial_path = ft_strdup(path);
@@ -265,6 +280,7 @@ void ft_cd(t_env *env_list, char *input)
 				printf("bash: cd: %s: No such file or directory\n", path);
 			else
 				perror("chdir");
+			data->error = 1;
 		}
 		free(initial_path);
 	}
@@ -276,6 +292,7 @@ void ft_cd(t_env *env_list, char *input)
 			if (!path)
 			{
 				printf("bash: cd: OLDPWD not set\n");
+				data->error = 1;
 				return;
 			}
 			printf("%s\n", path);
@@ -293,6 +310,7 @@ void ft_cd(t_env *env_list, char *input)
 				printf("bash: cd: %s: No such file or directory\n", path);
 			else
 				perror("chdir");
+			data->error = 1;
 		}
 		free(initial_path);
 	}
@@ -346,11 +364,11 @@ int main(int argc, char *argv[], char **env)
         	if (ft_strcmp(input, "pwd") == 0)
         	    ft_pwd(NULL);
 			if (ft_strcmp(input, "env") == 0)
-        	    print_env(env_list);
+        	    print_env(env_list, NULL);
 			if (ft_strcmp(input, "export") == 0)
 				ft_export(env_list, NULL);
 			if (ft_strcmp(input, "exit") == 0)
-				ft_exit(env_list, input);
+				ft_exit(env_list, NULL);
 			free(input);
         }
         else
