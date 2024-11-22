@@ -6,11 +6,26 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/18 10:52:40 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/20 16:06:14 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void free_tabtab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	if (!tab)
+		return;
+	while (tab[i] != NULL)
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+}
 
 //? Pour enlever les doubles quotes des noeud de la liste chainee
 t_token	*remove_quote(t_token *list)

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 18:47:31 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/18 18:47:58 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/22 11:36:44 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void env_return_value_len(t_dollar_len *var, char *tmp, t_env *env, char *str)
 			var->y++;
 			var->x++;
 		}
-		free(var->return_value);
 	}
 	else
 		var->return_value = NULL;

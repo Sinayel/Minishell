@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:58:53 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/18 20:49:03 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/22 14:59:21 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 void	ft_exit(t_token *list, t_data *data, t_env *env, t_path *path)
 {
+	t_export *export;
+	export = get_export();
+	if(export && export->content)
+		free_tabtab(export->content);
 	ft_env_lstclear(&env);
 	ft_token_lstclear(&list);
 	ft_free_path(path);

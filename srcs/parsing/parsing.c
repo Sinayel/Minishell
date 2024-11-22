@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 17:40:29 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/22 16:56:40 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,19 @@
 int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 {
 	if (ft_strcmp(str, "cd") == 0)
-		return (1);
+		ft_arg_cd(env, list);
 	if (ft_strcmp(str, "pwd") == 0)
-		return (1);
+		ft_pwd(NULL);
 	if (ft_strcmp(str, "unset") == 0)
 		return (1);
 	if (ft_strcmp(str, "env") == 0)
-		return (1);
+		print_env(env);
 	if (ft_strcmp(str, "echo") == 0)
 		echo(list);
 	if (ft_strcmp(str, "exit") == 0)
 		ft_exit(list, data, env, path);
 	if (ft_strcmp(str, "export") == 0)
-		return (1);
+		ft_export(env, NULL);			// Pas encore bon pour les ajouts de plusieur var dans l'env
 	return (0);
 }
 
@@ -67,13 +67,12 @@ int	check_cmd(t_token *list, t_env *env, t_data *data)
 	tmp = list;
 	while (tmp)
 	{
-		if (tmp->type == CMD && cmd(tmp->token, list, env, data, path) == 0)
+		if (tmp->type == CMD && cmd(list->token, list, env, data, path) == 0)
 		{
 			if (double_check(path, tmp) == 1)
 			{
 				if (path)
 					ft_free_path(path);
-				// printf("Command not found...\n");
 				return (1);
 			}
 		}

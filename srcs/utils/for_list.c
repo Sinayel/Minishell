@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 15:10:13 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/13 15:11:08 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/22 11:42:44 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void ft_env_lstclear(t_env **lst)
             free((*lst)->name);
         if ((*lst)->value)
             free((*lst)->value);
-        
+
         free(*lst);
         *lst = tmp;
     }

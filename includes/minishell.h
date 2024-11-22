@@ -6,14 +6,14 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 13:50:29 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/22 16:29:41 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define INPUT 1   // 1  "<"
 #define HEREDOC 2 // 2  "<<"
 #define TRUNC 3   // 3  ">"
-#define APPEND 4  // 4  ">>"
+#define APPEND 4  // 4  ">>"     
 #define PIPE 5    // 5  "|"
 #define CMD 6     // 6  "CMD"
 #define ARG 7     // 7  "ARG"
@@ -22,6 +22,7 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include "../libft/libft.h"
 #include <fcntl.h>
 #include <signal.h>
@@ -29,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 
 typedef struct s_dollar
 {
@@ -42,7 +44,7 @@ typedef struct s_dollar
 	char *finale;
 	char *return_value;
 	bool in_single_quotes;
-}					t_dollar;
+}				  t_dollar;
 
 typedef struct s_dollar_len
 {
@@ -53,7 +55,12 @@ typedef struct s_dollar_len
 	int len_tmp;
 	bool in_single_quotes;
 	char *return_value;
-}					t_dollar_len;
+}			  t_dollar_len;
+
+typedef struct s_export
+{
+    char 		**content;
+}				  t_export;
 
 typedef struct s_path
 {
@@ -66,7 +73,7 @@ typedef struct s_env
 	char			*name;
 	char			*value;
 	struct s_env	*next;
-}					t_env;
+}					 t_env;
 
 typedef struct s_token
 {
@@ -74,7 +81,7 @@ typedef struct s_token
 	int				type;
 	int				first;
 	struct s_token	*next;
-}					t_token;
+}				   t_token;
 
 typedef struct s_data
 {
@@ -111,31 +118,38 @@ int					check_redirection(t_token *list);
 t_token				*remove_quote(t_token *list);
 
 //	Path
-int					double_check(t_path *path, t_token *tmp);
+int execute_command(t_token *cmd, t_env *env_list, char **env);
+int double_check(t_path *path, t_token *tmp);
 t_path				*return_path(t_env *env);
 void 				ft_free_path(t_path *path);
 
-//! ------------------------  CMD  ------------------------
+//! ------------------------  CMD  -------------------------
 
 //* -----------------------  Env  -------------------------
+void 				print_env(t_env *head);
 void				print_env_vars(t_env *head, char *name);
 char				*return_env_value(t_env *head, char *name);
 t_env				*env_import(char **envp);
 void				append_env_var(t_env **head, char *name, char *value);
-t_env				*create_env_var(char *name, char *value);
+t_env 				*create_env_var(char *name, char *value);
 
 //* -----------------------  Pwd  -------------------------		// (JULIO)
+void				ft_pwd(char *arg);
 
 //* -----------------------  Cd  --------------------------		// (JULIO)
+void 				ft_cd(t_env *env_list, char *input);
+void				ft_arg_cd(t_env *env, t_token *list);
 
-//* -----------------------  Exit  ------------------------
+//* -----------------------  Exit  ------------------------		// (JULIO)
 
-//* -----------------------  Echo  ------------------------
+//* -----------------------  Echo  ------------------------		// (YANS)
 void 				echo(t_token *list);
 
-//* -----------------------  Unset  -----------------------
+//* -----------------------  Unset  -----------------------		// (JULIO)
 
-//* -----------------------  Export  ----------------------
+//* -----------------------  Export  ----------------------		// (JULIO)
+void 				ft_export(t_env *env_list, char *arg);
+t_export *get_export(void);
 
 //! --------------------------------------------------------
 
@@ -169,3 +183,5 @@ char 				*return_quoted_value(char *str, char *tmp, int *j, int *i);
 void 				env_return_value(char *str, t_dollar *var, t_env *env, char *tmp);
 void 				init_dollar_var(t_dollar *var, t_env *env, char *str);
 char 				*proccess_dollar_1_on_2(t_dollar *var, char *tmp);
+void 				free_tabtab(char **tab);
+char				**ft_split_for_path(char const *s, char c);

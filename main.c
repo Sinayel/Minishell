@@ -6,22 +6,22 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 19:36:23 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/22 16:29:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
 
-//! ◦ CD with only a relative or absolute path |  (JULIO) V
-//! ◦ PWD with no options                      |  (JULIO) V
-//! ◦ ENV with no options or arguments         |  (JULIO) V
-//! ◦ PIPEX										 |  (JULIO) X
-//! ◦ UNSET with no options                    |  (JULIO) X
-//! ◦ EXPORT with no options                   |  (JULIO) X
-//! ◦ EXIT                                     |  (YANS) V
-//! ◦ ECHO                                     |  (YANS) X
-//! ◦ PID											|  (YANS) X
-//! ◦ PARSING (99% du projet)                  |  (YANS) X
+//! ◦ PIPEX									   |  (JULIO)  X
+//! ◦ UNSET with no options                    |  (JULIO)  X
+//! ◦ EXPORT with no options                   |  (JULIO)  X
+//! ◦ CD with only a relative or absolute path |  (JULIO) [V]
+//! ◦ PWD with no options                      |  (JULIO) [V]
+//! ◦ ENV with no options or arguments         |  (JULIO) [V]
+//! ◦ EXIT                                     |  (YANS)  [V]
+//! ◦ ECHO                                     |  (YANS)  [V]
+//! ◦ PID									   |  (YANS)  [V]
+//! ◦ PARSING (99% du projet)                  |  (YANS)  [V]
 
 void	signal_handler(int signum)
 {
@@ -61,6 +61,10 @@ bool	exit_shell(t_data *data, t_env *env)
 	{
 		printf("exit\n");
 		free(data->input);
+		t_export *export;
+		export = get_export();
+		if(export && export->content)
+			free_tabtab(export->content);
 		ft_env_lstclear(&env);
 		return (false);
 	}

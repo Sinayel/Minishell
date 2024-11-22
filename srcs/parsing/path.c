@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 17:26:35 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/22 16:57:15 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_path	*return_path(t_env *env)
 	path = NULL;
 	i = 0;
 	tmp = return_env_value(env, "PATH");
-	path_breaker = ft_split(tmp, ':');
+	path_breaker = ft_split_for_path(tmp, ':');
 	if(!path_breaker)
 	{
 		free(tmp);
@@ -34,7 +34,6 @@ t_path	*return_path(t_env *env)
 		i++;
 	}
 	i = 0;
-	free(tmp);
 	free(path_breaker);
 	return (path);
 }
@@ -53,7 +52,7 @@ int	double_check(t_path *path, t_token *tmp)
 		is_ok = access(word, X_OK | X_OK | X_OK);
 		if (is_ok == 0)
 		{
-			// printf("Dans ta petite mere <3\n");
+			// printf("word = %s\n", word);
 			free(word);
 			return (0);
 		}

@@ -27,12 +27,16 @@ PARSING_SRC = srcs/parsing/token/id_token.c \
 BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/env/create_env.c \
 			  srcs/builtins/echo/echo.c \
+			  srcs/builtins/pwd/pwd.c \
+			  srcs/builtins/cd/cd.c \
+			  srcs/builtins/export/export.c \
 
 UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/free.c \
 			srcs/utils/utils_dollar.c \
 			srcs/utils/for_list.c \
 			srcs/utils/utils_token.c \
+			srcs/utils/ft_split.c \
 			srcs/error/msg.c \
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC) $(DOLLAR_SRC)
