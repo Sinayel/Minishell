@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/22 16:29:41 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/25 19:39:24 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #define PIPE 5    // 5  "|"
 #define CMD 6     // 6  "CMD"
 #define ARG 7     // 7  "ARG"
+#define INT_MIN	-2147483648
+#define INT_MAX	 2147483647
 
 #include <stdio.h>
 #include <readline/history.h>
@@ -126,30 +128,45 @@ void 				ft_free_path(t_path *path);
 //! ------------------------  CMD  -------------------------
 
 //* -----------------------  Env  -------------------------
-void 				print_env(t_env *head);
+int 				print_env(t_env *head);
 void				print_env_vars(t_env *head, char *name);
 char				*return_env_value(t_env *head, char *name);
 t_env				*env_import(char **envp);
 void				append_env_var(t_env **head, char *name, char *value);
 t_env 				*create_env_var(char *name, char *value);
+void 				ft_free_env(t_env **lst);
 
 //* -----------------------  Pwd  -------------------------		// (JULIO)
-void				ft_pwd(char *arg);
+int					ft_pwd(char *arg);
 
 //* -----------------------  Cd  --------------------------		// (JULIO)
-void 				ft_cd(t_env *env_list, char *input);
-void				ft_arg_cd(t_env *env, t_token *list);
+int 				ft_cd(t_env *env_list, char *input);
+int					ft_arg_cd(t_env *env, t_token *list);
+int					cmb_word(char *str);
+int 				len_for_cd(t_token *list);
 
-//* -----------------------  Exit  ------------------------		// (JULIO)
+//* -----------------------  Exit  ------------------------		// (YANS)
+bool 				is_valid_number(const char *str);
 
 //* -----------------------  Echo  ------------------------		// (YANS)
-void 				echo(t_token *list);
+int 				echo(t_token *list);
 
 //* -----------------------  Unset  -----------------------		// (JULIO)
 
 //* -----------------------  Export  ----------------------		// (JULIO)
-void 				ft_export(t_env *env_list, char *arg);
-t_export *get_export(void);
+int 				ft_arg_export(t_env *env, t_token *list);
+int 				ft_export(t_env *env_list, char *arg);
+char 				**sort_env_export(char **env_export);
+t_export 			*get_export(void);
+int 				cmb_export(char **env_export);
+int 				is_env_name_valid(char *name);
+void 				replace_env_value_ez(t_env **env_list,char *name, char *arg);
+void 				replace_env_value(t_env **env_list, char **arg);
+char 				**replace_one_in_export(char **export, char *arg);
+char 				**append_to_export(char **env_export, char *arg);
+int 				verif_if_in_export(char **export, char *arg);
+void 				export_to_env(t_env **env_list, char **arg);
+void				init_export(t_export *export_list, t_env *envlist);
 
 //! --------------------------------------------------------
 
@@ -168,7 +185,7 @@ char				*proccess_error(char *str, t_data *data);
 t_data				*get_data(void);
 void				skip_spaces(char *str, int *i);
 int					ft_strcmp(char *s1, char *s2);
-void				ft_exit(t_token *list, t_data *data, t_env *env, t_path *path);
+int					ft_exit(t_token *list, t_data *data, t_env *env, t_path *path);
 
 // Is ...
 bool				is_separator(char c);
@@ -185,3 +202,4 @@ void 				init_dollar_var(t_dollar *var, t_env *env, char *str);
 char 				*proccess_dollar_1_on_2(t_dollar *var, char *tmp);
 void 				free_tabtab(char **tab);
 char				**ft_split_for_path(char const *s, char c);
+long int 			ft_strtol(const char *nptr, char **endptr, int base);

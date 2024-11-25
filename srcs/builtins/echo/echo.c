@@ -6,13 +6,13 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 19:43:50 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 17:25:27 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/25 15:33:11 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
-void echo(t_token *list)
+int echo(t_token *list)
 {
     t_token *tmp = list;
     while(tmp)
@@ -32,4 +32,5 @@ void echo(t_token *list)
         tmp = tmp->next;
     }
     printf("\n");
+    return (0);
 }

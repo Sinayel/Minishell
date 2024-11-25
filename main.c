@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/22 16:29:50 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/25 19:46:07 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,15 @@ t_data	*get_data(void)
 	return (&data);
 }
 
-void	init_variable(int argc, char **argv)
+void	init_variable(int argc, char **argv, t_env *env)
 {
 	t_data	*data;
+	t_export* export;
 
+	export = get_export();
+	init_export(export, env);
 	data = get_data();
-	data->pid = getpid();
+	data->pid = 4242;
 	data->error = 0;
 	data->input = NULL;
 	(void)argc;
@@ -55,7 +58,7 @@ void	init_variable(int argc, char **argv)
 	signal(SIGINT, signal_handler);
 }
 
-bool	exit_shell(t_data *data, t_env *env)
+bool	exit_shell(t_data *data, t_env *env, t_token *list)
 {
 	if (!data->input)
 	{
@@ -65,7 +68,9 @@ bool	exit_shell(t_data *data, t_env *env)
 		export = get_export();
 		if(export && export->content)
 			free_tabtab(export->content);
+		ft_token_lstclear(&list);
 		ft_env_lstclear(&env);
+    	exit(0);
 		return (false);
 	}
 	return (true);
@@ -88,11 +93,11 @@ int	main(int argc, char *argv[], char **env)
 	list = NULL;
 	data = get_data();
 	env_list = env_import(env);
-	init_variable(argc, argv);
+	init_variable(argc, argv, env_list);
 	while (1)
 	{
 		data->input = readline("Minishell> ");
-		if (!exit_shell(data, env_list))
+		if (!exit_shell(data, env_list, list))
 			break ;
 		list = tokenization(data->input, env_list);
 		if(data->input)

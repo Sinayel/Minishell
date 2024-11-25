@@ -37,6 +37,7 @@ UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/for_list.c \
 			srcs/utils/utils_token.c \
 			srcs/utils/ft_split.c \
+			srcs/utils/ft_strtol.c \
 			srcs/error/msg.c \
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC) $(DOLLAR_SRC)

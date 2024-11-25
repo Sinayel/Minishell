@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 19:35:55 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/25 17:42:53 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,7 @@ t_token	*tokenization(char *str, t_env *env)
 		i++;
 	if (str[i] && !openquote(str))
 	{
-		tmp = proccess_pid(str, data);
+		tmp = proccess_pid(str, data);		// Pour gerer le pid (Pas a faire de base...)
 		if(tmp != str)
 			str = tmp;
 		tmp = proccess_error(str, data);

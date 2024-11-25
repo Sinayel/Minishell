@@ -6,23 +6,75 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:58:53 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/22 14:59:21 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/25 16:03:12 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ft_exit(t_token *list, t_data *data, t_env *env, t_path *path)
+bool is_valid_number(const char *str)
+{
+    int i;
+
+	i = 0;
+    if (str[i] == '+' || str[i] == '-')
+        i++;
+    while (str[i])
+    {
+        if (!isdigit(str[i]))
+            return false;
+        i++;
+    }
+    return true;
+}
+
+void	free_all(t_token *list, t_env *env, t_data *data, t_path *path)
 {
 	t_export *export;
 	export = get_export();
-	if(export && export->content)
+	if (export && export->content)
 		free_tabtab(export->content);
 	ft_env_lstclear(&env);
 	ft_token_lstclear(&list);
 	ft_free_path(path);
-	free(data->input);
-	exit(2);
+	if (data && data->input)
+		free(data->input);
+}
+
+int ft_exit(t_token *list, t_data *data, t_env *env, t_path *path)
+{
+    long exit_code = 0;
+    char *arg;
+
+	if (list && list->next && list->next->next)
+	{
+		ft_putstr_fd("exit: too many arguments\n", 2);
+		data->error = 2;
+		return (0);
+	}
+    if (list && list->next)
+    {
+        arg = list->next->token;
+        if (!is_valid_number(arg))
+        {
+            printf("exit: %s: ", arg);
+		    ft_putstr_fd("numeric argument required\n", 2);
+			free_all(list, env, data, path);
+            exit(2);
+        }
+        exit_code = ft_strtol(arg, NULL, 10);
+        if (exit_code < INT_MIN || exit_code > INT_MAX)
+        {
+            printf("exit: %s: ", arg);
+		    ft_putstr_fd("numeric argument required\n", 2);
+			free_all(list, env, data, path);
+            exit(2);
+        }
+        exit_code = (unsigned char)exit_code;
+    }
+	free_all(list, env, data, path);
+    exit(exit_code);
+	return (0);
 }
 
 void	free_token(t_token **token)
