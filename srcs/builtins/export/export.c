@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:48:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/25 19:45:48 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/25 20:44:40 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,6 +139,7 @@ char *ft_magouilles(char *str1, char *str2, char *str3)
         i++;
         j++;
     }
+    dest[i] = '\0';
     return (dest);
 }
 
@@ -220,20 +221,25 @@ char **append_to_export(char **env_export, char *arg)
     sorted = NULL;
     i = 0;
     printf("EST CE QUE JE PASSE LA ?????\n");
-    while (env_export[i])
+    while (env_export && env_export[i])
         i++;
     temp = (char **)malloc(sizeof(char *) * (i + 2));
     if (!temp)
         return (NULL);
-    i = 0 ;
-    while (env_export[i])
+    for (int j = 0; j < i; j++)
     {
-        temp[i] = ft_strdup(env_export[i]);
-        i++;
+        temp[j] = ft_strdup(env_export[j]);
+        if (!temp[j]) // Gestion d'erreur en cas d'échec de ft_strdup
+        {
+            free_tabtab(temp);
+            return (NULL);
+        }
     }
     temp[i] = ft_strdup(arg);
     temp[i + 1] = NULL;
     sorted = sort_env_export(temp);
+    // free_tabtab(env_export);
+    // free_tabtab(temp);
     return (sorted);
 }
 
@@ -410,10 +416,10 @@ int ft_export(t_env *env_list, char *arg)
     int i;
 
     i = 0;
-    // init_export(export, env_list);
+    init_export(export, env_list);
     if (!export->content)
         return 0;
-    env_value = pipeline_to_env_value(env_list, arg);
+    env_value = NULL;
     split_arg = NULL;
     arg_tabtab = NULL;
     if (!arg)
@@ -431,7 +437,9 @@ int ft_export(t_env *env_list, char *arg)
     }
     while (arg_tabtab[i])
     {
-        printf("JE PPASSE CMB DE FOIS ICI ?????\ni = %d\n", check_equal_arg(arg_tabtab[i]));
+        printf("arg tab = %s\n", arg_tabtab[i]);
+        env_value = pipeline_to_env_value(env_list, arg_tabtab[i]);
+        printf("JE PPASSE CMB DE FOIS ICI ?????\ni = %d\n", i);
         if (is_env_name_valid(arg_tabtab[i]) == 1)
         {
             printf("bash: export: `%s': not a valid identifier\n", arg_tabtab[i]);
@@ -451,7 +459,7 @@ int ft_export(t_env *env_list, char *arg)
             else
             {
                 export->content = replace_export(export->content, split_arg);
-                if (strcmp(env_value, split_arg[1]) != 0)
+                if (strcmp(env_value, split_arg[0]) != 0)
                     replace_env_value(&env_list, split_arg);
             }
             free_tabtab(split_arg);
@@ -488,7 +496,7 @@ int ft_arg_export(t_env *env, t_token *list)
 		tmp = tmp->next;
 	}
 	value_for_export[i] = '\0';
-	printf("arg cd = %s\n", value_for_export);
+	printf("arg cd = %s\nlen du export = %d\n", value_for_export, len);
 	ft_export(env, value_for_export);
 	free(value_for_export);
 	return (0);

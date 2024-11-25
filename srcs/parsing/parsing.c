@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/25 19:38:26 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/25 20:49:54 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 	if (ft_strcmp(str, "pwd") == 0)
 		return (ft_pwd(NULL));
 	if (ft_strcmp(str, "unset") == 0)
-		return (1);
+		return (ft_arg_unset(env, list));
 	if (ft_strcmp(str, "env") == 0)
 		return (print_env(env));
 	if (ft_strcmp(str, "echo") == 0)
@@ -27,7 +27,7 @@ int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 	if (ft_strcmp(str, "exit") == 0)
 		return (ft_exit(list, data, env, path));
 	if (ft_strcmp(str, "export") == 0)
-		return (ft_arg_export(env, list));			// Pas encore bon pour les ajouts de plusieur var dans l'env
+		return (ft_arg_export(env, list));
 	return 1;
 }
 

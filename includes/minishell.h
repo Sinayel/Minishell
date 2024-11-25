@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/25 19:39:24 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/25 20:49:33 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ bool 				is_valid_number(const char *str);
 int 				echo(t_token *list);
 
 //* -----------------------  Unset  -----------------------		// (JULIO)
+int 				ft_arg_unset(t_env *env, t_token *list);
 
 //* -----------------------  Export  ----------------------		// (JULIO)
 int 				ft_arg_export(t_env *env, t_token *list);
