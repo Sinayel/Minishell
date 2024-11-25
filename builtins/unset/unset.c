@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 16:08:54 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/22 19:53:54 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/25 17:28:02 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,10 @@ void ft_unset(t_env **env_list, char *arg)
     {
         temp = *env_list;
         if (!temp)
+        {
+            free_tabtab(arg_split);
             return;
+        }
         prev = NULL;
         while (temp)
         {
@@ -78,6 +81,7 @@ void ft_unset(t_env **env_list, char *arg)
                 free(temp->name);
                 free(temp->value);
                 free(temp);
+                free_tabtab(arg_split);
                 return;
             }
             prev = temp;
@@ -85,6 +89,7 @@ void ft_unset(t_env **env_list, char *arg)
         }
         i++;
     }
+    free_tabtab(arg_split);
 }
 
 // {

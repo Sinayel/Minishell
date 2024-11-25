@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:46:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/22 18:58:53 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/25 17:44:58 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,35 @@ int cmb_env(t_env *envlist)
     return (len);
 }
 
-char *ft_magouilles(t_env *head)
+char *ft_magouilles(char *str1, char *str2, char *str3)
 {
-    t_env *temp;
-    char *str1;
-    char *str2;
+    char *dest;
+    int i;
+    int j;
 
-    temp = head;
-    str1 = ft_strjoin(temp->name, "=");
-    str2 = ft_strjoin(str1, temp->value);
-    free(str1);
-    return (str2);
+    i = 0;
+    j = 0;
+    dest = (char *)malloc(sizeof(char) * (ft_strlen(str1) + ft_strlen(str2) + ft_strlen(str3) + 1));
+    while (str1[i])
+    {
+        dest[i] = str1[i];
+        i++;
+    }
+    j = 0;
+    while (str2[j])
+    {
+        dest[i] = str2[j];
+        i++;
+        j++;
+    }
+    j = 0;
+    while (str3[j])
+    {
+        dest[i] = str3[j];
+        i++;
+        j++;
+    }
+    return (dest);
 }
 
 char **env_to_export(t_env *env_list)
@@ -56,7 +74,7 @@ char **env_to_export(t_env *env_list)
         return (NULL);
     while (temp)
     {
-        env_export[i] = ft_magouilles(temp);
+        env_export[i] = ft_magouilles(temp->name, "=", temp->value);
         temp = temp->next;
         i++;
     }
@@ -272,9 +290,13 @@ int verif_if_in_export(char **export, char *arg)
             }
         }
         else if (ft_strncmp(export[i], arg, ft_strlen(arg)) == 0)
+        {
+            free_tabtab(split_arg);
             return (1);
+        }
         i++;
     }
+    free_tabtab(split_arg);
     return 0;
 }
 

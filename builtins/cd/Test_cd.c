@@ -130,7 +130,8 @@ void ch_oldpwd(t_env **env_list) //! LE PROBLEME EST LA !!!!!
 	{
 		if (verif_if_in_export(export->content, oldpwd_join) == 0)
 			export->content = append_to_export(export->content, oldpwd_join);
-		export->content = replace_one_in_export(export->content, oldpwd_join);
+		else
+			export->content = replace_one_in_export(export->content, oldpwd_join);
 		replace_env_value_ez(env_list, "OLDPWD", cwd);
 	}
 	free(oldpwd_join);
@@ -331,7 +332,6 @@ void ft_exit(t_env *env_list, char *input)
     export = get_export();
     if (export && export->content)
         free_tabtab(export->content);
-    
     if (env_list)
         ft_free_env(&env_list);
     
