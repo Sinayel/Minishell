@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:58:53 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/25 20:32:37 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/26 14:47:12 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int ft_exit(t_token *list, t_data *data, t_env *env, t_path *path)
 	{
 		ft_putstr_fd("exit: too many arguments\n", 2);
 		data->error = 2;
-		return (0);
+		return (2);
 	}
     if (list && list->next)
     {
@@ -74,7 +74,7 @@ int ft_exit(t_token *list, t_data *data, t_env *env, t_path *path)
     }
 	free_all(list, env, data, path);
     exit(exit_code);
-	return (0);
+	return (2);
 }
 
 void	free_token(t_token **token)

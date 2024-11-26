@@ -6,14 +6,14 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/25 20:49:33 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/26 13:48:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #define INPUT 1   // 1  "<"
 #define HEREDOC 2 // 2  "<<"
 #define TRUNC 3   // 3  ">"
-#define APPEND 4  // 4  ">>"     
+#define APPEND 4  // 4  ">>"
 #define PIPE 5    // 5  "|"
 #define CMD 6     // 6  "CMD"
 #define ARG 7     // 7  "ARG"
@@ -83,7 +83,9 @@ typedef struct s_token
 	int				type;
 	int				first;
 	struct s_token	*next;
+	struct s_token	*prev;
 }				   t_token;
+
 
 typedef struct s_data
 {

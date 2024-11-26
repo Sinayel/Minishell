@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/13 15:10:13 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/22 11:42:44 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/26 11:45:02 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,13 @@ t_token	*add_last(t_token *list, char *value)
 	new_element->type = 0;
 	new_element->first = 0;
 	new_element->next = NULL;
-	if (list == NULL)
+	new_element->prev = NULL;
+	if (!list)
 		return (new_element);
 	temp = list;
-	while (temp->next != NULL)
+	while (temp->next)
 		temp = temp->next;
 	temp->next = new_element;
+	new_element->prev = temp;
 	return (list);
 }
