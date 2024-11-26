@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/26 17:03:05 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/26 19:30:02 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,8 +158,5 @@ int	parsing(t_token *list, t_env *env, t_data *data)
 		ft_putstr_fd("command not found\n", 2);
 		return (1);
 	}
-	else if(check_cmd(list, env, data) == 2)
-		return 1;
-	data->error = 0;
 	return (0);
 }
