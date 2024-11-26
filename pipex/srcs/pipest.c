@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 17:08:34 by judenis           #+#    #+#             */
-/*   Updated: 2024/10/29 18:23:03 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/26 18:18:33 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,33 +55,4 @@ void	pipex(t_token *list, char **env)
             list = list->next;
         }
     }
-}
-
-int main(int ac, char **av, char **env) 
-{
-    (void)ac;
-    (void)av;
-    t_token *list;
-    list = (t_token)malloc(sizeof(t_token));
-    list->token = "cat";
-    list->type = 6;
-    list->i = 0;
-    list = list->next;
-    list->token = "Makefile";
-    list->type = 7;
-    list->i = 1;
-    list = list->next;
-    list->token = "|";
-    list->type = 5;
-    list->i = 2;
-    list = list->next;
-    list->token = "grep";
-    list->type = 6;
-    list->i = 3;
-    list = list->next;
-    list->token = "=";
-    list->type = 7;
-    list->i = 4;
-    list->next = NULL;
-    pipex(list, env);    
 }

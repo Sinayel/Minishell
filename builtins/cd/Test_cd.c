@@ -353,7 +353,6 @@ int main(int argc, char *argv[], char **env)
 	export = get_export();
 	init_export(export, env_list);
 	signal(SIGINT, ft_sig_handler);
-    
     while (1)
     {
         input = readline("$> ");
@@ -374,6 +373,7 @@ int main(int argc, char *argv[], char **env)
         else
         {
             split_input = ft_split(input, ' ');
+			printf("split_input[1] = %s\n", split_input[1]);
 			if (ft_strcmp(split_input[0], "cd") == 0 && cmb_word(input) > 2)
 			{
 				printf("bash: cd: too many arguments\n");

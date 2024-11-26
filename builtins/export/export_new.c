@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/15 11:46:03 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/25 17:44:58 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/25 19:40:01 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ char *ft_magouilles(char *str1, char *str2, char *str3)
         i++;
         j++;
     }
+    dest[i] = '\0';
     return (dest);
 }
 
@@ -349,7 +350,7 @@ void ft_export(t_env *env_list, char *arg)
     init_export(export, env_list);
     if (!export->content)
         return;
-    env_value = pipeline_to_env_value(env_list, arg);
+    env_value = NULL;
     split_arg = NULL;
     arg_tabtab = NULL;
     if (!arg)
@@ -367,6 +368,7 @@ void ft_export(t_env *env_list, char *arg)
     }
     while (arg_tabtab[i])
     {
+        env_value = pipeline_to_env_value(env_list, arg_tabtab[i]);
         printf("JE PPASSE CMB DE FOIS ICI ?????\ni = %d\n", check_equal_arg(arg_tabtab[i]));
         if (is_env_name_valid(arg_tabtab[i]) == 1)
         {
@@ -387,7 +389,7 @@ void ft_export(t_env *env_list, char *arg)
             else
             {
                 export->content = replace_export(export->content, split_arg);
-                if (strcmp(env_value, split_arg[1]) != 0)
+                if (strcmp(env_value, split_arg[0]) != 0)
                     replace_env_value(&env_list, split_arg);
             }
             free_tabtab(split_arg);
