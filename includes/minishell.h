@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/26 13:48:50 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/26 18:18:52 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,13 +155,19 @@ int 				echo(t_token *list);
 
 //* -----------------------  Unset  -----------------------		// (JULIO)
 int 				ft_arg_unset(t_env *env, t_token *list);
+int 				len_before_space(char *arg);
+void				free_tabtab_unset(char **tab);
+void				init_var_i(int *i, int *j);
+void				free_name_and_value(t_env *temp);
+char				**return_dest(char **dest, t_export *export, int j);
+char				**malloc_dest(t_export *export, char **dest);
 
 //* -----------------------  Export  ----------------------		// (JULIO)
 int 				ft_arg_export(t_env *env, t_token *list);
 int 				ft_export(t_env *env_list, char *arg);
 char 				**sort_env_export(char **env_export);
 t_export 			*get_export(void);
-int 				cmb_export(char **env_export);
+char				*ft_magouilles(char *str1, char *str2, char *str3);
 int 				is_env_name_valid(char *name);
 void 				replace_env_value_ez(t_env **env_list,char *name, char *arg);
 void 				replace_env_value(t_env **env_list, char **arg);

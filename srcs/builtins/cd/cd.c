@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:43:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/25 19:35:08 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/26 18:10:33 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void ch_pwd(t_env **env_list)
 	free(join_value);
 }
 
-void ch_oldpwd(t_env **env_list) //! LE PROBLEME EST LA !!!!!
+void ch_oldpwd(t_env **env_list)
 {
 	t_env *temp;
 	t_export *export;
@@ -58,11 +58,10 @@ void ch_oldpwd(t_env **env_list) //! LE PROBLEME EST LA !!!!!
 	temp = *env_list;
 	oldpwd = return_env_value(temp, "OLDPWD");
 	oldpwd_join = ft_strjoin("OLDPWD=", cwd);
-	
 	if (oldpwd == NULL)
 	{
-		ft_export(*env_list, oldpwd_join);
-		append_to_export(export->content, oldpwd_join);
+		append_env_var(env_list, "OLDPWD", cwd);
+		export->content = append_to_export(export->content, oldpwd_join);
 		free(oldpwd_join);
 		return;
 	}
@@ -113,7 +112,7 @@ int ft_cd(t_env *env_list, char *input)
 	data = get_data();
 	path = NULL;
 	initial_path = NULL;
-	if (input == NULL || input[0] == '~' || (input[0] == '-' && input[1] == '-'))
+	if (input == NULL || input[0] == '~' || (input[0] == '-' && input[1] == '-' && input[2] == '\0'))
 	{
 		path = return_env_value(env_list, "HOME");
 		if (!path)
@@ -124,7 +123,7 @@ int ft_cd(t_env *env_list, char *input)
 		}
 		initial_path = ft_strdup(path);
 		if (access(path, X_OK) == 0)
-			ch_oldpwd(&env_list); //! prend la valeur du cwd avant le pwd ?!?!?!?!!?!?!?!?!!?!?
+			ch_oldpwd(&env_list);
 		if (chdir(initial_path) != 0)
 		{
 			if (errno == ENOTDIR)
@@ -139,7 +138,19 @@ int ft_cd(t_env *env_list, char *input)
 	}
 	else
 	{
-		if (input[0] == '-')
+		if (input[0] == '-' && input[1] == '-')
+		{
+			printf("bash: cd: --: invalid option\n");
+			data->error = 2;
+			return 0;
+		}
+		if (input[0] == '-' && input[1] != '-' && input[1] != '\0')
+		{
+			printf("bash: cd: -%c: invalid option\n", input[1]);
+			data->error = 2;
+			return 0;
+		}
+		if (input[0] == '-' && input[1] == '\0')
 		{
 			path = return_env_value(env_list, "OLDPWD");
 			if (!path)

@@ -31,6 +31,7 @@ BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/cd/cd.c \
 			  srcs/builtins/export/export.c \
 			  srcs/builtins/unset/unset.c \
+			  srcs/builtins/unset/utils_unset.c \
 
 UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/free.c \
