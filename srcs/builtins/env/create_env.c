@@ -6,14 +6,13 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:08:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/26 18:59:16 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/27 18:05:00 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
 //! FINI
-// Fonction pour créer un nouveau nœud pour la liste chaînée
 t_env	*create_env_var(char *name, char *value)
 {
 	t_env	*new_node;
@@ -42,7 +41,6 @@ t_env	*create_env_var(char *name, char *value)
 	return (new_node);
 }
 
-// Fonction pour ajouter une variable d'environnement à la fin de la liste chaînée
 void	append_env_var(t_env **head, char *name, char *value)
 {
 	t_env	*new_node;
@@ -64,7 +62,6 @@ void	append_env_var(t_env **head, char *name, char *value)
 	}
 }
 
-// Fonction pour afficher les variables d'environnement de la liste chaînée
 void	print_env_vars(t_env *head, char *name)
 {
 	t_env	*temp;

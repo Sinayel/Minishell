@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/26 19:30:02 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/27 18:01:49 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,36 +29,6 @@ int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 	if (ft_strcmp(str, "export") == 0)
 		return (ft_arg_export(env, list));
 	return 1;
-}
-
-int return_next_next(t_token *tmp)
-{
-	if(tmp->type == HEREDOC && tmp->next->type == HEREDOC && tmp->next->next->type == HEREDOC)
-		return (msg_error(10));
-	else if ((tmp->type == TRUNC || tmp->type == APPEND) && (tmp->next->type == HEREDOC && (tmp->next->next->type == INPUT || tmp->next->next->type == HEREDOC)))
-		return (msg_error(10));
-	else if(tmp->type == HEREDOC && tmp->next->type == HEREDOC && tmp->next->next->type == INPUT)
-		return (msg_error(9));
-	return 0;
-}
-
-int for_trunc_and_heredoc(t_token *tmp)
-{
-	if (!tmp->next)
-		return (msg_error(1));
-	if (tmp->type == TRUNC && tmp->next->type == INPUT)	// Si ><
-		return (msg_error(8));
-	if(tmp->type == TRUNC && tmp->next->type == HEREDOC) // Si ><<
-		return (msg_error(9));
-	if ((tmp->type == APPEND || tmp->type == INPUT) && tmp->next->type == HEREDOC) // Si >> <<
-		return (msg_error(9));
-	if (tmp->type == HEREDOC && tmp->next->type == HEREDOC) // Si << <<
-		return (msg_error(8));
-	if(tmp->type == APPEND && tmp->next->type == TRUNC)	// Si >> >
-		return (msg_error(6));
-	if(tmp->type == APPEND && tmp->next->type == APPEND) // Si >> >>
-		return (msg_error(7));
-	return 0;
 }
 
 //! A MODIFIER APRES PIPEX SI BESOIN !!!

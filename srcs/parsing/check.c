@@ -6,37 +6,40 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 17:30:24 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/19 17:50:01 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/27 18:01:52 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-bool	check_unclosed_pipe(t_token *token_list)
+int return_next_next(t_token *tmp)
 {
-	t_token	*current;
-
-	current = token_list;
-	while (current)
-	{
-		if (current->type == PIPE && current->next == NULL)
-		{
-			printf("Error: Unclosed pipe\n");
-			return (true);
-		}
-		current = current->next;
-	}
-	return (false);
+	if(tmp->type == HEREDOC && tmp->next->type == HEREDOC && tmp->next->next->type == HEREDOC)
+		return (msg_error(10));
+	else if ((tmp->type == TRUNC || tmp->type == APPEND) && (tmp->next->type == HEREDOC && (tmp->next->next->type == INPUT || tmp->next->next->type == HEREDOC)))
+		return (msg_error(10));
+	else if(tmp->type == HEREDOC && tmp->next->type == HEREDOC && tmp->next->next->type == INPUT)
+		return (msg_error(9));
+	return 0;
 }
 
-int	check_type(t_token *list)
+int for_trunc_and_heredoc(t_token *tmp)
 {
-	t_token	*tmp;
-
-	tmp = list;
-	if (tmp->type == PIPE && tmp->next->type == PIPE)
-		return (msg_error(2));
-	return (0);
+	if (!tmp->next)
+		return (msg_error(1));
+	if (tmp->type == TRUNC && tmp->next->type == INPUT)	// Si ><
+		return (msg_error(8));
+	if(tmp->type == TRUNC && tmp->next->type == HEREDOC) // Si ><<
+		return (msg_error(9));
+	if ((tmp->type == APPEND || tmp->type == INPUT) && tmp->next->type == HEREDOC) // Si >> <<
+		return (msg_error(9));
+	if (tmp->type == HEREDOC && tmp->next->type == HEREDOC) // Si << <<
+		return (msg_error(8));
+	if(tmp->type == APPEND && tmp->next->type == TRUNC)	// Si >> >
+		return (msg_error(6));
+	if(tmp->type == APPEND && tmp->next->type == APPEND) // Si >> >>
+		return (msg_error(7));
+	return 0;
 }
 
 char	*check_quote(t_token *tmp, int *i, int *j)

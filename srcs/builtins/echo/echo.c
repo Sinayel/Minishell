@@ -12,25 +12,27 @@
 
 #include "../../../includes/minishell.h"
 
-int echo(t_token *list)
+int	echo(t_token *list)
 {
-    t_token *tmp = list;
-    while(tmp)
-    {
-        if(ft_strcmp(tmp->token, "echo") == 0)
-            break;
-        tmp = tmp->next;
-    }
-    if(tmp->next)
-        tmp = tmp->next;
-    while(tmp && tmp->type == ARG)
-    {
-        if(tmp->type == ARG)
-            printf("%s", tmp->token);
-        if(tmp->next)
-            printf(" ");
-        tmp = tmp->next;
-    }
-    printf("\n");
-    return (0);
+	t_token	*tmp;
+
+	tmp = list;
+	while (tmp)
+	{
+		if (ft_strcmp(tmp->token, "echo") == 0)
+			break ;
+		tmp = tmp->next;
+	}
+	if (tmp->next)
+		tmp = tmp->next;
+	while (tmp && tmp->type == ARG)
+	{
+		if (tmp->type == ARG)
+			printf("%s", tmp->token);
+		if (tmp->next)
+			printf(" ");
+		tmp = tmp->next;
+	}
+	printf("\n");
+	return (0);
 }

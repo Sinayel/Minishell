@@ -6,11 +6,18 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/22 18:05:20 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/27 17:55:57 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void	free_export(t_export *export)
+{
+	if (export->content)
+		free_tabtab(export->content);
+	free(export);
+}
 
 void free_tabtab(char **tab)
 {

@@ -29,6 +29,8 @@ BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/echo/echo.c \
 			  srcs/builtins/pwd/pwd.c \
 			  srcs/builtins/cd/cd.c \
+			  srcs/builtins/cd/pwd_option.c \
+			  srcs/builtins/cd/option_cd.c \
 			  srcs/builtins/export/export.c \
 			  srcs/builtins/unset/unset.c \
 			  srcs/builtins/unset/utils_unset.c \

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/26 18:18:52 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/27 18:03:21 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,14 +115,13 @@ char				*proccess_pid(char *str, t_data *data);
 
 // Check pipe,quote,redir
 int					check_pipe(t_token *list);
-int					check_type(t_token *list);
-bool				check_unclosed_pipe(t_token *token_list);
 char				*check_quote(t_token *tmp, int *i, int *j);
 int					check_redirection(t_token *list);
 t_token				*remove_quote(t_token *list);
+int 				for_trunc_and_heredoc(t_token *tmp);
+int 				return_next_next(t_token *tmp);
 
 //	Path
-int execute_command(t_token *cmd, t_env *env_list, char **env);
 int double_check(t_path *path, t_token *tmp);
 t_path				*return_path(t_env *env);
 void 				ft_free_path(t_path *path);
@@ -143,9 +142,12 @@ int					ft_pwd(char *arg);
 
 //* -----------------------  Cd  --------------------------		// (JULIO)
 int 				ft_cd(t_env *env_list, char *input);
-int					ft_arg_cd(t_env *env, t_token *list);
-int					cmb_word(char *str);
-int 				len_for_cd(t_token *list);
+char				*cd_handle_dollar(t_env *env_list, char *input);
+int					no_home_set(char *path, t_data *data);
+void				mouv_cd(char *path, t_env *env_list, t_data *data);
+int					bad_option(char *input, t_data *data);
+int					option_for_cd_(char *input, t_data *data, t_env *env_list, char *path);
+void				ch_pwd(t_env **env_list);
 
 //* -----------------------  Exit  ------------------------		// (YANS)
 bool 				is_valid_number(const char *str);
@@ -212,3 +214,12 @@ char 				*proccess_dollar_1_on_2(t_dollar *var, char *tmp);
 void 				free_tabtab(char **tab);
 char				**ft_split_for_path(char const *s, char c);
 long int 			ft_strtol(const char *nptr, char **endptr, int base);
+
+// Cd
+void				free_export(t_export *export);
+int					ft_arg_cd(t_env *env, t_token *list);
+int					cmb_word(char *str);
+int 				len_for_cd(t_token *list);
+void				ch_oldpwd(t_env **env_list);
+void				utils_ch_oldpwd(t_export *export, char *oldpwd_join, char *cwd, t_env **env_list);
+int					cmb_word(char *str);
