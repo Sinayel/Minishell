@@ -12,9 +12,9 @@
 
 #include "../../../includes/minishell.h"
 
-int ft_pwd(char *arg)
+int	ft_pwd(char *arg)
 {
-	char cwd[4096];
+	char	cwd[4096];
 
 	getcwd(cwd, sizeof(cwd));
 	if (arg == NULL || (arg[0] == '-' && arg[1] == '\0') || arg[0] != '-')

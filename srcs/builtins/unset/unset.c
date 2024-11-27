@@ -13,14 +13,14 @@
 #include "../../../includes/minishell.h"
 
 //! FINI
-int len_before_space(char *arg)
+int	len_before_space(char *arg)
 {
-    int len;
+	int	len;
 
-    len = 0;
-    while (arg[len] && arg[len] != '=')
-        len++;
-    return (len);
+	len = 0;
+	while (arg[len] && arg[len] != '=')
+		len++;
+	return (len);
 }
 
 void	unset_export(char *arg)
