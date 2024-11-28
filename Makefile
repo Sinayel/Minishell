@@ -43,6 +43,8 @@ BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/export/env_to_export.c \
 			  srcs/builtins/export/export_create.c \
 
+EXEC_SRC = 	srcs/exec/exec.c
+
 UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/free.c \
 			srcs/utils/utils_dollar.c \
@@ -52,7 +54,7 @@ UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/ft_strtol.c \
 			srcs/error/msg.c \
 
-MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC) $(DOLLAR_SRC)
+MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC) $(DOLLAR_SRC) $(EXEC_SRC)
 
 ASCII_LOGO = -e "\
 	███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗     \n\

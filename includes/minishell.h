@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 14:11:34 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/28 16:20:02 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,10 @@ int					cmb_env(t_env *envlist);
 char				*ft_magouilles_v2(char *str1, char *str2, char *str3);
 int					copy_string(char *dest, char *src, int v);
 
+//! -------------------------- EXEC ------------------------
+
+t_cmd 	*token_to_cmd(t_token *list);
+void 	print_cmd(t_cmd *list);
 
 //! --------------------------------------------------------
 
