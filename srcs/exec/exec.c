@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/28 19:43:41 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/28 19:46:44 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,10 +234,13 @@ int *is_input_heredoc(t_token *list, t_cmd *cmdlist)
         if (tmp->type == INPUT)
         {
             if (cmdlist->infile >= 0)
-                close
+                close(cmdlist->infile);
+            cmdlist->infile = open(tmp->token, O_RDONLY);
         }
         if (tmp->type == HEREDOC)
         {
+            if (cmdlist->infile >= 0)
+                close(cmdlist->infile);
             
         }
         tmp = tmp->next;
