@@ -25,16 +25,13 @@ Go to the project directory
 
 ```bash
   cd Minishell
-```
-Make le Minishell
-```bash
   Make
 ```
-Lancer le Minishell
+Start the Minishell
 ```bash
   ./Minishell
 ```
-Lancer le Minishell
+After Minishell started
 ```bash
   Vos commandes juste ici :)
 ```
