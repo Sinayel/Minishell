@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/28 17:25:27 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/28 19:41:10 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,17 +129,134 @@ t_cmd *token_to_cmd(t_token *list)
     return (cmd_head);
 }
 
-int exec_not_builtin(t_cmd *list)
+char **lst_to_tabtab(t_env *envlist)
+{
+    char **tabtab;
+    t_env *tmp;
+    int i;
+
+    i = 0;
+    tmp = envlist;
+    if (!tmp)
+        return (NULL);
+    tabtab = (char **)malloc(sizeof(char *) * (cmb_env(tmp) + 1));
+    if (!tabtab)
+        return (NULL);
+    while (tmp)
+    {
+        tabtab[i] = ft_magouilles(tmp->name, "=", tmp->value);
+        tmp = tmp->next;
+        i++;
+    }
+    tabtab[i] = NULL;
+    return (tabtab);
+}
+
+
+bool	checkpath(t_path *pathlist, char *cmd, char **path)
+{
+	int		is_ok;
+
+	while (pathlist)
+	{
+		*path = ft_magouilles(pathlist->name, "/", cmd);
+		is_ok = access(*path, X_OK | X_OK | X_OK);
+		if (is_ok == 0)
+		{
+			return (true);
+		}
+		pathlist = pathlist->next;
+	}
+	return (false);
+}
+
+void parent_process()
+{
+    int status;
+    wait(&status);
+    if (WIFEXITED(status))
+        return (WEXITSTATUS(status));
+    return (1);
+}
+
+void child_process(t_cmd *list, t_env *envlist, int *pipfd, t_path *pathlist)
+{
+    char *path;
+    char **tabtab;
+    path = NULL;
+    if (check_path(pathlist, list->cmd_arg[0], &path))
+    {
+        tabtab = lst_to_tabtab(envlist);
+        execve(path, list->cmd_arg, tabtab);
+        free(tabtab);
+    }
+    if (path)
+        free(path);
+    ft_exit(NULL, envlist, pathlist);
+}
+
+int exec_not_builtin(t_cmd *list, t_env *envlist, int *pipfd, t_path *pathlist)
 {
     t_cmd *tmp;
+    int pipfd[2];
+    pid_t pid;
 
     tmp = list;
+    pipfd[0] = 0;
+    pipfd[1] = 0;
     while (tmp)
     {
         if (is_builtin(tmp->cmd_arg[0]) == false)
         {
-            
+            pid = fork();
+            if (pid < 0)
+            {
+                perror("fork");
+                return (1);
+            }
+            else if (!pid)
+                child_process(tmp, envlist, pipfd, pathlist);
+            else
+                parent_process();
         }
     }
 }
 
+int *is_input_heredoc(t_token *list, t_cmd *cmdlist, int *pipfd)
+{
+    t_token *tmp;
+    int i;
+
+    i = 0;
+    tmp = list;
+    while (tmp)
+    {
+        if (tmp->type == INPUT)
+        {
+            
+        }
+        if (tmp->type == HEREDOC)
+        {
+            
+        }
+        tmp = tmp->next;
+    }
+    return (NULL);
+}
+
+int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
+{
+    t_cmd *cmdlist;
+    int pipfd[2];
+    
+    pipfd[0] = 0;
+    pipfd[1] = 0;
+    cmdlist = token_to_cmd(list);
+    is_input_heredoc(list , cmdlist, pipfd);
+    if (!cmdlist)
+        return (1);
+    if (!is_builtin(cmdlist->cmd_arg[0]))
+        return (exec_not_builtin(cmdlist, envlist, pipfd, pathlist));
+    else
+        return (cmd(cmdlist->cmd_arg[0], list, envlist, pathlist));
+}
