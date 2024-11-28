@@ -6,13 +6,13 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 13:45:54 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/28 16:49:27 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
 
-//! ◦ PIPEX									   |  (JULIO)  X
+//! ◦ PIPEX										|  (JULIO)  X
 //! ◦ UNSET with no options                    |  (JULIO)  X
 //! ◦ EXPORT with no options                   |  (JULIO)  X
 //! ◦ CD with only a relative or absolute path |  (JULIO) [V]
@@ -20,12 +20,12 @@
 //! ◦ ENV with no options or arguments         |  (JULIO) [V]
 //! ◦ EXIT                                     |  (YANS)  [V]
 //! ◦ ECHO                                     |  (YANS)  [V]
-//! ◦ PID									   |  (YANS)  [V]
+//! ◦ PID										|  (YANS)  [V]
 //! ◦ PARSING (99% du projet)                  |  (YANS)  [V]
 
 void	signal_handler(int signum)
 {
-	t_data *data;
+	t_data	*data;
 
 	data = get_data();
 	if (signum == SIGINT)
@@ -48,8 +48,8 @@ t_data	*get_data(void)
 
 void	init_variable(int argc, char **argv, t_env *env)
 {
-	t_data	*data;
-	t_export* export;
+	t_data		*data;
+	t_export	*export;
 
 	export = get_export();
 	init_export(export, env);
@@ -64,17 +64,18 @@ void	init_variable(int argc, char **argv, t_env *env)
 
 bool	exit_shell(t_data *data, t_env *env, t_token *list)
 {
+	t_export	*export;
+
 	if (!data->input)
 	{
 		printf("exit\n");
 		free(data->input);
-		t_export *export;
 		export = get_export();
-		if(export && export->content)
+		if (export && export->content)
 			free_tabtab(export->content);
 		ft_token_lstclear(&list);
 		ft_env_lstclear(&env);
-    	exit(0);
+		exit(0);
 		return (false);
 	}
 	return (true);
@@ -96,17 +97,13 @@ int	main(int argc, char *argv[], char **env)
 		if (!exit_shell(data, env_list, list))
 			break ;
 		list = tokenization(data->input, env_list);
-		if(list)
+		if (list)
 			add_history(data->input);
 		if (list)
 			parsing_exec(list, env_list, data);
-		// print_list(list);
 		ft_token_lstclear(&list);
-		if(data->input)
-		{
+		if (data->input)
 			free(data->input);
-			data->input = NULL;
-		}
 	}
 	return (0);
 }

@@ -23,10 +23,10 @@ t_path	*return_path(t_env *env)
 	i = 0;
 	tmp = return_env_value(env, "PATH");
 	path_breaker = ft_split_for_path(tmp, ':');
-	if(!path_breaker)
+	if (!path_breaker)
 	{
 		free(tmp);
-		return NULL;
+		return (NULL);
 	}
 	while (path_breaker[i])
 	{
@@ -38,9 +38,10 @@ t_path	*return_path(t_env *env)
 	return (path);
 }
 
-void errno_check(char *token)
+void	errno_check(char *token)
 {
-	t_data *data;
+	t_data	*data;
+
 	data = get_data();
 	if (errno == EACCES)
 	{
@@ -74,7 +75,6 @@ int	double_check(t_path *path, t_token *tmp)
 		is_ok = access(word, X_OK | X_OK | X_OK);
 		if (is_ok == 0)
 		{
-			
 			free(word);
 			return (0);
 		}

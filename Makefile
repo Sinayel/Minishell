@@ -20,6 +20,8 @@ DOLLAR_SRC =  srcs/parsing/dollar/pid.c \
 
 PARSING_SRC = srcs/parsing/token/id_token.c \
 			  srcs/parsing/token/tokenization.c \
+			  srcs/parsing/token/return_quoted_value.c \
+			  srcs/parsing/token/check_tokenization.c \
 			  srcs/parsing/check.c \
 			  srcs/parsing/path.c \
 			  srcs/parsing/parsing.c
@@ -33,6 +35,7 @@ BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/cd/option_cd.c \
 			  srcs/builtins/unset/unset.c \
 			  srcs/builtins/unset/utils_unset.c \
+			  srcs/builtins/unset/for_unset.c \
 			  srcs/builtins/export/export.c \
 			  srcs/builtins/export/print_export.c \
 			  srcs/builtins/export/replace_env.c \
@@ -42,14 +45,18 @@ BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/export/copy_to_export.c \
 			  srcs/builtins/export/env_to_export.c \
 			  srcs/builtins/export/export_create.c \
+			  srcs/error/ft_exit.c \
 
 UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/free.c \
 			srcs/utils/utils_dollar.c \
 			srcs/utils/for_list.c \
 			srcs/utils/utils_token.c \
+			srcs/utils/utils_token2.c \
+			srcs/utils/ft_exit_utils.c \
 			srcs/utils/ft_split.c \
 			srcs/utils/ft_strtol.c \
+			srcs/utils/ft_strtol_utils.c \
 			srcs/error/msg.c \
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC) $(DOLLAR_SRC)

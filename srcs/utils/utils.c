@@ -19,13 +19,13 @@ void	free_export(t_export *export)
 	free(export);
 }
 
-void free_tabtab(char **tab)
+void	free_tabtab(char **tab)
 {
 	int	i;
 
 	i = 0;
 	if (!tab)
-		return;
+		return ;
 	while (tab[i] != NULL)
 	{
 		free(tab[i]);
@@ -85,4 +85,3 @@ void	print_list(t_token *list)
 	}
 	printf("NULL\n");
 }
-

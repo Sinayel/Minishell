@@ -28,25 +28,23 @@ void	ft_token_lstclear(t_token **lst)
 	*lst = NULL;
 }
 
-void ft_env_lstclear(t_env **lst)
+void	ft_env_lstclear(t_env **lst)
 {
-    t_env *tmp;
+	t_env	*tmp;
 
-    if (!lst || !*lst)
-        return;
-
-    while (*lst)
-    {
-        tmp = (*lst)->next;
-        if ((*lst)->name)
-            free((*lst)->name);
-        if ((*lst)->value)
-            free((*lst)->value);
-
-        free(*lst);
-        *lst = tmp;
-    }
-    *lst = NULL;
+	if (!lst || !*lst)
+		return ;
+	while (*lst)
+	{
+		tmp = (*lst)->next;
+		if ((*lst)->name)
+			free((*lst)->name);
+		if ((*lst)->value)
+			free((*lst)->value);
+		free(*lst);
+		*lst = tmp;
+	}
+	*lst = NULL;
 }
 
 t_path	*add_env(t_path *list, char *value)

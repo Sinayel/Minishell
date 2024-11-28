@@ -22,12 +22,12 @@ bool	is_separator(char c)
 	return (c == '<' || c == '>' || c == '|');
 }
 
-bool is_redirection(char *c)
+bool	is_redirection(char *c)
 {
-    if (ft_strcmp(c, ">") == 0 || ft_strcmp(c, "<") == 0 ||
-        ft_strcmp(c, ">>") == 0 || ft_strcmp(c, "<<") == 0)
-        return true;
-    return false;
+	if (ft_strcmp(c, ">") == 0 || ft_strcmp(c, "<") == 0 || ft_strcmp(c,
+			">>") == 0 || ft_strcmp(c, "<<") == 0)
+		return (true);
+	return (false);
 }
 
 int	ft_isspace(int c)

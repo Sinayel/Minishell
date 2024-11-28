@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/18 18:59:30 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/28 15:53:38 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,66 +31,72 @@ int	ft_strlen_dollar(char *str)
 
 bool	verif_token(char c)
 {
-	return (((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95) && c != 32);
+	return (((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 95)
+		&& c != 32);
 }
 
-int len_for_tmp(char *str)
+int	len_for_tmp(char *str)
 {
-	int i = 0;
-	int j = 0;
-	while(str[i])
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	while (str[i])
 	{
-		while(str[i] && str[i] != '$')
+		while (str[i] && str[i] != '$')
 			i++;
-		if(str[i] == '$')
+		if (str[i] == '$')
 		{
 			i++;
-			while(str[i] && str[i] != '$' && verif_token(str[i]))
+			while (str[i] && str[i] != '$' && verif_token(str[i]))
 			{
 				i++;
 				j++;
 			}
 		}
 	}
-	return j;
+	return (j);
 }
 
-void code(char *str, t_dollar *var, t_env *env, char *tmp)
+void	code(char *str, t_dollar *var, t_env *env, char *tmp)
 {
-	if ((str[var->i] == '\"' && str[var->i+1] == '\'') || (str[var->i] == '\''))
-        return_quote(str, var);
+	if ((str[var->i] == '\"' && str[var->i + 1] == '\'')
+		|| (str[var->i] == '\''))
+		return_quote(str, var);
 	else if (var->in_single_quotes)
 		var->finale[var->y++] = str[var->i++];
 	else if (str[var->i] == '$' && verif_token(str[var->i + 1]))
 		env_return_value(str, var, env, tmp);
-	else if(str[var->i])
+	else if (str[var->i])
 		var->finale[var->y++] = str[var->i++];
 }
 
-char *proccess_dollar_value(char *str, t_env *env)
+char	*proccess_dollar_value(char *str, t_env *env)
 {
-	t_dollar *var = (t_dollar *)malloc(sizeof(t_dollar));
-	if(!var)
-		return NULL;
+	t_dollar	*var;
+	char		*tmp;
+	char		*result;
+
+	var = (t_dollar *)malloc(sizeof(t_dollar));
+	if (!var)
+		return (NULL);
 	init_dollar_var(var, env, str);
-	char *tmp;
 	tmp = (char *)malloc(sizeof(char) * (var->len_tmp + 1));
-	if(tmp)
+	if (tmp)
 		memset(tmp, '\0', var->len_tmp + 1);
-    while (str[var->i])
-	{
-        code(str, var, env, tmp);
-	}
+	while (str[var->i])
+		code(str, var, env, tmp);
 	var->y = 0;
-	while(var->finale[var->y] == ' ')
+	while (var->finale[var->y] == ' ')
 		var->y++;
-	if(var->tmp_y == var->y)
-		return free_dollar(var, tmp);
+	if (var->tmp_y == var->y)
+		return (free_dollar(var, tmp));
 	var->y = var->tmp_y;
 	free(tmp);
 	var->finale[var->y] = '\0';
-	char *result = ft_strdup(var->finale);
+	result = ft_strdup(var->finale);
 	free(var->finale);
 	free(var);
-	return result;
+	return (result);
 }
