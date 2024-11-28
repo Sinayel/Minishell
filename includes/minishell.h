@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 18:03:21 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/28 13:37:08 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ t_token				*id_token(t_token *list);
 int					openquote(char *line);
 
 // TODO -------------------  Parsing  ----------------------
-int					parsing(t_token *list, t_env *env, t_data *data);
+int					parsing_exec(t_token *list, t_env *env, t_data *data);
 
 // Check dollar
 char 				*proccess_dollar_value(char *str, t_env *env);
@@ -122,7 +122,7 @@ int 				for_trunc_and_heredoc(t_token *tmp);
 int 				return_next_next(t_token *tmp);
 
 //	Path
-int double_check(t_path *path, t_token *tmp);
+int 				double_check(t_path *path, t_token *tmp);
 t_path				*return_path(t_env *env);
 void 				ft_free_path(t_path *path);
 
@@ -150,6 +150,7 @@ int					option_for_cd_(char *input, t_data *data, t_env *env_list, char *path);
 void				ch_pwd(t_env **env_list);
 
 //* -----------------------  Exit  ------------------------		// (YANS)
+int					ft_exit(t_token *list, t_env *env, t_path *path);
 bool 				is_valid_number(const char *str);
 
 //* -----------------------  Echo  ------------------------		// (YANS)
@@ -178,6 +179,31 @@ char 				**append_to_export(char **env_export, char *arg);
 int 				verif_if_in_export(char **export, char *arg);
 void 				export_to_env(t_env **env_list, char **arg);
 void				init_export(t_export *export_list, t_env *envlist);
+void				handle_valid_argument(t_env *env_list, t_export *export, char *arg, char *env_value);
+void				handle_invalid_identifier(t_data *data, char *arg);
+void				process_arguments(t_env *env_list, t_export *export, t_data *data, char **arg_tabtab);
+char				**split_arguments(char *arg);
+int					should_append_to_export(t_export *export, char *arg, char *env_value);
+void				process_existing_export(t_env *env_list, t_export *export, char *env_value, char **split_arg);
+void				process_new_export(t_env *env_list, t_export *export, char *arg, char **split_arg);
+int					check_export(char **export, char **split_arg, char *arg);
+int					compare_export(char *sous_str, char **split_arg, char *arg);
+char				*extract_prefix(char *export_line);
+int					contains_equal(char *arg);
+char				*pipeline_to_env_value(t_env *envlist, char *name);
+void				printf_export(char **env_export);
+void				print_all_exports(char **env_export);
+char				**copy_env_export(char **env_export, int new_size);
+char				**add_to_env(char **temp, char *arg, int current_size);
+void				print_export_line(char *env_entry);
+char				**env_to_export(t_env *env_list);
+int					check_equal_arg(char *arg);
+char				**replace_export(char **env_export, char **split_arg);
+int					get_tab_size(char **tab);
+int					cmb_env(t_env *envlist);
+char				*ft_magouilles_v2(char *str1, char *str2, char *str3);
+int					copy_string(char *dest, char *src, int v);
+
 
 //! --------------------------------------------------------
 
@@ -196,7 +222,6 @@ char				*proccess_error(char *str, t_data *data);
 t_data				*get_data(void);
 void				skip_spaces(char *str, int *i);
 int					ft_strcmp(char *s1, char *s2);
-int					ft_exit(t_token *list, t_data *data, t_env *env, t_path *path);
 
 // Is ...
 bool				is_separator(char c);

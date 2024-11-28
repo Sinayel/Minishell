@@ -31,9 +31,17 @@ BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/cd/cd.c \
 			  srcs/builtins/cd/pwd_option.c \
 			  srcs/builtins/cd/option_cd.c \
-			  srcs/builtins/export/export.c \
 			  srcs/builtins/unset/unset.c \
 			  srcs/builtins/unset/utils_unset.c \
+			  srcs/builtins/export/export.c \
+			  srcs/builtins/export/print_export.c \
+			  srcs/builtins/export/replace_env.c \
+			  srcs/builtins/export/verif_if_export.c \
+			  srcs/builtins/export/big_export.c \
+			  srcs/builtins/export/big_big_export.c \
+			  srcs/builtins/export/copy_to_export.c \
+			  srcs/builtins/export/env_to_export.c \
+			  srcs/builtins/export/export_create.c \
 
 UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/free.c \

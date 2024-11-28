@@ -6,13 +6,13 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 18:01:49 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/28 13:49:37 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
+int	cmd(char *str, t_token *list, t_env *env, t_path *path)
 {
 	if (ft_strcmp(str, "cd") == 0)
 		return (ft_arg_cd(env, list));
@@ -25,7 +25,7 @@ int	cmd(char *str, t_token *list, t_env *env, t_data *data, t_path *path)
 	if (ft_strcmp(str, "echo") == 0)
 		return (echo(list));
 	if (ft_strcmp(str, "exit") == 0)
-		return (ft_exit(list, data, env, path));
+		return (ft_exit(list, env, path));
 	if (ft_strcmp(str, "export") == 0)
 		return (ft_arg_export(env, list));
 	return 1;
@@ -60,12 +60,13 @@ int	check_cmd(t_token *list, t_env *env, t_data *data)
 {
 	t_token	*tmp;
 	t_path	*path;
+	(void)data;
 
 	path = return_path(env);
 	tmp = list;
 	while (tmp)
 	{
-		if (tmp->type == CMD && cmd(tmp->token, tmp, env, data, path) == 1)
+		if (tmp->type == CMD && cmd(tmp->token, tmp, env, path) == 1)
 		{
 			if (double_check(path, tmp) == 1)
 			{
@@ -73,6 +74,7 @@ int	check_cmd(t_token *list, t_env *env, t_data *data)
 					ft_free_path(path);
 				return (1);
 			}
+			// Execute cmd path here
 			printf("Ok\n");
 		}
 		tmp = tmp->next;
@@ -108,7 +110,7 @@ int	check_pipe(t_token *list)
 	return (0);
 }
 
-int	parsing(t_token *list, t_env *env, t_data *data)
+int	parsing_exec(t_token *list, t_env *env, t_data *data)
 {
 	if (check_pipe(list) != 0)
 	{
@@ -128,5 +130,7 @@ int	parsing(t_token *list, t_env *env, t_data *data)
 		ft_putstr_fd("command not found\n", 2);
 		return (1);
 	}
+	else
+		data->error = 0;
 	return (0);
 }

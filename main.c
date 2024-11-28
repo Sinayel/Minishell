@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/26 19:18:44 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/28 13:45:54 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,12 @@
 
 void	signal_handler(int signum)
 {
+	t_data *data;
+
+	data = get_data();
 	if (signum == SIGINT)
 	{
+		data->error = 130;
 		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
@@ -76,14 +80,6 @@ bool	exit_shell(t_data *data, t_env *env, t_token *list)
 	return (true);
 }
 
-void cleanup(t_data *data, t_env *env_list)
-{
-    if (data->input)
-        free(data->input);
-    ft_env_lstclear(&env_list);
-    free(data); // Si data est alloué dynamiquement
-}
-
 int	main(int argc, char *argv[], char **env)
 {
 	t_token	*list;
@@ -100,10 +96,10 @@ int	main(int argc, char *argv[], char **env)
 		if (!exit_shell(data, env_list, list))
 			break ;
 		list = tokenization(data->input, env_list);
-		if(data->input)
+		if(list)
 			add_history(data->input);
 		if (list)
-			parsing(list, env_list, data);
+			parsing_exec(list, env_list, data);
 		// print_list(list);
 		ft_token_lstclear(&list);
 		if(data->input)
