@@ -10,9 +10,9 @@
 
 - Le [Google Sheet](https://docs.google.com/spreadsheets/d/1QsZmv_vq9QS7y6fVjXfKjz_Bq-JOCnArwBV5uhL4hLk/edit?gid=0#gid=0) du Minishell
 
-- Faire le parsing [X]
-
-- Faire les exec [X]
+- Faire le Parsing [Y]
+- Faire les Builtins [Y]
+- Faire les Execs [Y]
 ## Run Locally
 
 Clone the project
