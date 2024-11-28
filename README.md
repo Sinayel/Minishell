@@ -6,7 +6,6 @@
 - [42 Doc](https://harm-smits.github.io/42docs/projects/minishell)
 - [Writing ur own shell](https://www.cs.purdue.edu/homes/grr/SystemsProgrammingBook/Book/Chapter5-WritingYourOwnShell.pdf)
 - [Commands Shell](https://pubs.opengroup.org/onlinepubs/009695399/utilities/xcu_chap02.html)
-- [Fonction Guide](https://42-cursus.gitbook.io/guide/rank-03/minishell/functions)
 ## Roadmap
 
 - Le [Google Sheet](https://docs.google.com/spreadsheets/d/1QsZmv_vq9QS7y6fVjXfKjz_Bq-JOCnArwBV5uhL4hLk/edit?gid=0#gid=0) du Minishell
@@ -33,9 +32,12 @@ Make le Minishell
 ```
 Lancer le Minishell
 ```bash
-  ./Minishell [instruction]
+  ./Minishell
 ```
-![img](https://i.imgur.com/Ki3iNMf.gif)
+Lancer le Minishell
+```bash
+  Vos commandes juste ici :)
+```
 
 
 ## Authors
