@@ -30,10 +30,7 @@ Go to the project directory
 Start the Minishell
 ```bash
   ./Minishell
-```
-After Minishell started
-```bash
-  Vos commandes juste ici :)
+  minishell> Command here
 ```
 
 
