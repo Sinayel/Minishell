@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 13:37:08 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/28 14:11:34 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,13 @@ typedef struct s_token
 	struct s_token	*prev;
 }				   t_token;
 
+typedef struct s_cmd
+{
+	char **cmd_arg;
+	int infile;
+	int outfile;
+	struct s_cmd *next;
+}			t_cmd;
 
 typedef struct s_data
 {
