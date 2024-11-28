@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/28 19:41:10 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/28 19:43:41 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,7 @@ int exec_not_builtin(t_cmd *list, t_env *envlist, int *pipfd, t_path *pathlist)
     }
 }
 
-int *is_input_heredoc(t_token *list, t_cmd *cmdlist, int *pipfd)
+int *is_input_heredoc(t_token *list, t_cmd *cmdlist)
 {
     t_token *tmp;
     int i;
@@ -233,7 +233,8 @@ int *is_input_heredoc(t_token *list, t_cmd *cmdlist, int *pipfd)
     {
         if (tmp->type == INPUT)
         {
-            
+            if (cmdlist->infile >= 0)
+                close
         }
         if (tmp->type == HEREDOC)
         {
@@ -252,7 +253,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     pipfd[0] = 0;
     pipfd[1] = 0;
     cmdlist = token_to_cmd(list);
-    is_input_heredoc(list , cmdlist, pipfd);
+    is_input_heredoc(list , cmdlist);
     if (!cmdlist)
         return (1);
     if (!is_builtin(cmdlist->cmd_arg[0]))
