@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/29 16:21:49 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/29 19:22:56 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ int 				for_trunc_and_heredoc(t_token *tmp);
 int 				return_next_next(t_token *tmp);
 
 //	Path
-int 				double_check(t_path *path, t_token *tmp);
+int 				double_check(t_path *path, t_token *tmp, char *input);
 t_path				*return_path(t_env *env);
 void 				ft_free_path(t_path *path);
 
@@ -213,8 +213,12 @@ int					copy_string(char *dest, char *src, int v);
 
 //! -------------------------- EXEC ------------------------
 
-t_cmd 	*token_to_cmd(t_token *list);
-void 	print_cmd(t_cmd *list);
+int					cmd(char *str, t_token *list, t_env *env, t_path *path);
+t_cmd 				*token_to_cmd(t_token *list);
+void 				print_cmd(t_cmd *list);
+int 				ft_exec(t_token *list, t_env *envlist, t_path *pathlist);
+void				free_cmd(t_cmd **list);
+bool 				is_builtin(char *str);
 
 //! --------------------------------------------------------
 

@@ -6,11 +6,27 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/29 16:43:32 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/29 19:37:39 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void free_cmd(t_cmd **list)
+{
+    t_cmd *tmp;
+    t_cmd *next;
+
+    tmp = *list;
+    while (tmp)
+    {
+        next = tmp->next;
+        free_tabtab(tmp->cmd_arg);
+        free(tmp);
+        tmp = next;
+    }
+    *list = NULL;
+}
 
 int len_cmdblocks(t_token *list)
 {
@@ -43,7 +59,7 @@ int len_in_block(t_token *list)
 
 bool is_builtin(char *str)
 {
-    if (ft_strcmp(str, "cd") || ft_strcmp(str, "pwd") == 0 || ft_strcmp(str, "unset") == 0 || ft_strcmp(str, "env") == 0 || ft_strcmp(str, "echo") == 0 || ft_strcmp(str, "exit") == 0 || ft_strcmp(str, "export") == 0)
+    if (ft_strcmp(str, "cd") == 0|| ft_strcmp(str, "pwd") == 0 || ft_strcmp(str, "unset") == 0 || ft_strcmp(str, "env") == 0 || ft_strcmp(str, "echo") == 0 || ft_strcmp(str, "exit") == 0 || ft_strcmp(str, "export") == 0)
 		return true;
     return false;
 }
@@ -73,6 +89,7 @@ t_cmd *token_to_cmd(t_token *list)
     t_token *tmp = list;
     t_cmd *cmd_head = NULL;
     t_cmd *cmd_tail = NULL;
+    t_cmd *new_cmd;
     int i;
 
     while (tmp)
@@ -80,22 +97,17 @@ t_cmd *token_to_cmd(t_token *list)
         if (tmp->type == CMD)
         {
             // Création d'un nouveau nœud de commande
-            t_cmd *new_cmd = malloc(sizeof(t_cmd));
+            new_cmd = malloc(sizeof(t_cmd));
             if (!new_cmd)
                 return (NULL); // Gestion des erreurs d'allocation mémoire
             new_cmd->next = NULL;
-
-            // Comptage des arguments nécessaires
-            int arg_count = len_in_block(tmp);
-
             // Allocation pour les arguments (commande incluse)
-            new_cmd->cmd_arg = malloc(sizeof(char *) * (arg_count + 1));
+            new_cmd->cmd_arg = malloc(sizeof(char *) * (len_in_block(tmp) + 1));
             if (!new_cmd->cmd_arg)
             {
                 free(new_cmd);
                 return (NULL);
             }
-
             // Copie de la commande et des arguments
             i = 0;
             while (tmp && (tmp->type == CMD || tmp->type == ARG))
@@ -114,7 +126,6 @@ t_cmd *token_to_cmd(t_token *list)
                 i++;
             }
             new_cmd->cmd_arg[i] = NULL;
-
             // Ajout à la liste chaînée des commandes
             if (!cmd_head)
                 cmd_head = new_cmd;
@@ -125,7 +136,6 @@ t_cmd *token_to_cmd(t_token *list)
         else
             tmp = tmp->next;
     }
-
     return (cmd_head);
 }
 
@@ -152,17 +162,24 @@ char **lst_to_tabtab(t_env *envlist)
     return (tabtab);
 }
 
-
 bool	checkpath(t_path *pathlist, char *cmd, char **path)
 {
 	int		is_ok;
+    int     if_is_ok;
 
 	while (pathlist)
 	{
 		*path = ft_magouilles(pathlist->name, "/", cmd);
-		is_ok = access(*path, X_OK | X_OK | X_OK);
+        if_is_ok = access(cmd, X_OK);
+        if (if_is_ok == 0)
+        {
+            *path = ft_strdup(cmd);
+            return (true);
+        }
+		is_ok = access(*path, X_OK);
 		if (is_ok == 0)
 		{
+            printf("path = %s\n", *path);
 			return (true);
 		}
 		pathlist = pathlist->next;
@@ -170,40 +187,43 @@ bool	checkpath(t_path *pathlist, char *cmd, char **path)
 	return (false);
 }
 
-void parent_process()
+int parent_process()
 {
     int status;
+    int ret;
+
+    ret = 0;
     wait(&status);
     if (WIFEXITED(status))
-        return (WEXITSTATUS(status));
-    return (1);
+        ret = WEXITSTATUS(status);
+    return (ret);
 }
 
-void child_process(t_cmd *list, t_env *envlist, int *pipfd, t_path *pathlist)
+void child_process(t_cmd *list, t_env *envlist, t_path *pathlist)
 {
     char *path;
     char **tabtab;
+
     path = NULL;
-    if (check_path(pathlist, list->cmd_arg[0], &path))
+    if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
         tabtab = lst_to_tabtab(envlist);
         execve(path, list->cmd_arg, tabtab);
-        free(tabtab);
+        free_tabtab(tabtab);
+        ft_exit(NULL, envlist, pathlist);
     }
     if (path)
         free(path);
+    signal(SIGINT, SIG_DFL);
     ft_exit(NULL, envlist, pathlist);
 }
 
 int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist)
 {
     t_cmd *tmp;
-    int pipfd[2];
     pid_t pid;
 
     tmp = list;
-    pipfd[0] = 0;
-    pipfd[1] = 0;
     while (tmp)
     {
         if (is_builtin(tmp->cmd_arg[0]) == false)
@@ -215,11 +235,13 @@ int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist)
                 return (1);
             }
             else if (!pid)
-                child_process(tmp, envlist, pipfd, pathlist);
+                child_process(tmp, envlist, pathlist);
             else
                 parent_process();
+            tmp = tmp->next;
         }
     }
+    return (0);
 }
 
 int heredoc_handler(char *str, t_env *envlist, int fd)
@@ -269,44 +291,74 @@ int here_doc(t_env *envlist, char *str)
 int is_redir_heredoc(t_token *list, t_cmd *cmdlist, t_env *envlist)
 {
     t_token *tmp;
-    int i;
-    int fd;
 
-    i = 0;
     tmp = list;
-    fd = 0;
     while (tmp) //! faudrait ptet parcourir t_cmd plutot que t_token
     {
         if (tmp->type == INPUT)
         {
             if (cmdlist->infile >= 0)
                 close(cmdlist->infile);
-            fd = open(tmp->next->token, O_RDONLY);
+            cmdlist->infile = open(tmp->next->token, O_RDONLY);
         }
         if (tmp->type == HEREDOC) //* ce serait coolos si ca checkait aussi TRUNC ou APPEND
         {
             if (cmdlist->infile >= 0)
                 close(cmdlist->infile);
-            fd = here_doc(envlist, tmp->next->token);
+            cmdlist->infile = here_doc(envlist, tmp->next->token);
+        }
+        if (tmp->type == TRUNC)
+        {
+            if (cmdlist->outfile >= 0)
+                close(cmdlist->outfile);
+            cmdlist->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_TRUNC, 0644);
+        }
+        if (tmp->type == APPEND)
+        {
+            if (cmdlist->outfile >= 0)
+                close(cmdlist->outfile);
+            cmdlist->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_APPEND, 0644);
         }
         tmp = tmp->next;
     }
-    return (fd);
+    return (0);
+}
+
+int launch_builtin(t_token *list, t_env *envlist, t_path *path)
+{
+    t_token *tmp;
+
+    tmp = list;
+    while (tmp)
+    {
+        if (tmp->type == CMD)
+            cmd(tmp->token, tmp, envlist, path);
+        tmp = tmp->next;
+    }
+    // if (path)
+    //     ft_free_path(path);
+    return (0); 
 }
 
 int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
 {
     t_cmd *cmdlist;
-    int pipfd[2];
-    
-    pipfd[0] = 0;
-    pipfd[1] = 0;
+
     cmdlist = token_to_cmd(list);
     is_redir_heredoc(list , cmdlist, envlist);
     if (!cmdlist)
         return (1);
     if (!is_builtin(cmdlist->cmd_arg[0]))
-        return (exec_not_builtin(cmdlist, envlist, pathlist));
+    {
+        printf("not builtin\n");
+        exec_not_builtin(cmdlist, envlist, pathlist);
+        free_cmd(&cmdlist);
+    }
     else
-        return (cmd(cmdlist->cmd_arg[0], list, envlist, pathlist));
+    {
+        printf("builtin\n");
+        free_cmd(&cmdlist);
+        launch_builtin(list, envlist, pathlist);
+    }
+    return (0);
 }

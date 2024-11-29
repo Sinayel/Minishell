@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 13:49:37 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/29 19:32:11 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,19 @@ int	check_cmd(t_token *list, t_env *env, t_data *data)
 	tmp = list;
 	while (tmp)
 	{
-		if (tmp->type == CMD && cmd(tmp->token, tmp, env, path) == 1)
+		if (tmp->type == CMD) //! && cmd(tmp->token, tmp, env, path) == 1
 		{
-			if (double_check(path, tmp) == 1)
-			{
-				if (path)
-					ft_free_path(path);
-				return (1);
-			}
+			// if (double_check(path, tmp, tmp->token) == 1)
+			// {
+			// 	if (path)
+			// 		ft_free_path(path);
+			// 	return (1);
+			// }
 			// Execute cmd path here
 			printf("Ok\n");
+			ft_exec(tmp, env, path);
+			// if (path)
+		 	// 	ft_free_path(path);
 		}
 		tmp = tmp->next;
 	}
