@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/28 19:46:44 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/29 16:34:03 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ void child_process(t_cmd *list, t_env *envlist, int *pipfd, t_path *pathlist)
     ft_exit(NULL, envlist, pathlist);
 }
 
-int exec_not_builtin(t_cmd *list, t_env *envlist, int *pipfd, t_path *pathlist)
+int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist)
 {
     t_cmd *tmp;
     int pipfd[2];
@@ -222,7 +222,51 @@ int exec_not_builtin(t_cmd *list, t_env *envlist, int *pipfd, t_path *pathlist)
     }
 }
 
-int *is_input_heredoc(t_token *list, t_cmd *cmdlist)
+int heredoc_handler(char *str, t_env *envlist, int fd)
+{
+    char *line;
+
+    while (1)
+    {
+        line = readline(">");
+        if (!line)
+        {
+            write(2, "bash :warning: here-document delimited by end-of-file (wanted `", 61);
+            write(2, str, ft_strlen(str));
+            write(2, "`)\n", 3);
+            break;
+        }
+        if (ft_strcmp(line, str) == 0)
+            break;
+        line = proccess_dollar_value(line, envlist);
+        write(fd, line, ft_strlen(line));
+        write(fd, "\n", 1);
+        free(line);
+    }
+    free(line);
+    close(fd);
+    return (0);
+}
+
+int here_doc(t_env *envlist, char *str)
+{
+    int fd;
+
+    fd = open(".tmp_heredoc", O_CREAT | O_RDWR | O_TRUNC, 0644);
+    if (fd < 0)
+        return (-1);
+    if (!heredoc_handler(str, envlist, fd))
+    {
+        unlink(".tmp_heredoc");
+        return (-1);
+    }
+    fd = open(".tmp_heredoc", O_RDONLY);
+    if (fd > 0)
+        unlink(".tmp_heredoc");
+    return (fd);
+}
+
+int *is_input_heredoc(t_token *list, t_cmd *cmdlist, t_env *envlist)
 {
     t_token *tmp;
     int i;
@@ -235,13 +279,11 @@ int *is_input_heredoc(t_token *list, t_cmd *cmdlist)
         {
             if (cmdlist->infile >= 0)
                 close(cmdlist->infile);
-            cmdlist->infile = open(tmp->token, O_RDONLY);
+            cmdlist->infile = open(tmp->next->token, O_RDONLY);
         }
         if (tmp->type == HEREDOC)
         {
-            if (cmdlist->infile >= 0)
-                close(cmdlist->infile);
-            
+            here_doc(envlist, tmp->next->token);
         }
         tmp = tmp->next;
     }
@@ -256,11 +298,11 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     pipfd[0] = 0;
     pipfd[1] = 0;
     cmdlist = token_to_cmd(list);
-    is_input_heredoc(list , cmdlist);
+    is_input_heredoc(list , cmdlist, envlist);
     if (!cmdlist)
         return (1);
     if (!is_builtin(cmdlist->cmd_arg[0]))
-        return (exec_not_builtin(cmdlist, envlist, pipfd, pathlist));
+        return (exec_not_builtin(cmdlist, envlist, pathlist));
     else
         return (cmd(cmdlist->cmd_arg[0], list, envlist, pathlist));
 }
