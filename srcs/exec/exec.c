@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/29 16:34:03 by judenis          ###   ########.fr       */
+/*   Updated: 2024/11/29 16:43:32 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,28 +266,32 @@ int here_doc(t_env *envlist, char *str)
     return (fd);
 }
 
-int *is_input_heredoc(t_token *list, t_cmd *cmdlist, t_env *envlist)
+int is_redir_heredoc(t_token *list, t_cmd *cmdlist, t_env *envlist)
 {
     t_token *tmp;
     int i;
+    int fd;
 
     i = 0;
     tmp = list;
-    while (tmp)
+    fd = 0;
+    while (tmp) //! faudrait ptet parcourir t_cmd plutot que t_token
     {
         if (tmp->type == INPUT)
         {
             if (cmdlist->infile >= 0)
                 close(cmdlist->infile);
-            cmdlist->infile = open(tmp->next->token, O_RDONLY);
+            fd = open(tmp->next->token, O_RDONLY);
         }
-        if (tmp->type == HEREDOC)
+        if (tmp->type == HEREDOC) //* ce serait coolos si ca checkait aussi TRUNC ou APPEND
         {
-            here_doc(envlist, tmp->next->token);
+            if (cmdlist->infile >= 0)
+                close(cmdlist->infile);
+            fd = here_doc(envlist, tmp->next->token);
         }
         tmp = tmp->next;
     }
-    return (NULL);
+    return (fd);
 }
 
 int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
@@ -298,7 +302,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     pipfd[0] = 0;
     pipfd[1] = 0;
     cmdlist = token_to_cmd(list);
-    is_input_heredoc(list , cmdlist, envlist);
+    is_redir_heredoc(list , cmdlist, envlist);
     if (!cmdlist)
         return (1);
     if (!is_builtin(cmdlist->cmd_arg[0]))
