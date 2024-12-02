@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/29 18:58:22 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/02 18:07:22 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void errno_check(char *token)
 	data->error = 126;
 }
 
-int	double_check(t_path *path, t_token *tmp, char *input)
+int		double_check(t_path *path, t_token *tmp, char *input)
 {
 	char	*word;
 	char	*temp;

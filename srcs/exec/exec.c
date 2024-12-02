@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/11/29 19:37:39 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/02 19:41:32 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,23 @@ void free_cmd(t_cmd **list)
     t_cmd *tmp;
     t_cmd *next;
 
+    if (list == NULL || *list == NULL)
+        return;
     tmp = *list;
     while (tmp)
     {
         next = tmp->next;
-        free_tabtab(tmp->cmd_arg);
+        // Libération des arguments de la commande
+        if (tmp->cmd_arg)
+        {
+            free_tabtab(tmp->cmd_arg);
+            tmp->cmd_arg = NULL;
+        }
+        // Libération du nœud de commande
         free(tmp);
         tmp = next;
     }
+    // Mettre le pointeur original à NULL
     *list = NULL;
 }
 
@@ -76,12 +85,13 @@ void print_cmd(t_cmd *list)
         i = 0;
         while (tmp->cmd_arg[i])
         {
-            printf("noeud n.%d = [%s]\n", len, tmp->cmd_arg[i]);
+            printf("noeud n.%d = [%s] ->\n", len, tmp->cmd_arg[i]);
             i++;
         }
         len++;
         tmp = tmp->next;
     }
+    printf("-> NULL\n");
 }
 
 t_cmd *token_to_cmd(t_token *list)
@@ -210,6 +220,7 @@ void child_process(t_cmd *list, t_env *envlist, t_path *pathlist)
         tabtab = lst_to_tabtab(envlist);
         execve(path, list->cmd_arg, tabtab);
         free_tabtab(tabtab);
+        free(path);
         ft_exit(NULL, envlist, pathlist);
     }
     if (path)
@@ -221,8 +232,10 @@ void child_process(t_cmd *list, t_env *envlist, t_path *pathlist)
 int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist)
 {
     t_cmd *tmp;
+    // t_data *data;
     pid_t pid;
 
+    // data = get_data();
     tmp = list;
     while (tmp)
     {
@@ -253,7 +266,7 @@ int heredoc_handler(char *str, t_env *envlist, int fd)
         line = readline(">");
         if (!line)
         {
-            write(2, "bash :warning: here-document delimited by end-of-file (wanted `", 61);
+            write(2, "bash :warning: here-document delimited by end-of-file (wanted ` ", 62);
             write(2, str, ft_strlen(str));
             write(2, "`)\n", 3);
             break;
@@ -340,25 +353,45 @@ int launch_builtin(t_token *list, t_env *envlist, t_path *path)
     return (0); 
 }
 
-int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
+int ft_exec(t_token *list, t_env *envlist, t_path *pathlist) //* Le prog lit et exec le dernier input/heredoc et le dernier append/trunc
 {
     t_cmd *cmdlist;
+    t_data *data;
+    t_cmd *tmp;
 
     cmdlist = token_to_cmd(list);
-    is_redir_heredoc(list , cmdlist, envlist);
-    if (!cmdlist)
+    tmp = cmdlist;
+    data = get_data();
+    print_cmd(tmp);
+    is_redir_heredoc(list , tmp, envlist);
+    if (!tmp)
         return (1);
-    if (!is_builtin(cmdlist->cmd_arg[0]))
+    while (tmp)
     {
-        printf("not builtin\n");
-        exec_not_builtin(cmdlist, envlist, pathlist);
-        free_cmd(&cmdlist);
+        if (!is_builtin(tmp->cmd_arg[0]) && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
+        {
+            printf("not builtin\n");
+            exec_not_builtin(tmp, envlist, pathlist);
+        }
+        else if (is_builtin(cmdlist->cmd_arg[0]))
+        {
+            printf("builtin\n");
+            if (ft_strcmp(tmp->cmd_arg[0], "exit") == 0)
+                free_cmd(&tmp);
+            launch_builtin(list, envlist, pathlist);
+        }
+        else
+        {
+            data->error = 127;
+            printf("command not found\n");
+            free_cmd(&tmp);
+            return (1);
+        }
+        if (tmp->next)
+            tmp = tmp->next;
+        else
+            break;
     }
-    else
-    {
-        printf("builtin\n");
-        free_cmd(&cmdlist);
-        launch_builtin(list, envlist, pathlist);
-    }
+    free_cmd(&tmp);
     return (0);
 }
