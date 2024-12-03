@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/02 19:41:32 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/03 12:26:48 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,13 +200,12 @@ bool	checkpath(t_path *pathlist, char *cmd, char **path)
 int parent_process()
 {
     int status;
-    int ret;
+    t_data *data = get_data();
 
-    ret = 0;
     wait(&status);
     if (WIFEXITED(status))
-        ret = WEXITSTATUS(status);
-    return (ret);
+        data->error = WEXITSTATUS(status); //! C'est des macros pas des fonctions donc autorise
+    return (data->error);
 }
 
 void child_process(t_cmd *list, t_env *envlist, t_path *pathlist)
@@ -358,7 +357,10 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist) //* Le prog lit et 
     t_cmd *cmdlist;
     t_data *data;
     t_cmd *tmp;
+    int pipefd[2];
 
+    pipefd[0] = -1;
+    pipefd[1] = -1;
     cmdlist = token_to_cmd(list);
     tmp = cmdlist;
     data = get_data();
@@ -368,6 +370,8 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist) //* Le prog lit et 
         return (1);
     while (tmp)
     {
+        if (pipe(pipefd) == -1)
+            return (1);
         if (!is_builtin(tmp->cmd_arg[0]) && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
         {
             printf("not builtin\n");
