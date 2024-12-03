@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 18:47:31 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 15:53:58 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 17:13:32 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,11 @@ void	env_return_value_len(t_dollar_len *var, char *tmp, t_env *env,
 	var->j = 0;
 	while (str[var->i] && str[var->i] != '$' && verif_token(str[var->i]))
 		tmp[var->j++] = str[var->i++];
+	tmp[var->j] = '\0';
 	var->return_value = return_env_value(env, tmp);
 	if (var->return_value)
 	{
+		var->x = 0;
 		while (var->return_value[var->x])
 		{
 			var->y++;

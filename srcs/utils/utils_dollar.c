@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 18:19:15 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/22 11:35:18 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 17:15:49 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ void	init_dollar_var(t_dollar *var, t_env *env, char *str)
 		free(var);
 		exit(EXIT_FAILURE);
 	}
-	memset(var->finale, '\0', var->len_finale);
+	ft_memset(var->finale, '\0', var->len_finale);
 }
 
 void	env_return_value(char *str, t_dollar *var, t_env *env, char *tmp)
@@ -72,7 +72,7 @@ void	env_return_value(char *str, t_dollar *var, t_env *env, char *tmp)
 		}
 	}
 	else
-		var->return_value = NULL;
+		var->return_value = " ";
 }
 
 void	return_quote(char *str, t_dollar *var)
@@ -83,7 +83,8 @@ void	return_quote(char *str, t_dollar *var)
 
 char	*free_dollar(t_dollar *var, char *tmp)
 {
-	free(var->return_value);
+	if (var->return_value != NULL)
+		free(var->return_value);
 	free(var->finale);
 	free(var);
 	free(tmp);

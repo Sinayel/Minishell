@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:12:34 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 14:22:31 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/02 12:31:27 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,13 @@ int	check_if_exit(t_token *list, t_env *env)
 	t_token	*tmp;
 	t_path	*path;
 
-	path = return_path(env);
+	if (env->next)
+		path = return_path(env);
 	tmp = list;
 	while (tmp)
 	{
-		if (tmp->type == CMD && for_check_exit(tmp->token, tmp, env, path) == 2)
+		if (tmp->type == CMD && for_check_exit(tmp->token, tmp, env, path) == 2
+			&& env->next)
 		{
 			if (path)
 				ft_free_path(path);
@@ -36,7 +38,7 @@ int	check_if_exit(t_token *list, t_env *env)
 		}
 		tmp = tmp->next;
 	}
-	if (path)
+	if (env->next)
 		ft_free_path(path);
 	return (0);
 }

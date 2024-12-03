@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 14:24:16 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 12:30:23 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	cmd(char *str, t_token *list, t_env *env)
 
 int	parsing_exec(t_token *list, t_env *env, t_data *data)
 {
+	(void)env;
 	if (check_pipe(list) != 0)
 	{
 		data->error = 2;

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/25 16:01:19 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/11/29 18:55:45 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,19 +61,21 @@ void	errno_check(char *token)
 	data->error = 126;
 }
 
-int	double_check(t_path *path, t_token *tmp)
+int	double_check(t_path *path, t_token *tmp, char *input)
 {
 	char	*word;
 	char	*temp;
 	int		is_ok;
+	int		is_if_ok;
 
 	while (path)
 	{
 		temp = ft_strjoin(path->name, "/");
 		word = ft_strjoin(temp, tmp->token);
 		free(temp);
+		is_if_ok = access(input, X_OK | X_OK | X_OK);
 		is_ok = access(word, X_OK | X_OK | X_OK);
-		if (is_ok == 0)
+		if (is_ok == 0 || is_if_ok == 0)
 		{
 			free(word);
 			return (0);

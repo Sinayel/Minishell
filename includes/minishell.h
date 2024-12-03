@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 16:46:34 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 17:18:54 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,7 @@ int					for_trunc_and_heredoc(t_token *tmp);
 int					return_next_next(t_token *tmp);
 
 //	Path
-int					double_check(t_path *path, t_token *tmp);
+int					double_check(t_path *path, t_token *tmp, char *input);
 t_path				*return_path(t_env *env);
 void				ft_free_path(t_path *path);
 
@@ -224,11 +224,12 @@ char				**add_to_env(char **temp, char *arg, int current_size);
 void				print_export_line(char *env_entry);
 char				**env_to_export(t_env *env_list);
 int					check_equal_arg(char *arg);
-char				**replace_export(char **env_export, char **split_arg);
+char				**replace_export(char **env_export, char *split_arg);
 int					get_tab_size(char **tab);
 int					cmb_env(t_env *envlist);
 char				*ft_magouilles_v2(char *str1, char *str2, char *str3);
 int					copy_string(char *dest, char *src, int v);
+int					ft_strlen_tabtab_gpt(char **split_arg);
 
 //! --------------------------------------------------------
 
