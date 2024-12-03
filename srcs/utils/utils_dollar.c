@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 18:19:15 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 17:15:49 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 21:04:49 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@ void	return_quote(char *str, t_dollar *var)
 
 char	*free_dollar(t_dollar *var, char *tmp)
 {
-	if (var->return_value != NULL)
-		free(var->return_value);
+	// if (var->return_value != NULL)
+	// 	free(var->return_value);
 	free(var->finale);
 	free(var);
 	free(tmp);
