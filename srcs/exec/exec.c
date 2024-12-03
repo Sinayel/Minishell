@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/03 12:26:48 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/03 16:39:42 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,8 @@ t_cmd *token_to_cmd(t_token *list)
                 i++;
             }
             new_cmd->cmd_arg[i] = NULL;
+            new_cmd->infile = -1;
+            new_cmd->outfile = -1;
             // Ajout à la liste chaînée des commandes
             if (!cmd_head)
                 cmd_head = new_cmd;
@@ -208,12 +210,31 @@ int parent_process()
     return (data->error);
 }
 
-void child_process(t_cmd *list, t_env *envlist, t_path *pathlist)
+static void redir_in_out(t_cmd *list, int *fd)
+{
+    close(fd[0]);
+    if (list->infile >= 0)
+    {
+        dup2(list->infile, 0);
+        close(list->infile);
+    }
+    if (list->outfile >= 0)
+    {
+        dup2(list->outfile, 1);
+        close(list->outfile);
+    }
+    else if (list->next)
+        dup2(fd[1], 1);
+    close(fd[1]);
+}
+
+void child_process(t_cmd *list, t_env *envlist, t_path *pathlist, int *fd)
 {
     char *path;
     char **tabtab;
 
     path = NULL;
+    redir_in_out(list, fd);
     if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
         tabtab = lst_to_tabtab(envlist);
@@ -228,7 +249,7 @@ void child_process(t_cmd *list, t_env *envlist, t_path *pathlist)
     ft_exit(NULL, envlist, pathlist);
 }
 
-int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist)
+int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist, int *fd)
 {
     t_cmd *tmp;
     // t_data *data;
@@ -247,7 +268,7 @@ int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist)
                 return (1);
             }
             else if (!pid)
-                child_process(tmp, envlist, pathlist);
+                child_process(tmp, envlist, pathlist, fd);
             else
                 parent_process();
             tmp = tmp->next;
@@ -300,7 +321,7 @@ int here_doc(t_env *envlist, char *str)
     return (fd);
 }
 
-int is_redir_heredoc(t_token *list, t_cmd *cmdlist, t_env *envlist)
+int ft_redir(t_token *list, t_cmd *cmdlist, t_env *envlist)
 {
     t_token *tmp;
 
@@ -347,15 +368,12 @@ int launch_builtin(t_token *list, t_env *envlist, t_path *path)
             cmd(tmp->token, tmp, envlist, path);
         tmp = tmp->next;
     }
-    // if (path)
-    //     ft_free_path(path);
     return (0); 
 }
 
-int ft_exec(t_token *list, t_env *envlist, t_path *pathlist) //* Le prog lit et exec le dernier input/heredoc et le dernier append/trunc
+int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
 {
     t_cmd *cmdlist;
-    t_data *data;
     t_cmd *tmp;
     int pipefd[2];
 
@@ -363,9 +381,8 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist) //* Le prog lit et 
     pipefd[1] = -1;
     cmdlist = token_to_cmd(list);
     tmp = cmdlist;
-    data = get_data();
     print_cmd(tmp);
-    is_redir_heredoc(list , tmp, envlist);
+    ft_redir(list , tmp, envlist);
     if (!tmp)
         return (1);
     while (tmp)
@@ -375,7 +392,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist) //* Le prog lit et 
         if (!is_builtin(tmp->cmd_arg[0]) && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
         {
             printf("not builtin\n");
-            exec_not_builtin(tmp, envlist, pathlist);
+            exec_not_builtin(tmp, envlist, pathlist, pipefd);
         }
         else if (is_builtin(cmdlist->cmd_arg[0]))
         {
@@ -384,13 +401,8 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist) //* Le prog lit et 
                 free_cmd(&tmp);
             launch_builtin(list, envlist, pathlist);
         }
-        else
-        {
-            data->error = 127;
-            printf("command not found\n");
-            free_cmd(&tmp);
-            return (1);
-        }
+        else //! attention a verifier les permissions ! (autre code erreur a retourner je crois)
+            break;
         if (tmp->next)
             tmp = tmp->next;
         else
@@ -399,3 +411,4 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist) //* Le prog lit et 
     free_cmd(&tmp);
     return (0);
 }
+ //* Le prog lit et exec le dernier input/heredoc et le dernier append/trunc

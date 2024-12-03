@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/02 18:07:22 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/03 16:59:16 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,33 +40,38 @@ t_path	*return_path(t_env *env)
 
 void errno_check(char *token)
 {
+	printf("\n\nerrno = %d\n\n\n", errno);
 	t_data *data;
 	data = get_data();
 	if (errno == EACCES)
 	{
 		printf("%s: ", token);
 		ft_putstr_fd("Permission denied\n", 2);
+		data->error = 126;
 	}
 	else if (errno == EISDIR)
 	{
 		printf("%s: ", token);
 		ft_putstr_fd("Is a directory\n", 2);
+		data->error = 126;
 	}
 	else
 	{
 		printf("%s: ", token);
 		ft_putstr_fd("Command not found\n", 2);
+		data->error = 127;
 	}
-	data->error = 126;
 }
 
 int		double_check(t_path *path, t_token *tmp, char *input)
 {
+	// t_data *data;
 	char	*word;
 	char	*temp;
 	int		is_ok;
 	int 	if_is_ok;
 
+	// data = get_data();
 	while (path)
 	{
 		temp = ft_strjoin(path->name, "/");
@@ -74,6 +79,8 @@ int		double_check(t_path *path, t_token *tmp, char *input)
 		free(temp);
 		if_is_ok = access(input, X_OK);
 		is_ok = access(word, X_OK);
+		if (path->next == NULL && is_ok != 0)
+			errno_check(tmp->token);
 		if (is_ok == 0 || if_is_ok == 0)
 		{
 			free(word);
