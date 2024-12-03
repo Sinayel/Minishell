@@ -6,11 +6,35 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 18:50:55 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 18:51:17 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 17:18:37 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
+
+int	ft_strlen_tabtab_gpt(char **split_arg)
+{
+	int	i;
+	int	j;
+	int	v;
+
+	i = 0;
+	j = 0;
+	v = 0;
+	while (split_arg[i])
+	{
+		if (i != 0)
+			v++;
+		j = 0;
+		while (split_arg[i][j])
+		{
+			v++;
+			j++;
+		}
+		i++;
+	}
+	return (v);
+}
 
 void	handle_valid_argument(t_env *env_list, t_export *export, char *arg,
 		char *env_value)
@@ -32,7 +56,7 @@ void	handle_valid_argument(t_env *env_list, t_export *export, char *arg,
 
 void	handle_invalid_identifier(t_data *data, char *arg)
 {
-	printf("bash: export: `%s': not a valid identifier\n", arg);
+	printf("bash: export: '%s': not a valid identifier\n", arg);
 	data->error = 1;
 }
 

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 16:49:27 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 17:19:49 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	signal_handler(int signum)
 	}
 }
 
-//! UNIQUEMENT POUR LES STRUCTURE (NE MARCHE PAS AVEC LES LISTE CHAINEE)
 t_data	*get_data(void)
 {
 	static t_data	data;
@@ -101,6 +100,7 @@ int	main(int argc, char *argv[], char **env)
 			add_history(data->input);
 		if (list)
 			parsing_exec(list, env_list, data);
+		print_list(list);
 		ft_token_lstclear(&list);
 		if (data->input)
 			free(data->input);

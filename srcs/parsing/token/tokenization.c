@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/26 18:29:09 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 16:12:10 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 14:10:51 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_token	*proccess_token(t_token *list, char *str)
 	return (list);
 }
 
-char	*process_initial_whitespace_and_quotes(char *str, int *i)
+char	*verif_quote(char *str, int *i)
 {
 	while (str[*i] == ' ')
 		(*i)++;
@@ -84,7 +84,7 @@ t_token	*tokenization(char *str, t_env *env)
 
 	list = NULL;
 	i = 0;
-	str = process_initial_whitespace_and_quotes(str, &i);
+	str = verif_quote(str, &i);
 	if (str)
 	{
 		str = handle_dollar_and_errors(str, env);

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 18:47:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 18:48:01 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 15:41:45 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,22 +71,27 @@ int	check_equal_arg(char *arg)
 	return (0);
 }
 
-char	**replace_export(char **env_export, char **split_arg)
+char	**replace_export(char **env_export, char *split_arg)
 {
-	int	i;
+	int		i;
+	char	**trouve_moi;
 
 	i = 0;
+	printf("%s\n", split_arg);
+	trouve_moi = ft_split(split_arg, '=');
 	while (env_export[i])
 	{
-		if (ft_strncmp(env_export[i], split_arg[0],
-				ft_strlen(split_arg[0])) == 0)
+		if (ft_strncmp(env_export[i], trouve_moi[0],
+				ft_strlen(trouve_moi[0])) == 0)
 		{
 			free(env_export[i]);
-			env_export[i] = ft_magouilles(split_arg[0], "=", split_arg[1]);
+			env_export[i] = ft_strdup(split_arg);
+			free_tabtab(trouve_moi);
 			return (env_export);
 		}
 		i++;
 	}
+	free_tabtab(trouve_moi);
 	return (env_export);
 }
 

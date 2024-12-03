@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 15:53:38 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/03 17:14:51 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char	*proccess_dollar_value(char *str, t_env *env)
 	init_dollar_var(var, env, str);
 	tmp = (char *)malloc(sizeof(char) * (var->len_tmp + 1));
 	if (tmp)
-		memset(tmp, '\0', var->len_tmp + 1);
+		ft_memset(tmp, '\0', var->len_tmp + 1);
 	while (str[var->i])
 		code(str, var, env, tmp);
 	var->y = 0;
