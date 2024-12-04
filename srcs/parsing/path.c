@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 16:59:16 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/04 19:36:40 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,18 @@ t_path	*return_path(t_env *env)
 	return (path);
 }
 
-void errno_check(char *token)
+void errno_check(int err, char *token)
 {
-	printf("\n\nerrno = %d\n\n\n", errno);
 	t_data *data;
+
 	data = get_data();
-	if (errno == EACCES)
+	if (err == EACCES)
 	{
 		printf("%s: ", token);
 		ft_putstr_fd("Permission denied\n", 2);
 		data->error = 126;
 	}
-	else if (errno == EISDIR)
+	if (err == EISDIR)
 	{
 		printf("%s: ", token);
 		ft_putstr_fd("Is a directory\n", 2);
@@ -63,31 +63,61 @@ void errno_check(char *token)
 	}
 }
 
-int		double_check(t_path *path, t_token *tmp, char *input)
+int is_directory(const char *path)
 {
-	// t_data *data;
-	char	*word;
-	char	*temp;
-	int		is_ok;
-	int 	if_is_ok;
+    struct stat path_stat;
+    return (stat(path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode));
+}
 
-	// data = get_data();
-	while (path)
+int check_access(char *path)
+{
+    if (access(path, R_OK) == -1)
 	{
-		temp = ft_strjoin(path->name, "/");
-		word = ft_strjoin(temp, tmp->token);
-		free(temp);
-		if_is_ok = access(input, X_OK);
-		is_ok = access(word, X_OK);
-		if (path->next == NULL && is_ok != 0)
-			errno_check(tmp->token);
-		if (is_ok == 0 || if_is_ok == 0)
+        if (errno == EISDIR || errno == EACCES)
 		{
-			free(word);
-			return (0);
+            errno_check(errno, path);
+            return 1; // Erreur permition ou repertoire
+        }
+        return 2; // Command not found
+    }
+    return 0; // Aucun problème
+}
+
+int double_check(t_path *path, t_token *tmp, char *input)
+{
+    char *word;
+    int result;
+
+	word = NULL;
+    while (path)
+	{
+        if (is_directory(input))
+		{
+            printf("%s: Is a directory\n", input);
+            return (1);
 		}
-		free(word);
-		path = path->next;
-	}
-	return (1);
+        result = check_access(input);
+        if (result == 1 || result == 0)
+            return (result);
+        word = ft_magouilles(path->name, "/", tmp->token);
+        if (is_directory(word))
+		{
+            printf("%s: Is a directory\n", word);
+            free(word);
+            return (1);
+        }
+        result = check_access(word);
+        if (result == 1 || result == 0)
+		{
+            free(word);
+            return (result);
+        }
+		if (path->next == NULL)
+			break;
+        free(word);
+        path = path->next;
+    }
+	errno_check(0, word);
+	free(word);
+    return 1;
 }
