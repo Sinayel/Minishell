@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 18:45:29 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 19:02:47 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 14:17:04 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	is_env_name_valid(char *name)
 	int	i;
 
 	i = 0;
-	if (name[0] >= '0' && name[0] <= '9')
+	if ((name[0] >= '0' && name[0] <= '9') || name[0] == '=')
 		return (1);
 	while (name[i])
 	{

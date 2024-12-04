@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_cd.c                                         :+:      :+:    :+:   */
+/*   option_cd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:56:46 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 17:57:30 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 15:16:17 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,12 @@ int	no_home_set(char *path, t_data *data)
 	return (1);
 }
 
-void	mouv_cd(char *path, t_env *env_list, t_data *data)
+int	mouv_cd(char *path, t_env *env_list, t_data *data)
 {
 	char	*initial_path;
 
+	if (no_home_set(path, data) == 0)
+		return (1);
 	initial_path = ft_strdup(path);
 	if (access(path, X_OK) == 0)
 		ch_oldpwd(&env_list);
@@ -56,9 +58,12 @@ void	mouv_cd(char *path, t_env *env_list, t_data *data)
 		else
 			perror("chdir");
 		data->error = 1;
+		free(initial_path);
+		return (1);
 	}
 	free(initial_path);
 	ch_pwd(&env_list);
+	return (0);
 }
 
 int	bad_option(char *input, t_data *data)

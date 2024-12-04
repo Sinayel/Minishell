@@ -6,25 +6,13 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:39:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/26 18:59:12 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:55:57 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
 //! FINI
-void	env_create_oldpwd(t_env **env_list)
-{
-	t_env	*new;
-	char	cwd[4096];
-
-	getcwd(cwd, sizeof(cwd));
-	new = (t_env *)malloc(sizeof(t_env));
-	new->name = ft_strdup("OLDPWD");
-	new->value = ft_strdup(cwd);
-	new->next = NULL;
-	(*env_list)->next = new;
-}
 
 t_env	*env_create_pwd(t_env **env_list)
 {
@@ -38,25 +26,6 @@ t_env	*env_create_pwd(t_env **env_list)
 	new->next = NULL;
 	*env_list = new;
 	return (*env_list);
-}
-
-void	ft_free_env(t_env **lst)
-{
-	t_env	*tmp;
-
-	if (!lst || !*lst)
-		return ;
-	while (*lst)
-	{
-		tmp = (*lst)->next;
-		if ((*lst)->name)
-			free((*lst)->name);
-		if ((*lst)->value)
-			free((*lst)->value);
-		free(*lst);
-		*lst = tmp;
-	}
-	*lst = NULL;
 }
 
 t_env	*env_import(char **envp)

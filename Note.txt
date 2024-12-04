@@ -132,7 +132,7 @@ Paramètre spéciaux :
 
     - : Représente les options de l'interpréteur (bash) utilisées.
 
-    $ : Correspond au PID (identifiant de processus) du shell en cours.
+    $$ : Correspond au PID (identifiant de processus) du shell en cours.
 
     ! : Indique le PID de la dernière tâche exécutée en arrière-plan.
 

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 15:56:25 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:56:48 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,17 +80,17 @@ char	*get_pid(int len, char *str, char *pid)
 	return (tmp);
 }
 
-char	*proccess_pid(char *str)
-{
-	t_data	*data;
-	int		len;
-	char	*pid;
-	char	*tmp;
+// char	*proccess_pid(char *str)
+// {
+// 	t_data	*data;
+// 	int		len;
+// 	char	*pid;
+// 	char	*tmp;
 
-	data = get_data();
-	len = ft_strlen(str);
-	pid = ft_itoa(data->pid);
-	tmp = get_pid(len, str, pid);
-	free(pid);
-	return (tmp);
-}
+// 	data = get_data();
+// 	len = ft_strlen(str);
+// 	pid = ft_itoa(data->pid);
+// 	tmp = get_pid(len, str, pid);
+// 	free(pid);
+// 	return (tmp);
+// }

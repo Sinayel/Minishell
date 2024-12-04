@@ -6,16 +6,16 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 12:30:23 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:13:37 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	cmd(char *str, t_token *list, t_env *env)
+int	cmd(char *str, t_token *list, t_env *env, t_data *data)
 {
 	if (ft_strcmp(str, "cd") == 0)
-		return (ft_arg_cd(env, list));
+		return (ft_arg_cd(env, list, data));
 	if (ft_strcmp(str, "pwd") == 0)
 		return (ft_pwd(NULL));
 	if (ft_strcmp(str, "unset") == 0)
@@ -28,12 +28,13 @@ int	cmd(char *str, t_token *list, t_env *env)
 		return (0);
 	if (ft_strcmp(str, "export") == 0)
 		return (ft_arg_export(env, list));
+	if (ft_strcmp(str, "") == 0)
+		return (1);
 	return (1);
 }
 
 int	parsing_exec(t_token *list, t_env *env, t_data *data)
 {
-	(void)env;
 	if (check_pipe(list) != 0)
 	{
 		data->error = 2;
@@ -46,13 +47,12 @@ int	parsing_exec(t_token *list, t_env *env, t_data *data)
 		ft_putstr_fd("error redirection\n", 2);
 		return (1);
 	}
-	if (check_cmd(list, env) == 1)
+	if (check_cmd(list, env, data) == 1)
 	{
-		data->error = 127;
 		ft_putstr_fd("command not found\n", 2);
 		return (1);
 	}
 	else if (!check_if_exit(list, env))
-		data->error = 0;
+		return (1);
 	return (0);
 }

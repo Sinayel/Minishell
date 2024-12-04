@@ -6,29 +6,30 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:23:26 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/02 12:31:21 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 19:05:53 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
 // 6 Check si les commandes sont dans le path ou si elles ont deja etaient creer
-int	check_cmd(t_token *list, t_env *env)
+int	check_cmd(t_token *list, t_env *env, t_data	*data)
 {
 	t_token	*tmp;
 	t_path	*path;
 
-	if (env->next)
-		path = return_path(env);
+	path = return_path(env);
 	tmp = list;
 	while (tmp)
 	{
-		if (tmp->type == CMD && cmd(tmp->token, tmp, env) == 1 && env->next)
+		if ((tmp->type == CMD && cmd(tmp->token, tmp, env, data) == 1
+				&& env->next))
 		{
 			if (double_check(path, tmp, tmp->token) == 1)
 			{
 				if (path)
 					ft_free_path(path);
+				data->error = 127;
 				return (1);
 			}
 			printf("Ok (exec cmd)\n");

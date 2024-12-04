@@ -6,48 +6,37 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:43:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 17:59:22 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:54:33 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
-char	*skip_spaces_input(char *input)
-{
-	int	i;
-
-	i = 0;
-	while (input[i] && (input[i] == ' ' || input[i] == '\t'))
-		i++;
-	return (input + i);
-}
-
-int	ft_cd(t_env *env_list, char *input)
+int	ft_cd(t_env *env_list, char *input, t_data *data)
 {
 	char	*path;
-	t_data	*data;
 
-	data = get_data();
 	path = NULL;
 	if (input == NULL || input[0] == '~' || (input[0] == '-' && input[1] == '-'
 			&& input[2] == '\0'))
 	{
 		path = return_env_value(env_list, "HOME");
-		if (no_home_set(path, data) == 0)
-			return (0);
-		mouv_cd(path, env_list, data);
+		if (mouv_cd(path, env_list, data) == 1)
+			return (1);
 	}
 	else
 	{
 		path = NULL;
 		if (bad_option(input, data) == 0)
-			return (0);
+			return (1);
 		if (option_for_cd_(input, data, env_list, path) == 0)
 			path = return_env_value(env_list, "OLDPWD");
 		else
 			path = input;
-		mouv_cd(path, env_list, data);
+		if (mouv_cd(path, env_list, data) == 1)
+			return (1);
 	}
+	data->error = 0;
 	return (0);
 }
 
@@ -75,7 +64,7 @@ int	len_for_cd(t_token *list)
 	return (i);
 }
 
-int	ft_arg_cd(t_env *env, t_token *list)
+int	ft_arg_cd(t_env *env, t_token *list, t_data *data)
 {
 	int		len;
 	t_token	*tmp;
@@ -86,7 +75,7 @@ int	ft_arg_cd(t_env *env, t_token *list)
 	len = len_for_cd(list);
 	tmp = list->next;
 	if (len == 0)
-		return (ft_cd(env, NULL));
+		return (ft_cd(env, NULL, data));
 	value_for_cd = (char *)malloc(sizeof(char) * (len + 1));
 	init_var_i(&i, &j);
 	while (tmp)
@@ -99,7 +88,7 @@ int	ft_arg_cd(t_env *env, t_token *list)
 		tmp = tmp->next;
 	}
 	value_for_cd[i] = '\0';
-	ft_cd(env, value_for_cd);
+	ft_cd(env, value_for_cd, data);
 	free(value_for_cd);
 	return (0);
 }

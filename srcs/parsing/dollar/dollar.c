@@ -6,28 +6,11 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 18:39:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 17:14:51 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:56:32 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
-
-int	ft_strlen_dollar(char *str)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (str[i] == '$')
-		i++;
-	while (str[i])
-	{
-		i++;
-		j++;
-	}
-	return (j);
-}
 
 bool	verif_token(char c)
 {
