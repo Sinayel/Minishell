@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 17:18:54 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:58:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,8 @@ void				skip_and_initialize_tmp(char **tmp, char *str, int *i,
 int					parsing_exec(t_token *list, t_env *env, t_data *data);
 
 // Cmd
-int					cmd(char *str, t_token *list, t_env *env);
-int					check_cmd(t_token *list, t_env *env);
+int					cmd(char *str, t_token *list, t_env *env, t_data *data);
+int					check_cmd(t_token *list, t_env *env, t_data *data);
 
 // Check dollar
 char				*proccess_dollar_value(char *str, t_env *env);
@@ -131,7 +131,6 @@ char				*proccess_pid(char *str);
 int					check_pipe(t_token *list);
 char				*check_quote(t_token *tmp, int *i, int *j);
 int					check_redirection(t_token *list);
-t_token				*remove_quote(t_token *list);
 int					for_trunc_and_heredoc(t_token *tmp);
 int					return_next_next(t_token *tmp);
 
@@ -144,21 +143,19 @@ void				ft_free_path(t_path *path);
 
 //* -----------------------  Env  -------------------------
 int					print_env(t_env *head);
-void				print_env_vars(t_env *head, char *name);
 char				*return_env_value(t_env *head, char *name);
 t_env				*env_import(char **envp);
 void				append_env_var(t_env **head, char *name, char *value);
 t_env				*create_env_var(char *name, char *value);
-void				ft_free_env(t_env **lst);
 
 //* -----------------------  Pwd  -------------------------		// (JULIO)
 int					ft_pwd(char *arg);
 
 //* -----------------------  Cd  --------------------------		// (JULIO)
-int					ft_cd(t_env *env_list, char *input);
+int					ft_cd(t_env *env_list, char *input, t_data *data);
 char				*cd_handle_dollar(t_env *env_list, char *input);
 int					no_home_set(char *path, t_data *data);
-void				mouv_cd(char *path, t_env *env_list, t_data *data);
+int					mouv_cd(char *path, t_env *env_list, t_data *data);
 int					bad_option(char *input, t_data *data);
 int					option_for_cd_(char *input, t_data *data, t_env *env_list,
 						char *path);
@@ -177,7 +174,6 @@ int					echo(t_token *list);
 //* -----------------------  Unset  -----------------------		// (JULIO)
 int					ft_arg_unset(t_env *env, t_token *list);
 int					len_before_space(char *arg);
-void				free_tabtab_unset(char **tab);
 void				init_var_i(int *i, int *j);
 void				free_name_and_value(t_env *temp);
 char				**return_dest(char **dest, t_export *export, int j);
@@ -271,14 +267,12 @@ char				*return_quoted_value(char *str, char *tmp, int *j, int *i);
 void				env_return_value(char *str, t_dollar *var, t_env *env,
 						char *tmp);
 void				init_dollar_var(t_dollar *var, t_env *env, char *str);
-char				*proccess_dollar_1_on_2(t_dollar *var, char *tmp);
 void				free_tabtab(char **tab);
 char				**ft_split_for_path(char const *s, char c);
 long int			ft_strtol(const char *nptr, char **endptr, int base);
 
 // Cd
-void				free_export(t_export *export);
-int					ft_arg_cd(t_env *env, t_token *list);
+int					ft_arg_cd(t_env *env, t_token *list, t_data *data);
 int					cmb_word(char *str);
 int					len_for_cd(t_token *list);
 void				ch_oldpwd(t_env **env_list);

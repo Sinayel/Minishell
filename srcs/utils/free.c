@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:58:53 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 16:28:57 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:57:32 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,6 @@ void	free_all(t_token *list, t_env *env, t_path *path)
 	ft_free_path(path);
 	if (data && data->input)
 		free(data->input);
-}
-
-void	free_token(t_token **token)
-{
-	t_token	*current;
-	t_token	*next;
-
-	current = *token;
-	while (current)
-	{
-		next = current->next;
-		free(current);
-		current = next;
-	}
-	*token = NULL;
 }
 
 void	ft_free_path(t_path *path)

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/29 18:55:45 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 19:04:59 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,14 @@ t_path	*return_path(t_env *env)
 	char	**path_breaker;
 	int		i;
 
+	path_breaker = NULL;
 	path = NULL;
 	i = 0;
 	tmp = return_env_value(env, "PATH");
-	path_breaker = ft_split_for_path(tmp, ':');
+	if (tmp == NULL)
+		return (NULL);
+	if (tmp)
+		path_breaker = ft_split_for_path(tmp, ':');
 	if (!path_breaker)
 	{
 		free(tmp);
@@ -33,8 +37,8 @@ t_path	*return_path(t_env *env)
 		path = add_env(path, path_breaker[i]);
 		i++;
 	}
-	i = 0;
-	free(path_breaker);
+	if (path_breaker)
+		free(path_breaker);
 	return (path);
 }
 
@@ -68,20 +72,23 @@ int	double_check(t_path *path, t_token *tmp, char *input)
 	int		is_ok;
 	int		is_if_ok;
 
-	while (path)
+	if (tmp->token[0] != '\0')
 	{
-		temp = ft_strjoin(path->name, "/");
-		word = ft_strjoin(temp, tmp->token);
-		free(temp);
-		is_if_ok = access(input, X_OK | X_OK | X_OK);
-		is_ok = access(word, X_OK | X_OK | X_OK);
-		if (is_ok == 0 || is_if_ok == 0)
+		while (path)
 		{
+			temp = ft_strjoin(path->name, "/");
+			word = ft_strjoin(temp, tmp->token);
+			free(temp);
+			is_if_ok = access(input, X_OK | X_OK | X_OK);
+			is_ok = access(word, X_OK | X_OK | X_OK);
+			if (is_ok == 0 || is_if_ok == 0)
+			{
+				free(word);
+				return (0);
+			}
 			free(word);
-			return (0);
+			path = path->next;
 		}
-		free(word);
-		path = path->next;
 	}
 	return (1);
 }

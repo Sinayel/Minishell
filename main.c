@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 17:19:49 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:36:57 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,10 @@ int	main(int argc, char *argv[], char **env)
 			break ;
 		list = tokenization(data->input, env_list);
 		if (list)
+		{
 			add_history(data->input);
-		if (list)
 			parsing_exec(list, env_list, data);
+		}
 		print_list(list);
 		ft_token_lstclear(&list);
 		if (data->input)

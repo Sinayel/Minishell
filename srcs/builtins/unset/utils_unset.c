@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/26 18:12:44 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/26 18:13:36 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:56:17 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,21 +35,6 @@ void	free_name_and_value(t_env *temp)
 	free(temp->name);
 	free(temp->value);
 	free(temp);
-}
-
-void	free_tabtab_unset(char **tab)
-{
-	int	i;
-
-	i = 0;
-	if (!tab)
-		return ;
-	while (tab[i] != NULL)
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
 }
 
 void	init_var_i(int *i, int *j)

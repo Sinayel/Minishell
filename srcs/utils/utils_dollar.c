@@ -6,28 +6,11 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 18:19:15 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 21:04:49 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:57:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-char	*proccess_dollar_1_on_2(t_dollar *var, char *tmp)
-{
-	int	tmp_y;
-
-	tmp_y = var->y;
-	var->y = 0;
-	while (var->finale[var->y] == ' ')
-		var->y++;
-	if (tmp_y == var->y)
-	{
-		free_dollar(var, tmp);
-		return (NULL);
-	}
-	var->y = tmp_y;
-	return (var->finale);
-}
 
 void	init_dollar_var(t_dollar *var, t_env *env, char *str)
 {
@@ -83,8 +66,6 @@ void	return_quote(char *str, t_dollar *var)
 
 char	*free_dollar(t_dollar *var, char *tmp)
 {
-	// if (var->return_value != NULL)
-	// 	free(var->return_value);
 	free(var->finale);
 	free(var);
 	free(tmp);

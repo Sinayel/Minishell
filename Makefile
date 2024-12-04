@@ -69,7 +69,12 @@ ASCII_LOGO = -e "\
 	██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\n\
 	╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
 
-all: $(NAMELFT) $(NAME)
+analyse:
+	@echo "Analyse du code avec cppcheck..."
+	cppcheck --enable=unusedFunction --enable=style $(MINISHELL_SRC) 2> cppcheck_report.txt
+	@echo "Rapport d'analyse généré : cppcheck_report.txt"
+
+all: $(NAMELFT) $(NAME) analyse
 
 $(NAMELFT):
 	@echo "Compilation de la libft..."
@@ -92,4 +97,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re analyse

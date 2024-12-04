@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:08:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 18:05:00 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/04 18:55:18 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,21 +59,6 @@ void	append_env_var(t_env **head, char *name, char *value)
 			temp = temp->next;
 		}
 		temp->next = new_node;
-	}
-}
-
-void	print_env_vars(t_env *head, char *name)
-{
-	t_env	*temp;
-
-	temp = head;
-	while (temp)
-	{
-		if (ft_strcmp(temp->name, name) == 0)
-		{
-			printf("%s=%s\n", temp->name, temp->value);
-		}
-		temp = temp->next;
 	}
 }
 
