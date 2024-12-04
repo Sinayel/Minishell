@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/03 16:39:42 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/04 19:50:23 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -401,7 +401,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
                 free_cmd(&tmp);
             launch_builtin(list, envlist, pathlist);
         }
-        else //! attention a verifier les permissions ! (autre code erreur a retourner je crois)
+        else                                 //* (OK)
             break;
         if (tmp->next)
             tmp = tmp->next;

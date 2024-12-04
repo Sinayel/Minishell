@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 16:57:29 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/04 19:50:13 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,13 +128,5 @@ int	parsing_exec(t_token *list, t_env *env, t_data *data)
 		ft_putstr_fd("error redirection\n", 2);
 		return (1);
 	}
-	if (check_cmd(list, env) == 1)
-	{
-		// data->error = 127;
-		// ft_putstr_fd("command not found\n", 2);
-		return (1);
-	}
-	// else
-	// 	data->error = 0;
-	return (0);
+	return (check_cmd(list, env) == 1);
 }

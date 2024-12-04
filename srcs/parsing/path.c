@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/04 19:36:40 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/04 19:48:40 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int check_access(char *path)
         if (errno == EISDIR || errno == EACCES)
 		{
             errno_check(errno, path);
-            return 1; // Erreur permition ou repertoire
+            return 1; // Erreur permission ou repertoire
         }
         return 2; // Command not found
     }
