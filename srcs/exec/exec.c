@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/04 19:50:23 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/05 12:11:50 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,9 @@ void print_cmd(t_cmd *list)
     t_cmd *tmp;
 
     tmp = list;
-    int i = 0;
+    int i;
     int len = 0;
+    i = 0;
     while (tmp)
     {
         i = 0;
@@ -88,6 +89,7 @@ void print_cmd(t_cmd *list)
             printf("noeud n.%d = [%s] ->\n", len, tmp->cmd_arg[i]);
             i++;
         }
+        // printf("infile = %d\noutfile = %d\n", tmp->infile, tmp->outfile);
         len++;
         tmp = tmp->next;
     }
@@ -199,7 +201,7 @@ bool	checkpath(t_path *pathlist, char *cmd, char **path)
 	return (false);
 }
 
-int parent_process()
+int parent_process(int *fd, t_cmd *cmdlist)
 {
     int status;
     t_data *data = get_data();
@@ -207,6 +209,12 @@ int parent_process()
     wait(&status);
     if (WIFEXITED(status))
         data->error = WEXITSTATUS(status); //! C'est des macros pas des fonctions donc autorise
+
+    close(fd[1]);
+    if (cmdlist->infile >= 0)
+        close(cmdlist->infile);
+    
+
     return (data->error);
 }
 
@@ -235,6 +243,7 @@ void child_process(t_cmd *list, t_env *envlist, t_path *pathlist, int *fd)
 
     path = NULL;
     redir_in_out(list, fd);
+    printf("infile = %d\noutfile = %d\n", list->infile, list->outfile);
     if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
         tabtab = lst_to_tabtab(envlist);
@@ -264,13 +273,15 @@ int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist, int *fd)
             pid = fork();
             if (pid < 0)
             {
-                perror("fork");
+                free_cmd(&tmp);
+                if (access(".tmp.heredoc", F_OK) == 0)
+                    unlink(".tmp_heredoc");
                 return (1);
             }
             else if (!pid)
                 child_process(tmp, envlist, pathlist, fd);
             else
-                parent_process();
+                parent_process(fd, tmp);
             tmp = tmp->next;
         }
     }
