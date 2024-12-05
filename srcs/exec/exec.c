@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/05 16:30:59 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/05 19:46:32 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ void free_cmd(t_cmd **list)
     {
         next = tmp->next;
         // Libération des arguments de la commande
+        if (tmp->infile >= 0)
+            close(tmp->infile);
+        if (tmp->outfile >= 0)
+            close(tmp->outfile);
         if (tmp->cmd_arg)
         {
             free_tabtab(tmp->cmd_arg);
@@ -33,6 +37,8 @@ void free_cmd(t_cmd **list)
         free(tmp);
         tmp = next;
     }
+    if (access(".tmp.heredoc", F_OK) == 0)
+        unlink(".tmp_heredoc");
     // Mettre le pointeur original à NULL
     *list = NULL;
 }
@@ -89,11 +95,36 @@ void print_cmd(t_cmd *list)
             printf("noeud n.%d = [%s] ->\n", len, tmp->cmd_arg[i]);
             i++;
         }
-        // printf("infile = %d\noutfile = %d\n", tmp->infile, tmp->outfile);
+        printf("infile = %d\noutfile = %d\n", tmp->infile, tmp->outfile);
         len++;
         tmp = tmp->next;
     }
     printf("-> NULL\n");
+}
+
+int launch_builtin(t_token *list, t_env *envlist, t_path *path)
+{
+    t_token *tmp;
+
+    tmp = list;
+    while (tmp)
+    {
+        if (tmp->type == CMD)
+            cmd(tmp->token, tmp, envlist, path);
+        tmp = tmp->next;
+    }
+    return (0); 
+}
+
+static void built(int *fd, t_token *list,t_cmd *cmd, t_env *envlist, t_path *pathlist)
+{
+    if (fd[0] >= 0)
+        close(fd[0]);
+    if (cmd->outfile < 0 && cmd->next != NULL)
+        cmd->outfile = fd[1];
+    else if
+        close(fd[1]);
+    launch_builtin(list, envlist, pathlist);
 }
 
 t_cmd *token_to_cmd(t_token *list)
@@ -138,8 +169,8 @@ t_cmd *token_to_cmd(t_token *list)
                 i++;
             }
             new_cmd->cmd_arg[i] = NULL;
-            new_cmd->infile = -1;
-            new_cmd->outfile = -1;
+            new_cmd->infile = -2;
+            new_cmd->outfile = -2;
             // Ajout à la liste chaînée des commandes
             if (!cmd_head)
                 cmd_head = new_cmd;
@@ -203,24 +234,29 @@ bool	checkpath(t_path *pathlist, char *cmd, char **path)
 
 int parent_process(int *fd, t_cmd *cmdlist)
 {
-    int status;
+    int status = 0;
     t_data *data = get_data();
 
-    wait(&status);
-    if (WIFEXITED(status))
-        data->error = WEXITSTATUS(status); //! C'est des macros pas des fonctions donc autorise
 
     close(fd[1]);
     if (cmdlist->infile >= 0)
         close(cmdlist->infile);
-    
+    if (cmdlist->infile == -2)
+        cmdlist->infile = fd[0];
+    if (cmdlist->next != NULL && cmdlist->next->infile == -2)
+        cmdlist->next->infile = fd[0];
+    else
+        close(fd[0]);
 
+    wait(&status);
+    if (WIFEXITED(status))
+        data->error = WEXITSTATUS(status); //! C'est des macros pas des fonctions donc autorise
     return (data->error);
 }
 
 static void redir_in_out(t_cmd *list, int *fd)
 {
-    printf("Noeud actuel : %s\nNoeud suivant : %s\n", list->cmd_arg[0], list->next->cmd_arg[0]);
+    printf("Noeud actuel : %s\n", list->cmd_arg[0]);
     close(fd[0]);
     if (list->infile >= 0)
     {
@@ -237,12 +273,13 @@ static void redir_in_out(t_cmd *list, int *fd)
     close(fd[1]);
 }
 
-void child_process(t_cmd *list, t_env *envlist, t_path *pathlist)
+void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipefd)
 {
     char *path;
     char **tabtab;
 
     path = NULL;
+    redir_in_out(list, pipefd);
     printf("infile = %d\noutfile = %d\n", list->infile, list->outfile);
     if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
@@ -250,43 +287,35 @@ void child_process(t_cmd *list, t_env *envlist, t_path *pathlist)
         execve(path, list->cmd_arg, tabtab);
         free_tabtab(tabtab);
         free(path);
+        free_cmd(&list);
         ft_exit(NULL, envlist, pathlist);
     }
     if (path)
         free(path);
     signal(SIGINT, SIG_DFL);
+    free_cmd(&list);
     ft_exit(NULL, envlist, pathlist);
 }
 
-int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist, int *fd)
+void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathlist, int *pipefd)
 {
     t_cmd *tmp;
-    // t_data *data;
-    pid_t pid;
 
-    // data = get_data();
-    tmp = list;
-    while (tmp)
+    tmp = cmdlist;
+    if (!is_builtin(tmp->cmd_arg[0]) && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
     {
-        pid = fork();
-        if (pid < 0)
-        {
-            free_cmd(&tmp);
-            if (access(".tmp.heredoc", F_OK) == 0)
-                unlink(".tmp_heredoc");
-            return (1);
-        }
-        else if (!pid)
-        {
-            redir_in_out(list, fd);
-            child_process(tmp, envlist, pathlist);
-        }
-        else
-            parent_process(fd, tmp);
-        tmp = tmp->next;
+        printf("not builtin\n");
+        not_builtin_child(tmp, envlist, pathlist, pipefd);
     }
-    return (0);
+    else if (is_builtin(cmdlist->cmd_arg[0]))
+    {
+        printf("builtin\n");
+        if (ft_strcmp(tmp->cmd_arg[0], "exit") == 0)
+            free_cmd(&tmp);
+        built(pipefd, list, tmp, envlist, pathlist);
+    }
 }
+
 
 int heredoc_handler(char *str, t_env *envlist, int fd)
 {
@@ -369,21 +398,32 @@ int ft_redir(t_token *list, t_cmd *cmdlist, t_env *envlist)
         }
         tmp = tmp->next;
     }
+    // if (cmd->infile < 0)
+    //     cmd->infile = 0;
     return (0);
 }
 
-int launch_builtin(t_token *list, t_env *envlist, t_path *path)
+int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *list, int *pipefd)
 {
-    t_token *tmp;
-
-    tmp = list;
+    t_cmd *tmp;
+    pid_t pid_fork;
+    tmp = cmdlist;
+    
+    pid_fork = fork();
     while (tmp)
     {
-        if (tmp->type == CMD)
-            cmd(tmp->token, tmp, envlist, path);
+        if (pid_fork < 0)
+        {
+            free_cmd(&tmp);
+            return (1);
+        }
+        else if (!pid_fork)
+            ft_embouchure(tmp, list, envlist, pathlist, pipefd);
+        else
+            parent_process(pipefd, tmp);
         tmp = tmp->next;
     }
-    return (0); 
+    return (0);
 }
 
 int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
@@ -396,33 +436,25 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     pipefd[1] = -1;
     cmdlist = token_to_cmd(list);
     tmp = cmdlist;
-    print_cmd(tmp);
-    ft_redir(list , tmp, envlist);
     if (!tmp)
         return (1);
-    while (tmp)
+    if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]))
+        return (launch_builtin(list, envlist, pathlist));
+    // print_cmd(tmp);
+    // ft_redir(list , tmp, envlist);
+    exec_cmd(tmp, envlist, pathlist, list, pipefd);
+    tmp = tmp->next;
+    while (tmp->next != NULL)
     {
-        if (tmp->next && pipe(pipefd) == -1)
+        if (pipe(pipefd) == -1)
             return (1);
-        if (!is_builtin(tmp->cmd_arg[0]) && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
-        {
-            printf("not builtin\n");
-            exec_not_builtin(tmp, envlist, pathlist, pipefd);
-        }
-        else if (is_builtin(cmdlist->cmd_arg[0]))
-        {
-            printf("builtin\n");
-            if (ft_strcmp(tmp->cmd_arg[0], "exit") == 0)
-                free_cmd(&tmp);
-            launch_builtin(list, envlist, pathlist);
-        }
-        else                                             //* (OK)
-            break;
-        if (tmp->next)
-            tmp = tmp->next;
-        else
-            break;
+        exec_cmd(tmp, envlist, pathlist, list, pipefd);
+        tmp = tmp->next;
     }
+    if (pipefd[0] >= 0)
+        close(pipefd[0]);
+    if (pipefd[1] >= 0)
+        close(pipefd[1]);
     free_cmd(&tmp);
     return (0);
 }
