@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/05 16:19:30 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/05 16:30:59 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,6 +220,7 @@ int parent_process(int *fd, t_cmd *cmdlist)
 
 static void redir_in_out(t_cmd *list, int *fd)
 {
+    printf("Noeud actuel : %s\nNoeud suivant : %s\n", list->cmd_arg[0], list->next->cmd_arg[0]);
     close(fd[0]);
     if (list->infile >= 0)
     {
@@ -267,25 +268,22 @@ int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist, int *fd)
     tmp = list;
     while (tmp)
     {
-        if (is_builtin(tmp->cmd_arg[0]) == false)
+        pid = fork();
+        if (pid < 0)
         {
-            pid = fork();
-            if (pid < 0)
-            {
-                free_cmd(&tmp);
-                if (access(".tmp.heredoc", F_OK) == 0)
-                    unlink(".tmp_heredoc");
-                return (1);
-            }
-            else if (!pid)
-            {
-                child_process(tmp, envlist, pathlist);
-                redir_in_out(tmp, fd);
-            }
-            else
-                parent_process(fd, tmp);
-            tmp = tmp->next;
+            free_cmd(&tmp);
+            if (access(".tmp.heredoc", F_OK) == 0)
+                unlink(".tmp_heredoc");
+            return (1);
         }
+        else if (!pid)
+        {
+            redir_in_out(list, fd);
+            child_process(tmp, envlist, pathlist);
+        }
+        else
+            parent_process(fd, tmp);
+        tmp = tmp->next;
     }
     return (0);
 }
