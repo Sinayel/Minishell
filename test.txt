@@ -1,3 +1,18 @@
 infile = -1
-outfile = 3
-path = /usr/bin/cat
+outfile = 6
+path = /usr/bin/ls
+LICENSE
+Makefile
+Note.txt
+README.md
+caca
+includes
+libft
+main.c
+minishell
+out
+out.txt
+srcs
+supp.supp
+test.txt
+truc

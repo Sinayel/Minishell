@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/05 12:11:50 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/05 16:07:56 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -335,33 +335,37 @@ int here_doc(t_env *envlist, char *str)
 int ft_redir(t_token *list, t_cmd *cmdlist, t_env *envlist)
 {
     t_token *tmp;
+    t_cmd *cmd;
 
+    cmd = cmdlist;
     tmp = list;
     while (tmp) //! faudrait ptet parcourir t_cmd plutot que t_token
     {
         if (tmp->type == INPUT)
         {
-            if (cmdlist->infile >= 0)
-                close(cmdlist->infile);
-            cmdlist->infile = open(tmp->next->token, O_RDONLY);
+            if (cmd->infile >= 0)
+                close(cmd->infile);
+            cmd->infile = open(tmp->next->token, O_RDONLY);
         }
         if (tmp->type == HEREDOC) //* ce serait coolos si ca checkait aussi TRUNC ou APPEND
         {
-            if (cmdlist->infile >= 0)
-                close(cmdlist->infile);
-            cmdlist->infile = here_doc(envlist, tmp->next->token);
+            if (cmd->infile >= 0)
+                close(cmd->infile);
+            cmd->infile = here_doc(envlist, tmp->next->token);
         }
+        while (cmd->next != NULL)
+            cmd = cmd->next;
         if (tmp->type == TRUNC)
         {
-            if (cmdlist->outfile >= 0)
-                close(cmdlist->outfile);
-            cmdlist->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_TRUNC, 0644);
+            if (cmd->outfile >= 0)
+                close(cmd->outfile);
+            cmd->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_TRUNC, 0644);
         }
         if (tmp->type == APPEND)
         {
-            if (cmdlist->outfile >= 0)
-                close(cmdlist->outfile);
-            cmdlist->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_APPEND, 0644);
+            if (cmd->outfile >= 0)
+                close(cmd->outfile);
+            cmd->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_APPEND, 0644);
         }
         tmp = tmp->next;
     }
@@ -387,6 +391,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     t_cmd *cmdlist;
     t_cmd *tmp;
     int pipefd[2];
+    pid_t pid;
 
     pipefd[0] = -1;
     pipefd[1] = -1;
@@ -398,7 +403,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
         return (1);
     while (tmp)
     {
-        if (pipe(pipefd) == -1)
+        if (tmp->next && pipe(pipefd) == -1)
             return (1);
         if (!is_builtin(tmp->cmd_arg[0]) && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
         {
@@ -412,7 +417,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
                 free_cmd(&tmp);
             launch_builtin(list, envlist, pathlist);
         }
-        else                                 //* (OK)
+        else                                             //* (OK)
             break;
         if (tmp->next)
             tmp = tmp->next;
