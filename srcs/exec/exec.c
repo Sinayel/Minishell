@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/05 16:07:56 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/05 16:19:30 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,13 +236,12 @@ static void redir_in_out(t_cmd *list, int *fd)
     close(fd[1]);
 }
 
-void child_process(t_cmd *list, t_env *envlist, t_path *pathlist, int *fd)
+void child_process(t_cmd *list, t_env *envlist, t_path *pathlist)
 {
     char *path;
     char **tabtab;
 
     path = NULL;
-    redir_in_out(list, fd);
     printf("infile = %d\noutfile = %d\n", list->infile, list->outfile);
     if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
@@ -279,7 +278,10 @@ int exec_not_builtin(t_cmd *list, t_env *envlist, t_path *pathlist, int *fd)
                 return (1);
             }
             else if (!pid)
-                child_process(tmp, envlist, pathlist, fd);
+            {
+                child_process(tmp, envlist, pathlist);
+                redir_in_out(tmp, fd);
+            }
             else
                 parent_process(fd, tmp);
             tmp = tmp->next;
@@ -391,7 +393,6 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     t_cmd *cmdlist;
     t_cmd *tmp;
     int pipefd[2];
-    pid_t pid;
 
     pipefd[0] = -1;
     pipefd[1] = -1;
