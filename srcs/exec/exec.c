@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/06 19:08:00 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/06 19:36:47 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,7 +354,6 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
     }
 }
 
-
 int heredoc_handler(char *str, t_env *envlist, int fd)
 {
     char *line;
@@ -371,11 +370,16 @@ int heredoc_handler(char *str, t_env *envlist, int fd)
         }
         if (ft_strcmp(line, str) == 0)
             break;
-        line = proccess_dollar_value(line, envlist);
-        if (line != "\n")
-            write(fd, line, ft_strlen(line));
+        if (ft_strcmp(line, "") != 0)
+        {
+            line = proccess_dollar_value(line, envlist);
+            printf( "line = $%s$\n", line);
+            if (line)
+                write(fd, line, ft_strlen(line));
+        }
         write(fd, "\n", 1);
-        free(line);
+        if (line)
+            free(line);
     }
     free(line);
     close(fd);
