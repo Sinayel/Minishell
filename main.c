@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/29 19:05:33 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/06 16:00:48 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	main(int argc, char *argv[], char **env)
 		if (!exit_shell(data, env_list, list))
 			break ;
 		list = tokenization(data->input, env_list);
-		if(list)
+		if (list)
 			add_history(data->input);
 		if (list)
 			parsing_exec(list, env_list, data);

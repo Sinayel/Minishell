@@ -6,11 +6,36 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/05 19:46:32 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/06 16:02:17 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
+{
+    t_data *list;
+
+    list = get_data();
+    // if (datalist->input)
+    //     free(datalist->input);
+    // if (list)
+    //     ft_token_lstclear(&list);
+    if (env)
+        ft_env_lstclear(&env); 
+    if (cmdlist)
+        free_cmd(&cmdlist);
+    if (pathlist)
+        ft_free_path(pathlist);
+    if (pipefd[0] >= 0)
+        close(pipefd[0]);
+    if (pipefd[1] >= 0)
+        close(pipefd[1]);
+    rl_clear_history();
+    if (!access(".tmp.heredoc", F_OK))
+        unlink(".tmp.heredoc");
+    exit(list->error);
+}
 
 void free_cmd(t_cmd **list)
 {
@@ -102,11 +127,12 @@ void print_cmd(t_cmd *list)
     printf("-> NULL\n");
 }
 
-int launch_builtin(t_token *list, t_env *envlist, t_path *path)
+int launch_builtin(t_token *list, t_env *envlist, t_path *path, t_cmd *cmdlist)
 {
     t_token *tmp;
-
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PROBLEEEEEEEEEEEEEEEEMMMMMMMMEEEEEEEEE   !!!!
     tmp = list;
+
     while (tmp)
     {
         if (tmp->type == CMD)
@@ -122,7 +148,7 @@ static void built(int *fd, t_token *list,t_cmd *cmd, t_env *envlist, t_path *pat
         close(fd[0]);
     if (cmd->outfile < 0 && cmd->next != NULL)
         cmd->outfile = fd[1];
-    else if
+    else
         close(fd[1]);
     launch_builtin(list, envlist, pathlist);
 }
@@ -139,26 +165,22 @@ t_cmd *token_to_cmd(t_token *list)
     {
         if (tmp->type == CMD)
         {
-            // Création d'un nouveau nœud de commande
             new_cmd = malloc(sizeof(t_cmd));
             if (!new_cmd)
-                return (NULL); // Gestion des erreurs d'allocation mémoire
+                return (NULL);
             new_cmd->next = NULL;
-            // Allocation pour les arguments (commande incluse)
             new_cmd->cmd_arg = malloc(sizeof(char *) * (len_in_block(tmp) + 1));
             if (!new_cmd->cmd_arg)
             {
                 free(new_cmd);
                 return (NULL);
             }
-            // Copie de la commande et des arguments
             i = 0;
             while (tmp && (tmp->type == CMD || tmp->type == ARG))
             {
                 new_cmd->cmd_arg[i] = ft_strdup(tmp->token);
                 if (!new_cmd->cmd_arg[i])
                 {
-                    // Libération en cas d'échec
                     while (i > 0)
                         free(new_cmd->cmd_arg[--i]);
                     free(new_cmd->cmd_arg);
@@ -171,7 +193,6 @@ t_cmd *token_to_cmd(t_token *list)
             new_cmd->cmd_arg[i] = NULL;
             new_cmd->infile = -2;
             new_cmd->outfile = -2;
-            // Ajout à la liste chaînée des commandes
             if (!cmd_head)
                 cmd_head = new_cmd;
             else
@@ -285,16 +306,13 @@ void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipef
     {
         tabtab = lst_to_tabtab(envlist);
         execve(path, list->cmd_arg, tabtab);
-        free_tabtab(tabtab);
-        free(path);
-        free_cmd(&list);
-        ft_exit(NULL, envlist, pathlist);
+        free_all_fork(list, pathlist, pipefd, envlist);
     }
     if (path)
         free(path);
     signal(SIGINT, SIG_DFL);
     free_cmd(&list);
-    ft_exit(NULL, envlist, pathlist);
+    free_all_fork(list, pathlist, pipefd, envlist);
 }
 
 void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathlist, int *pipefd)
@@ -355,6 +373,8 @@ int here_doc(t_env *envlist, char *str)
         unlink(".tmp_heredoc");
         return (-1);
     }
+    if (fd >= 0)
+        close(fd);
     fd = open(".tmp_heredoc", O_RDONLY);
     if (fd > 0)
         unlink(".tmp_heredoc");
@@ -403,26 +423,54 @@ int ft_redir(t_token *list, t_cmd *cmdlist, t_env *envlist)
     return (0);
 }
 
-int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *list, int *pipefd)
+static void ft_wait(t_cmd *cmdlist, t_token *token)
 {
+    int status;
+    int len_cmd;
+    t_data *list;
     t_cmd *tmp;
-    pid_t pid_fork;
+    int pid;
+
+    list = get_data();
+    len_cmd = len_cmdblocks(token);
     tmp = cmdlist;
-    
-    pid_fork = fork();
-    while (tmp)
+    while (len_cmd--)
     {
-        if (pid_fork < 0)
+        pid = waitpid(0, &status, 0);
+        if (pid == list->pid)
         {
-            free_cmd(&tmp);
-            return (1);
+            if (WIFEXITED(status))
+                list->error = WEXITSTATUS(status);
         }
-        else if (!pid_fork)
-            ft_embouchure(tmp, list, envlist, pathlist, pipefd);
-        else
-            parent_process(pipefd, tmp);
+        if (cmdlist->infile >= 0)
+            close(cmdlist->infile);
+        if (cmdlist->outfile >= 0)
+            close(cmdlist->outfile);
         tmp = tmp->next;
     }
+}
+
+int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *list, int *pipefd)
+{
+    t_data *data;
+
+    data = get_data();
+    
+    data->pid = fork();
+    if (data->pid < 0)
+    {
+        free_cmd(&cmdlist);
+        return (1);
+    }
+    else if (!data->pid)
+    {
+        if (cmdlist->cmd_arg && cmdlist->cmd_arg[0])
+            ft_embouchure(cmdlist, list, envlist, pathlist, pipefd);
+        // else ?
+    }
+    else
+        parent_process(pipefd, cmdlist);
+    cmdlist = cmdlist->next;
     return (0);
 }
 
@@ -444,17 +492,17 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     // ft_redir(list , tmp, envlist);
     exec_cmd(tmp, envlist, pathlist, list, pipefd);
     tmp = tmp->next;
-    while (tmp->next != NULL)
+    while (tmp)
     {
         if (pipe(pipefd) == -1)
+        {
+            free_cmd(&cmdlist);
             return (1);
+        }
         exec_cmd(tmp, envlist, pathlist, list, pipefd);
         tmp = tmp->next;
     }
-    if (pipefd[0] >= 0)
-        close(pipefd[0]);
-    if (pipefd[1] >= 0)
-        close(pipefd[1]);
+    ft_wait(cmdlist, list);
     free_cmd(&tmp);
     return (0);
 }

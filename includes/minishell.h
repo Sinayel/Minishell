@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/04 19:11:57 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/06 14:56:59 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ typedef struct s_cmd
 typedef struct s_data
 {
 	char			*input;
-	int				pid;
+	pid_t			pid;
 	int				error;
 }					t_data;
 
