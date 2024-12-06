@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/06 16:00:48 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/06 18:04:49 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,6 @@ int	main(int argc, char *argv[], char **env)
 		if (list)
 			parsing_exec(list, env_list, data);
 		print_list(list);
-		
-		// t_cmd *cmd = token_to_cmd(list);
-		// print_cmd(cmd);
 		ft_token_lstclear(&list);
 		if(data->input)
 		{

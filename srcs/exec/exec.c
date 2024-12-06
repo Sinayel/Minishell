@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/06 16:02:17 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/06 19:08:00 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ void print_cmd(t_cmd *list)
     printf("-> NULL\n");
 }
 
-int launch_builtin(t_token *list, t_env *envlist, t_path *path, t_cmd *cmdlist)
+int launch_builtin(t_token *list, t_env *envlist, t_path *path)
 {
     t_token *tmp;
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PROBLEEEEEEEEEEEEEEEEMMMMMMMMEEEEEEEEE   !!!!
@@ -142,15 +142,36 @@ int launch_builtin(t_token *list, t_env *envlist, t_path *path, t_cmd *cmdlist)
     return (0); 
 }
 
-static void built(int *fd, t_token *list,t_cmd *cmd, t_env *envlist, t_path *pathlist)
+static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
 {
-    if (fd[0] >= 0)
-        close(fd[0]);
-    if (cmd->outfile < 0 && cmd->next != NULL)
-        cmd->outfile = fd[1];
-    else
-        close(fd[1]);
-    launch_builtin(list, envlist, pathlist);
+    int save_outfile;
+    char *cmd_buff;
+
+    cmd_buff = ft_strdup(cmdlist->cmd_arg[0]);    
+    save_outfile = -1;
+    if (cmdlist->outfile >= 0)
+    {
+        save_outfile = dup(1);
+        dup2(cmdlist->outfile, 1);
+    }
+    if (ft_strcmp(cmd_buff, "exit") == 0)
+    {
+        if (cmdlist->outfile >= 0)
+        {
+            dup2(save_outfile, 1);
+            close(save_outfile);
+        }
+        free_cmd(&cmdlist);
+    }
+    cmd(cmd_buff, list, envlist, pathlist);
+    if (cmdlist && cmdlist->outfile >=0)
+    {
+        dup2(save_outfile, 1);
+        close(save_outfile);
+    }
+    free_cmd(&cmdlist);
+    free(cmd_buff);
+    return (0);
 }
 
 t_cmd *token_to_cmd(t_token *list)
@@ -268,7 +289,6 @@ int parent_process(int *fd, t_cmd *cmdlist)
         cmdlist->next->infile = fd[0];
     else
         close(fd[0]);
-
     wait(&status);
     if (WIFEXITED(status))
         data->error = WEXITSTATUS(status); //! C'est des macros pas des fonctions donc autorise
@@ -330,7 +350,7 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
         printf("builtin\n");
         if (ft_strcmp(tmp->cmd_arg[0], "exit") == 0)
             free_cmd(&tmp);
-        built(pipefd, list, tmp, envlist, pathlist);
+        built(list, tmp, envlist, pathlist);
     }
 }
 
@@ -352,7 +372,8 @@ int heredoc_handler(char *str, t_env *envlist, int fd)
         if (ft_strcmp(line, str) == 0)
             break;
         line = proccess_dollar_value(line, envlist);
-        write(fd, line, ft_strlen(line));
+        if (line != "\n")
+            write(fd, line, ft_strlen(line));
         write(fd, "\n", 1);
         free(line);
     }
@@ -418,8 +439,6 @@ int ft_redir(t_token *list, t_cmd *cmdlist, t_env *envlist)
         }
         tmp = tmp->next;
     }
-    // if (cmd->infile < 0)
-    //     cmd->infile = 0;
     return (0);
 }
 
@@ -448,6 +467,7 @@ static void ft_wait(t_cmd *cmdlist, t_token *token)
             close(cmdlist->outfile);
         tmp = tmp->next;
     }
+    free_cmd(&cmdlist);
 }
 
 int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *list, int *pipefd)
@@ -487,9 +507,9 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     if (!tmp)
         return (1);
     if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]))
-        return (launch_builtin(list, envlist, pathlist));
+        return (built(list, tmp, envlist, pathlist));
     // print_cmd(tmp);
-    // ft_redir(list , tmp, envlist);
+    ft_redir(list , tmp, envlist);
     exec_cmd(tmp, envlist, pathlist, list, pipefd);
     tmp = tmp->next;
     while (tmp)
@@ -503,7 +523,6 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
         tmp = tmp->next;
     }
     ft_wait(cmdlist, list);
-    free_cmd(&tmp);
     return (0);
 }
  //* Le prog lit et exec le dernier input/heredoc et le dernier append/trunc

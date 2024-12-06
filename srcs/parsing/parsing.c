@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/04 19:50:13 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/06 18:01:28 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ int	cmd(char *str, t_token *list, t_env *env, t_path *path)
 	if (ft_strcmp(str, "echo") == 0)
 		return (echo(list));
 	if (ft_strcmp(str, "exit") == 0)
+	{
+		free(str);
 		return (ft_exit(list, env, path));
+	}
 	if (ft_strcmp(str, "export") == 0)
 		return (ft_arg_export(env, list));
 	return 1;
