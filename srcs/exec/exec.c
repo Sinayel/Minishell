@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/07 16:57:33 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/07 18:25:11 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -366,23 +366,27 @@ int heredoc_handler(char *str, t_env *envlist, int fd)
             write(2, "bash :warning: here-document delimited by end-of-file (wanted `", 64);
             write(2, str, ft_strlen(str));
             write(2, "`)\n", 3);
-            return (-1);
+            close(fd);
+            return (0);
         }
         if (ft_strcmp(line, str) == 0)
             break;
         if (ft_strcmp(line, "") != 0)
         {
-            line = proccess_dollar_value(line, envlist);
-            printf( "line = $%s$\n", line);
             if (line)
+            {
+                line = proccess_dollar_value(line, envlist);
+                printf( "line = $%s$\n", line);
                 write(fd, line, ft_strlen(line));
+            }
         }
         write(fd, "\n", 1);
-        if (line)
+        if (line)   
             free(line);
     }
-    free(line);
-    // close(fd);
+    if (line)
+        free(line);
+    close(fd);
     return (0);
 }
 
@@ -473,6 +477,8 @@ static void ft_wait(t_cmd *cmdlist, t_token *token)
             close(cmdlist->outfile);
         tmp = tmp->next;
     }
+    if (access(".tmp.heredoc", F_OK) == 0)
+        unlink(".tmp.heredoc");
     free_cmd(&cmdlist);
 }
 
