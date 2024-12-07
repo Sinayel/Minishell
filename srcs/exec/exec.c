@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/06 19:36:47 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/07 16:57:33 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void free_cmd(t_cmd **list)
         tmp = next;
     }
     if (access(".tmp.heredoc", F_OK) == 0)
-        unlink(".tmp_heredoc");
+        unlink(".tmp.heredoc");
     // Mettre le pointeur original à NULL
     *list = NULL;
 }
@@ -363,10 +363,10 @@ int heredoc_handler(char *str, t_env *envlist, int fd)
         line = readline(">");
         if (!line)
         {
-            write(2, "bash :warning: here-document delimited by end-of-file (wanted ` ", 62);
+            write(2, "bash :warning: here-document delimited by end-of-file (wanted `", 64);
             write(2, str, ft_strlen(str));
             write(2, "`)\n", 3);
-            break;
+            return (-1);
         }
         if (ft_strcmp(line, str) == 0)
             break;
@@ -382,7 +382,7 @@ int heredoc_handler(char *str, t_env *envlist, int fd)
             free(line);
     }
     free(line);
-    close(fd);
+    // close(fd);
     return (0);
 }
 
@@ -390,19 +390,20 @@ int here_doc(t_env *envlist, char *str)
 {
     int fd;
 
-    fd = open(".tmp_heredoc", O_CREAT | O_RDWR | O_TRUNC, 0644);
+    fd = open(".tmp.heredoc", O_CREAT | O_RDWR | O_TRUNC, 0644);
     if (fd < 0)
         return (-1);
-    if (!heredoc_handler(str, envlist, fd))
+    if (heredoc_handler(str, envlist, fd))
     {
-        unlink(".tmp_heredoc");
+        printf("here_doc = %d\n", fd);
+        unlink(".tmp.heredoc");
         return (-1);
     }
-    if (fd >= 0)
-        close(fd);
-    fd = open(".tmp_heredoc", O_RDONLY);
+    // if (fd >= 0)
+    //     close(fd);
+    fd = open(".tmp.heredoc", O_RDONLY);
     if (fd > 0)
-        unlink(".tmp_heredoc");
+        unlink(".tmp.heredoc");
     return (fd);
 }
 
@@ -426,6 +427,7 @@ int ft_redir(t_token *list, t_cmd *cmdlist, t_env *envlist)
             if (cmd->infile >= 0)
                 close(cmd->infile);
             cmd->infile = here_doc(envlist, tmp->next->token);
+            printf("infile HEREDOC = %d\n", cmd->infile);
         }
         while (cmd->next != NULL)
             cmd = cmd->next;
