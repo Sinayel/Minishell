@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:43:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/29 19:20:03 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/07 22:16:13 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	len_for_cd(t_token *list)
 	tmp = tmp->next;
 	i = 0;
 	j = 0;
-	while (tmp)
+	while (tmp && tmp->type > 5)
 	{
 		while (tmp->token[j])
 		{
@@ -89,7 +89,7 @@ int	ft_arg_cd(t_env *env, t_token *list)
 		return (ft_cd(env, NULL));
 	value_for_cd = (char *)malloc(sizeof(char) * (len + 1));
 	init_var_i(&i, &j);
-	while (tmp)
+	while (tmp && tmp->type > 5)
 	{
 		while (tmp->token[j])
 			value_for_cd[i++] = tmp->token[j++];

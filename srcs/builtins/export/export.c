@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:48:51 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 18:51:10 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/07 22:14:09 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int	ft_arg_export(t_env *env, t_token *list)
 		return (ft_export(env, NULL));
 	value_for_export = (char *)malloc(sizeof(char) * (len + 1));
 	init_var_i(&i, &j);
-	while (tmp)
+	while (tmp && tmp->type > 5)
 	{
 		while (tmp->token[j])
 			value_for_export[i++] = tmp->token[j++];

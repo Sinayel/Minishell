@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/07 21:46:46 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/07 21:59:20 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,6 @@ void print_cmd(t_cmd *list)
             printf("noeud n.%d = [%s] ->\n", len, tmp->cmd_arg[i]);
             i++;
         }
-        printf("infile = %d\noutfile = %d\n", tmp->infile, tmp->outfile);
         len++;
         tmp = tmp->next;
     }
@@ -313,10 +312,7 @@ bool	checkpath(t_path *pathlist, char *cmd, char **path)
         }
 		is_ok = access(*path, X_OK);
 		if (is_ok == 0)
-		{
-            printf("path = %s\n", *path);
 			return (true);
-		}
 		pathlist = pathlist->next;
 	}
 	return (false);
@@ -345,7 +341,6 @@ int parent_process(int *fd, t_cmd *cmdlist)
 
 static void redir_in_out(t_cmd *list, int *fd)
 {
-    printf("Noeud actuel : %s\n", list->cmd_arg[0]);
     close(fd[0]);
     if (list->infile >= 0)
     {
@@ -369,7 +364,6 @@ void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipef
 
     path = NULL;
     redir_in_out(list, pipefd);
-    printf("infile = %d\noutfile = %d\n", list->infile, list->outfile);
     if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
         tabtab = lst_to_tabtab(envlist);
@@ -390,12 +384,12 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
     tmp = cmdlist;
     if (!is_builtin(tmp->cmd_arg[0]) && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
     {
-        printf("not builtin\n");
+        // printf("not builtin\n");
         not_builtin_child(tmp, envlist, pathlist, pipefd);
     }
     else if (is_builtin(cmdlist->cmd_arg[0]))
     {
-        printf("builtin\n");
+        // printf("builtin\n");
         // if (ft_strcmp(tmp->cmd_arg[0], "exit") == 0)
         //     free_cmd(&tmp);
         built(list, tmp, envlist, pathlist);
