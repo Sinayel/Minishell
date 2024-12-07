@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/06 14:56:59 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/07 21:22:17 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -219,6 +219,7 @@ t_cmd 				*token_to_cmd(t_token *list);
 void 				print_cmd(t_cmd *list);
 int 				ft_exec(t_token *list, t_env *envlist, t_path *pathlist);
 void				free_cmd(t_cmd **list);
+int					len_cmd(t_cmd *list);
 bool 				is_builtin(char *str);
 
 //! --------------------------------------------------------

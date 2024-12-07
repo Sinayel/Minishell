@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 17:55:57 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/07 21:42:03 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,11 @@ void free_tabtab(char **tab)
 	i = 0;
 	if (!tab)
 		return;
-	while (tab[i] != NULL)
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
+	while (tab && tab[i])
+		free(tab[i++]);
+	if (tab)
+		free(tab);
+	tab = NULL;
 }
 
 //? Pour enlever les doubles quotes des noeud de la liste chainee

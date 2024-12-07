@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/07 18:25:11 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/07 21:46:46 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,35 +37,83 @@ void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
     exit(list->error);
 }
 
+void free_cmd_vars(t_cmd *list)
+{
+    if (list->infile > 0)
+        close(list->infile);
+    list->infile = -2;
+    if (list->outfile > 0)
+        close(list->outfile);
+    list->outfile = -2;
+    free_tabtab(list->cmd_arg);
+}
+
 void free_cmd(t_cmd **list)
 {
     t_cmd *tmp;
-    t_cmd *next;
+    t_cmd *current;
+    int len;
 
+    len  = len_cmd(*list) - 1;
     if (list == NULL || *list == NULL)
         return;
-    tmp = *list;
+    current = *list;
+    while (len-- && current)
+    {
+        tmp = current;
+        current = current->next;
+        free_cmd_vars(tmp);
+        free(tmp);
+    }
+    free_cmd_vars(current);
+    free(current);
+    *list = NULL;
+}
+
+// void free_cmd(t_cmd **list)
+// {
+//     t_cmd *tmp;
+//     t_cmd *next;
+
+//     if (list == NULL || *list == NULL)
+//         return;
+//     tmp = *list;
+//     while (tmp)
+//     {
+//         next = tmp->next;
+//         // Libération des arguments de la commande
+//         if (tmp->infile >= 0)
+//             close(tmp->infile);
+//         if (tmp->outfile >= 0)
+//             close(tmp->outfile);
+//         if (tmp->cmd_arg)
+//         {
+//             free_tabtab(tmp->cmd_arg);
+//             tmp->cmd_arg = NULL;
+//         }
+//         // Libération du nœud de commande
+//         free(tmp);
+//         tmp = next;
+//     }
+//     if (access(".tmp.heredoc", F_OK) == 0)
+//         unlink(".tmp.heredoc");
+//     // Mettre le pointeur original à NULL
+//     *list = NULL;
+// }
+
+int len_cmd(t_cmd *list)
+{
+    int len;
+    t_cmd *tmp;
+
+    len = 0;
+    tmp = list;
     while (tmp)
     {
-        next = tmp->next;
-        // Libération des arguments de la commande
-        if (tmp->infile >= 0)
-            close(tmp->infile);
-        if (tmp->outfile >= 0)
-            close(tmp->outfile);
-        if (tmp->cmd_arg)
-        {
-            free_tabtab(tmp->cmd_arg);
-            tmp->cmd_arg = NULL;
-        }
-        // Libération du nœud de commande
-        free(tmp);
-        tmp = next;
+        len++;
+        tmp = tmp->next;
     }
-    if (access(".tmp.heredoc", F_OK) == 0)
-        unlink(".tmp.heredoc");
-    // Mettre le pointeur original à NULL
-    *list = NULL;
+    return (len);
 }
 
 int len_cmdblocks(t_token *list)
@@ -348,8 +396,8 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
     else if (is_builtin(cmdlist->cmd_arg[0]))
     {
         printf("builtin\n");
-        if (ft_strcmp(tmp->cmd_arg[0], "exit") == 0)
-            free_cmd(&tmp);
+        // if (ft_strcmp(tmp->cmd_arg[0], "exit") == 0)
+        //     free_cmd(&tmp);
         built(list, tmp, envlist, pathlist);
     }
 }
@@ -376,7 +424,6 @@ int heredoc_handler(char *str, t_env *envlist, int fd)
             if (line)
             {
                 line = proccess_dollar_value(line, envlist);
-                printf( "line = $%s$\n", line);
                 write(fd, line, ft_strlen(line));
             }
         }
@@ -403,8 +450,6 @@ int here_doc(t_env *envlist, char *str)
         unlink(".tmp.heredoc");
         return (-1);
     }
-    // if (fd >= 0)
-    //     close(fd);
     fd = open(".tmp.heredoc", O_RDONLY);
     if (fd > 0)
         unlink(".tmp.heredoc");
@@ -426,12 +471,11 @@ int ft_redir(t_token *list, t_cmd *cmdlist, t_env *envlist)
                 close(cmd->infile);
             cmd->infile = open(tmp->next->token, O_RDONLY);
         }
-        if (tmp->type == HEREDOC) //* ce serait coolos si ca checkait aussi TRUNC ou APPEND
+        if (tmp->type == HEREDOC)
         {
             if (cmd->infile >= 0)
                 close(cmd->infile);
             cmd->infile = here_doc(envlist, tmp->next->token);
-            printf("infile HEREDOC = %d\n", cmd->infile);
         }
         while (cmd->next != NULL)
             cmd = cmd->next;
@@ -487,7 +531,6 @@ int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *list, in
     t_data *data;
 
     data = get_data();
-    
     data->pid = fork();
     if (data->pid < 0)
     {
@@ -502,7 +545,8 @@ int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *list, in
     }
     else
         parent_process(pipefd, cmdlist);
-    cmdlist = cmdlist->next;
+    if (cmdlist->next != NULL)
+        cmdlist = cmdlist->next;
     return (0);
 }
 
@@ -518,10 +562,10 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     tmp = cmdlist;
     if (!tmp)
         return (1);
+    ft_redir(list , tmp, envlist);
     if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]))
         return (built(list, tmp, envlist, pathlist));
     // print_cmd(tmp);
-    ft_redir(list , tmp, envlist);
     exec_cmd(tmp, envlist, pathlist, list, pipefd);
     tmp = tmp->next;
     while (tmp)
