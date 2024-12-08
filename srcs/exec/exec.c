@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/08 22:14:46 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/08 22:28:52 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,11 +203,11 @@ static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
     }
     if (ft_strcmp(cmd_buff, "exit") == 0)
     {
-        if (cmdlist->outfile >= 0)
-        {
-            dup2(save_outfile, 1);
-            close(save_outfile);
-        }
+        // if (cmdlist->outfile >= 0)
+        // {
+        //     dup2(save_outfile, 1);
+        //     close(save_outfile);
+        // }
         free_cmd(&cmdlist);
     }
     cmd(cmd_buff, list, envlist, pathlist);
@@ -393,6 +393,13 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
         // if (ft_strcmp(tmp->cmd_arg[0], "exit") == 0)
         //     free_cmd(&tmp);
         built(list, tmp, envlist, pathlist);
+    }
+    else
+    {
+        if (pipefd[0] >= 0)
+            close(pipefd[0]);
+        if (pipefd[1] >= 0)
+            close(pipefd[1]);
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/04 19:48:40 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/08 22:24:20 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,26 +38,26 @@ t_path	*return_path(t_env *env)
 	return (path);
 }
 
-void errno_check(int err, char *token)
+void errno_check(int err)
 {
 	t_data *data;
 
 	data = get_data();
 	if (err == EACCES)
 	{
-		printf("%s: ", token);
+		// printf("%s: ", token);
 		ft_putstr_fd("Permission denied\n", 2);
 		data->error = 126;
 	}
 	if (err == EISDIR)
 	{
-		printf("%s: ", token);
+		// printf("%s: ", token);
 		ft_putstr_fd("Is a directory\n", 2);
 		data->error = 126;
 	}
 	else
 	{
-		printf("%s: ", token);
+		// printf("%s: ", token);
 		ft_putstr_fd("Command not found\n", 2);
 		data->error = 127;
 	}
@@ -75,7 +75,7 @@ int check_access(char *path)
 	{
         if (errno == EISDIR || errno == EACCES)
 		{
-            errno_check(errno, path);
+            errno_check(errno);
             return 1; // Erreur permission ou repertoire
         }
         return 2; // Command not found
@@ -117,7 +117,7 @@ int double_check(t_path *path, t_token *tmp, char *input)
         free(word);
         path = path->next;
     }
-	errno_check(0, word);
+	errno_check(0);
 	free(word);
     return 1;
 }
