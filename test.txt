@@ -1,7 +1,1 @@
-infile = 3
-outfile = 5
-path = /usr/bin/cat
-drfghujigtfcvgnikohgtgef
-sefdthhu
-dawsfghjk
-fsdgh
+     14      14     109

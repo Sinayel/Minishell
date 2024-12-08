@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/07 21:59:20 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/08 22:14:46 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -548,8 +548,11 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
 {
     t_cmd *cmdlist;
     t_cmd *tmp;
+    t_data *data;
     int pipefd[2];
 
+    data = get_data();
+    data->pid = 0;
     pipefd[0] = -1;
     pipefd[1] = -1;
     cmdlist = token_to_cmd(list);
@@ -560,6 +563,11 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]))
         return (built(list, tmp, envlist, pathlist));
     // print_cmd(tmp);
+    if (pipe(pipefd) == -1)
+    {
+        free_cmd(&cmdlist);
+        return (1);
+    }
     exec_cmd(tmp, envlist, pathlist, list, pipefd);
     tmp = tmp->next;
     while (tmp)
