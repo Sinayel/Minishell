@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/09 10:17:39 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 18:26:53 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ int check_access(char *path)
     return 0; // Aucun problème
 }
 
-int double_check(t_path *path, t_token *tmp, char *input)
+int double_check(t_path *path, char *input)
 {
     char *word;
     int result;
@@ -99,7 +99,7 @@ int double_check(t_path *path, t_token *tmp, char *input)
         result = check_access(input);
         if (result == 1 || result == 0)
             return (result);
-        word = ft_magouilles(path->name, "/", tmp->token);
+        word = ft_magouilles(path->name, "/", input);
         if (is_directory(word))
 		{
             printf("%s: Is a directory\n", word);
@@ -117,6 +117,7 @@ int double_check(t_path *path, t_token *tmp, char *input)
         free(word);
         path = path->next;
     }
+	// printf("%s: Command not found\n", word);
 	errno_check(0);
 	free(word);
     return 1;

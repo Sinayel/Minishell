@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/07 21:22:17 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 17:12:59 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ int 				for_trunc_and_heredoc(t_token *tmp);
 int 				return_next_next(t_token *tmp);
 
 //	Path
-int 				double_check(t_path *path, t_token *tmp, char *input);
+int 				double_check(t_path *path, char *input);
 t_path				*return_path(t_env *env);
 void 				ft_free_path(t_path *path);
 

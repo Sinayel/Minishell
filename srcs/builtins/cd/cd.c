@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:43:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/07 22:16:13 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 18:45:59 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ int	ft_arg_cd(t_env *env, t_token *list)
 	{
 		while (tmp->token[j])
 			value_for_cd[i++] = tmp->token[j++];
-		if (tmp->next)
-			value_for_cd[i++] = ' ';
+		if (tmp->next->type == ARG)
+			return (printf("bash: cd: too many arguments\n"));
 		j = 0;
 		tmp = tmp->next;
 	}

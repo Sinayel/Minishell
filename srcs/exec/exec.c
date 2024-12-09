@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/09 16:17:47 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 19:28:16 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
 {
     t_data *list;
 
+    (void)cmdlist;
     list = get_data();
     // if (datalist->input)
     //     free(datalist->input);
@@ -24,9 +25,9 @@ void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
     if (list->input)
         free(list->input);
     if (env)
-        ft_free_env(&env);
-    if (cmdlist)
-        free_cmd(&cmdlist);
+        ft_env_lstclear(&env);
+    // if (cmdlist)
+    //     free_cmd(&cmdlist);
     if (pathlist)
         ft_free_path(pathlist);
     if (pipefd[0] >= 0)
@@ -56,11 +57,11 @@ void free_cmd(t_cmd **list)
     t_cmd *current;
     int len;
 
-    len  = len_cmd(*list) - 1;
     if (list == NULL || *list == NULL)
         return;
+    len  = len_cmd(*list) - 1;
     current = *list;
-    while (len-- && current)
+    while (current && len--)
     {
         tmp = current;
         current = current->next;
@@ -109,6 +110,8 @@ int len_cmd(t_cmd *list)
     t_cmd *tmp;
 
     len = 0;
+    if (!list)
+        return (0);
     tmp = list;
     while (tmp)
     {
@@ -200,6 +203,15 @@ static void redir_builtin(t_cmd *cmdlist, int *pipefd)
         close(pipefd[1]);
 }
 
+void free_export_exec(void)
+{
+    t_export *export;
+
+    export = get_export();
+    if (export && export->content)
+        free_tabtab(export->content);
+}
+
 static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
 {
     int save_outfile;
@@ -212,15 +224,9 @@ static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
         save_outfile = dup(1);
         dup2(cmdlist->outfile, 1);
     }
-    if (ft_strcmp(cmd_buff, "exit") == 0)
-    {
-        // if (cmdlist->outfile >= 0)
-        // {
-        //     dup2(save_outfile, 1);
-        //     close(save_outfile);
-        // }
+    // if (ft_strcmp(cmd_buff, "export") == 0 && !cmdlist->next)
+    if (ft_strcmp(cmd_buff, "exit") == 0 && !cmdlist->next)
         free_cmd(&cmdlist);
-    }
     cmd(cmd_buff, list, envlist, pathlist);
     if (cmdlist && cmdlist->outfile >=0)
     {
@@ -331,7 +337,7 @@ bool	checkpath(t_path *pathlist, char *cmd, char **path)
 
 int parent_process(int *fd, t_cmd *cmdlist)
 {
-    int status = 0;
+    // int status = 0;
     t_data *data;
 
     data = get_data();
@@ -344,9 +350,9 @@ int parent_process(int *fd, t_cmd *cmdlist)
         cmdlist->next->infile = fd[0];
     else
         close(fd[0]);
-    wait(&status);
-    if (WIFEXITED(status))
-        data->error = WEXITSTATUS(status); //! C'est des macros pas des fonctions donc autorise
+    // wait(&status);
+    // if (WIFEXITED(status))
+    //     data->error = WEXITSTATUS(status); //! C'est des macros pas des fonctions donc autorise
     return (data->error);
 }
 
@@ -390,20 +396,19 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
     t_cmd *tmp;
 
     tmp = cmdlist;
-    if (is_builtin(tmp->cmd_arg[0]) == 0 && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
+    if (is_builtin(tmp->cmd_arg[0]) == 1)
     {
-        // printf("not builtin\n");
-        not_builtin_child(tmp, envlist, pathlist, pipefd);
-    }
-    else if (is_builtin(tmp->cmd_arg[0]) == 1)
-    {
-        printf("ALLO ?!");
+        printf("buitin\n");
         redir_builtin(cmdlist, pipefd);
         built(list, tmp, envlist, pathlist);
     }
-    printf("is builtin = %d\n", is_builtin(tmp->cmd_arg[0]));
+    else if (is_builtin(tmp->cmd_arg[0]) == 0 && double_check(pathlist, cmdlist->cmd_arg[0]) == 0)
+        not_builtin_child(tmp, envlist, pathlist, pipefd);
+    else if (double_check(pathlist, cmdlist->cmd_arg[0]) == 1)
+        free_cmd(&cmdlist);
+    free_export_exec();
     ft_token_lstclear(&list);
-    free_all_fork(cmdlist, pathlist, pipefd, envlist);
+    free_all_fork(tmp, pathlist, pipefd, envlist);
 }
 
 int heredoc_handler(char *str, t_env *envlist, int fd)
@@ -545,12 +550,9 @@ static int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *l
             ft_embouchure(cmdlist, list, envlist, pathlist, pipefd);
         else
             free_all_fork(cmdlist, pathlist, pipefd, envlist);
-        // else ?
     }
     else
         parent_process(pipefd, cmdlist);
-    if (cmdlist->next != NULL)
-        cmdlist = cmdlist->next;
     return (0);
 }
 
@@ -570,7 +572,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     if (!tmp)
         return (1);
     ft_redir(list , tmp, envlist);
-    if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]) == 1)
+    if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]) == true)
         return (built(list, tmp, envlist, pathlist));
     // print_cmd(tmp);
     if (pipe(pipefd) == -1)
@@ -584,13 +586,13 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     {
         if (pipe(pipefd) == -1)
         {
-            free_cmd(&tmp);
+            free_cmd(&cmdlist);
             return (1);
         }
         exec_cmd(tmp, envlist, pathlist, list, pipefd);
         tmp = tmp->next;
     }
-    ft_wait(tmp, list);
+    ft_wait(cmdlist, list);
     return (0);
 }
  //* Le prog lit et exec le dernier input/heredoc et le dernier append/trunc
