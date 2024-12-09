@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/09 20:11:53 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 21:24:55 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,7 @@ static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
         dup2(cmdlist->outfile, 1);
     }
     // if (ft_strcmp(cmd_buff, "export") == 0 && !cmdlist->next)
-    if (ft_strcmp(cmd_buff, "exit") == 0 && !cmdlist->next)
+    if (ft_strcmp(cmd_buff, "exit") == 0)
         free_cmd(&cmdlist);
     cmd(cmd_buff, list, envlist, pathlist);
     if (cmdlist && cmdlist->outfile >=0)
@@ -400,11 +400,12 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
     {
         redir_builtin(cmdlist, pipefd);
         built(list, tmp, envlist, pathlist);
+        // free_cmd(&tmp);
     }
     else if (is_builtin(tmp->cmd_arg[0]) == 0 && double_check(pathlist, cmdlist->cmd_arg[0]) == 0)
         not_builtin_child(tmp, envlist, pathlist, pipefd);
     else if (double_check(pathlist, cmdlist->cmd_arg[0]) == 1)
-        free_cmd(&cmdlist);
+        free_cmd(&tmp);
     free_export_exec();
     ft_token_lstclear(&list);
     free_all_fork(tmp, pathlist, pipefd, envlist);
@@ -532,6 +533,7 @@ static void ft_wait(t_cmd *cmdlist, t_token *token)
     }
     if (access(".tmp.heredoc", F_OK) == 0)
         unlink(".tmp.heredoc");
+    free_cmd(&tmp);
     free_cmd(&cmdlist);
 }
 
