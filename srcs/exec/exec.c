@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/09 10:57:42 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 16:17:47 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,12 @@ void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
     t_data *list;
 
     list = get_data();
-    printf("LS COMMANDE EST INCORREDCTE\n");
     // if (datalist->input)
     //     free(datalist->input);
     // if (list)
     //     ft_token_lstclear(&list);
+    if (list->input)
+        free(list->input);
     if (env)
         ft_free_env(&env);
     if (cmdlist)
@@ -190,6 +191,15 @@ int launch_builtin(t_token *list, t_env *envlist, t_path *path)
     return (0); 
 }
 
+static void redir_builtin(t_cmd *cmdlist, int *pipefd)
+{
+    close(pipefd[0]);
+    if (cmdlist->outfile < 0 && cmdlist)
+        cmdlist->outfile = pipefd[1];
+    else
+        close(pipefd[1]);
+}
+
 static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
 {
     int save_outfile;
@@ -218,7 +228,7 @@ static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
         close(save_outfile);
     }
     free(cmd_buff);
-    // free_cmd(&cmdlist);
+    free_cmd(&cmdlist);
     return (0);
 }
 
@@ -322,9 +332,9 @@ bool	checkpath(t_path *pathlist, char *cmd, char **path)
 int parent_process(int *fd, t_cmd *cmdlist)
 {
     int status = 0;
-    t_data *data = get_data();
+    t_data *data;
 
-
+    data = get_data();
     close(fd[1]);
     if (cmdlist->infile >= 0)
         close(cmdlist->infile);
@@ -380,20 +390,18 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
     t_cmd *tmp;
 
     tmp = cmdlist;
-    if (!is_builtin(tmp->cmd_arg[0]) && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
+    if (is_builtin(tmp->cmd_arg[0]) == 0 && double_check(pathlist, list, tmp->cmd_arg[0]) == 0)
     {
         // printf("not builtin\n");
         not_builtin_child(tmp, envlist, pathlist, pipefd);
     }
-    else if (is_builtin(cmdlist->cmd_arg[0]))
+    else if (is_builtin(tmp->cmd_arg[0]) == 1)
     {
-        close(pipefd[0]);
-        if (cmdlist->outfile < 0 && cmdlist->next)
-            cmdlist->outfile = pipefd[1];
-        else
-            close(pipefd[1]);
+        printf("ALLO ?!");
+        redir_builtin(cmdlist, pipefd);
         built(list, tmp, envlist, pathlist);
     }
+    printf("is builtin = %d\n", is_builtin(tmp->cmd_arg[0]));
     ft_token_lstclear(&list);
     free_all_fork(cmdlist, pathlist, pipefd, envlist);
 }
@@ -420,7 +428,8 @@ int heredoc_handler(char *str, t_env *envlist, int fd)
             if (line)
             {
                 line = proccess_dollar_value(line, envlist);
-                write(fd, line, ft_strlen(line));
+                if (line)
+                    write(fd, line, ft_strlen(line));
             }
         }
         write(fd, "\n", 1);
@@ -561,7 +570,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     if (!tmp)
         return (1);
     ft_redir(list , tmp, envlist);
-    if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]))
+    if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]) == 1)
         return (built(list, tmp, envlist, pathlist));
     // print_cmd(tmp);
     if (pipe(pipefd) == -1)
@@ -575,13 +584,13 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     {
         if (pipe(pipefd) == -1)
         {
-            free_cmd(&cmdlist);
+            free_cmd(&tmp);
             return (1);
         }
         exec_cmd(tmp, envlist, pathlist, list, pipefd);
         tmp = tmp->next;
     }
-    ft_wait(cmdlist, list);
+    ft_wait(tmp, list);
     return (0);
 }
  //* Le prog lit et exec le dernier input/heredoc et le dernier append/trunc
