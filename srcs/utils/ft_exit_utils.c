@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:21:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/28 16:29:58 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/09 21:04:07 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	handle_too_many_arguments(t_token *list, t_data *data)
 {
-	if (list && list->next && list->next->next)
+	if (list && list->next && list->next->next && list->next->next->next->type == ARG)
 	{
 		ft_putstr_fd("exit: too many arguments\n", 2);
 		data->error = 1;
