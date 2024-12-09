@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:21:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/09 20:36:15 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 21:01:19 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	ft_exit(t_token *list, t_env *env, t_path *path)
 	if (list && list->next)
 	{
 		arg = list->next->token;
-		if (!is_valid_number(arg))
+		if (!is_valid_number(arg) && list->next->type != ARG)
 			handle_invalid_argument(arg, list, env, path);
 		exit_code = parse_exit_code(arg, list, env, path);
 	}
