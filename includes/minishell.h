@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/04 18:58:29 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/09 20:07:15 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,17 @@
 #include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
 #include "../libft/libft.h"
-#include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
+#include <errno.h>
 
 typedef struct s_dollar
 {
@@ -86,6 +87,14 @@ typedef struct s_token
 	struct s_token	*prev;
 }					t_token;
 
+typedef struct s_cmd
+{
+	char **cmd_arg;
+	int infile;
+	int outfile;
+	struct s_cmd *next;
+}			t_cmd;
+
 typedef struct s_data
 {
 	char			*input;
@@ -113,8 +122,8 @@ void				skip_and_initialize_tmp(char **tmp, char *str, int *i,
 int					parsing_exec(t_token *list, t_env *env, t_data *data);
 
 // Cmd
-int					cmd(char *str, t_token *list, t_env *env, t_data *data);
-int					check_cmd(t_token *list, t_env *env, t_data *data);
+int					cmd(char *str, t_token *list, t_env *env, t_path *path);
+int					check_cmd(t_token *list, t_env *env);
 
 // Check dollar
 char				*proccess_dollar_value(char *str, t_env *env);
@@ -135,7 +144,7 @@ int					for_trunc_and_heredoc(t_token *tmp);
 int					return_next_next(t_token *tmp);
 
 //	Path
-int					double_check(t_path *path, t_token *tmp, char *input);
+int 				double_check(t_path *path, char *input);
 t_path				*return_path(t_env *env);
 void				ft_free_path(t_path *path);
 
@@ -152,10 +161,10 @@ t_env				*create_env_var(char *name, char *value);
 int					ft_pwd(char *arg);
 
 //* -----------------------  Cd  --------------------------		// (JULIO)
-int					ft_cd(t_env *env_list, char *input, t_data *data);
+int					ft_cd(t_env *env_list, char *input);
 char				*cd_handle_dollar(t_env *env_list, char *input);
 int					no_home_set(char *path, t_data *data);
-int					mouv_cd(char *path, t_env *env_list, t_data *data);
+void				mouv_cd(char *path, t_env *env_list, t_data *data);
 int					bad_option(char *input, t_data *data);
 int					option_for_cd_(char *input, t_data *data, t_env *env_list,
 						char *path);
@@ -227,6 +236,15 @@ char				*ft_magouilles_v2(char *str1, char *str2, char *str3);
 int					copy_string(char *dest, char *src, int v);
 int					ft_strlen_tabtab_gpt(char **split_arg);
 
+//* -------------------------- EXEC ------------------------
+int					cmd(char *str, t_token *list, t_env *env, t_path *path);
+t_cmd 				*token_to_cmd(t_token *list);
+void 				print_cmd(t_cmd *list);
+int 				ft_exec(t_token *list, t_env *envlist, t_path *pathlist);
+void				free_cmd(t_cmd **list);
+int					len_cmd(t_cmd *list);
+bool 				is_builtin(char *str);
+
 //! --------------------------------------------------------
 
 // 3 --------------------  Liste Chainee  --------------------
@@ -272,7 +290,7 @@ char				**ft_split_for_path(char const *s, char c);
 long int			ft_strtol(const char *nptr, char **endptr, int base);
 
 // Cd
-int					ft_arg_cd(t_env *env, t_token *list, t_data *data);
+int					ft_arg_cd(t_env *env, t_token *list);
 int					cmb_word(char *str);
 int					len_for_cd(t_token *list);
 void				ch_oldpwd(t_env **env_list);
