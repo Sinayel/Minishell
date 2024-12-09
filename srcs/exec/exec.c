@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/08 23:40:14 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 10:57:42 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,13 @@ void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
     t_data *list;
 
     list = get_data();
+    printf("LS COMMANDE EST INCORREDCTE\n");
     // if (datalist->input)
     //     free(datalist->input);
     // if (list)
     //     ft_token_lstclear(&list);
     if (env)
-        ft_env_lstclear(&env); 
+        ft_free_env(&env);
     if (cmdlist)
         free_cmd(&cmdlist);
     if (pathlist)
@@ -217,7 +218,7 @@ static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
         close(save_outfile);
     }
     free(cmd_buff);
-    free_cmd(&cmdlist);
+    // free_cmd(&cmdlist);
     return (0);
 }
 
@@ -368,13 +369,10 @@ void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipef
     {
         tabtab = lst_to_tabtab(envlist);
         execve(path, list->cmd_arg, tabtab);
-        free_all_fork(list, pathlist, pipefd, envlist);
     }
     if (path)
         free(path);
     signal(SIGINT, SIG_DFL);
-    free_cmd(&list);
-    free_all_fork(list, pathlist, pipefd, envlist);
 }
 
 void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathlist, int *pipefd)
@@ -396,8 +394,8 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
             close(pipefd[1]);
         built(list, tmp, envlist, pathlist);
     }
-    else if (double_check(pathlist, list, tmp->cmd_arg[0]) == 1)
-        free_all_fork(cmdlist, pathlist, pipefd, envlist);
+    ft_token_lstclear(&list);
+    free_all_fork(cmdlist, pathlist, pipefd, envlist);
 }
 
 int heredoc_handler(char *str, t_env *envlist, int fd)
@@ -513,10 +511,10 @@ static void ft_wait(t_cmd *cmdlist, t_token *token)
             if (WIFEXITED(status))
                 list->error = WEXITSTATUS(status);
         }
-        if (cmdlist->infile >= 0)
-            close(cmdlist->infile);
-        if (cmdlist->outfile >= 0)
-            close(cmdlist->outfile);
+        if (tmp->infile >= 0)
+            close(tmp->infile);
+        if (tmp->outfile >= 0)
+            close(tmp->outfile);
         tmp = tmp->next;
     }
     if (access(".tmp.heredoc", F_OK) == 0)
@@ -536,7 +534,8 @@ static int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *l
     {
         if (cmdlist->cmd_arg && cmdlist->cmd_arg[0])
             ft_embouchure(cmdlist, list, envlist, pathlist, pipefd);
-        free_all_fork(cmdlist, pathlist, pipefd, envlist);
+        else
+            free_all_fork(cmdlist, pathlist, pipefd, envlist);
         // else ?
     }
     else
