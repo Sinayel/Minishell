@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/09 19:28:16 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 19:47:50 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,37 +72,6 @@ void free_cmd(t_cmd **list)
     free(current);
     *list = NULL;
 }
-
-// void free_cmd(t_cmd **list)
-// {
-//     t_cmd *tmp;
-//     t_cmd *next;
-
-//     if (list == NULL || *list == NULL)
-//         return;
-//     tmp = *list;
-//     while (tmp)
-//     {
-//         next = tmp->next;
-//         // Libération des arguments de la commande
-//         if (tmp->infile >= 0)
-//             close(tmp->infile);
-//         if (tmp->outfile >= 0)
-//             close(tmp->outfile);
-//         if (tmp->cmd_arg)
-//         {
-//             free_tabtab(tmp->cmd_arg);
-//             tmp->cmd_arg = NULL;
-//         }
-//         // Libération du nœud de commande
-//         free(tmp);
-//         tmp = next;
-//     }
-//     if (access(".tmp.heredoc", F_OK) == 0)
-//         unlink(".tmp.heredoc");
-//     // Mettre le pointeur original à NULL
-//     *list = NULL;
-// }
 
 int len_cmd(t_cmd *list)
 {
@@ -350,9 +319,6 @@ int parent_process(int *fd, t_cmd *cmdlist)
         cmdlist->next->infile = fd[0];
     else
         close(fd[0]);
-    // wait(&status);
-    // if (WIFEXITED(status))
-    //     data->error = WEXITSTATUS(status); //! C'est des macros pas des fonctions donc autorise
     return (data->error);
 }
 
