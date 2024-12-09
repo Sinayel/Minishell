@@ -21,10 +21,10 @@ DOLLAR_SRC =  srcs/parsing/dollar/pid.c \
 PARSING_SRC = srcs/parsing/token/id_token.c \
 			  srcs/parsing/token/tokenization.c \
 			  srcs/parsing/token/return_quoted_value.c \
-			  srcs/parsing/token/check_tokenization.c \
 			  srcs/parsing/check.c \
 			  srcs/parsing/path.c \
-			  srcs/parsing/parsing.c
+			  srcs/parsing/parsing.c \
+			  srcs/exec/exec.c \
 
 BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/env/create_env.c \
@@ -69,12 +69,7 @@ ASCII_LOGO = -e "\
 	██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\n\
 	╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
 
-analyse:
-	@echo "Analyse du code avec cppcheck..."
-	cppcheck --enable=unusedFunction --enable=style $(MINISHELL_SRC) 2> cppcheck_report.txt
-	@echo "Rapport d'analyse généré : cppcheck_report.txt"
-
-all: $(NAMELFT) $(NAME) analyse
+all: $(NAMELFT) $(NAME)
 
 $(NAMELFT):
 	@echo "Compilation de la libft..."
@@ -97,4 +92,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re analyse
+.PHONY: all clean fclean re
