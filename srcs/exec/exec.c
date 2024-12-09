@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/09 21:24:55 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 21:31:32 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,7 @@ static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
     int save_outfile;
     char *cmd_buff;
 
-    cmd_buff = ft_strdup(cmdlist->cmd_arg[0]);    
+    cmd_buff = ft_strdup(cmdlist->cmd_arg[0]);
     save_outfile = -1;
     if (cmdlist->outfile >= 0)
     {
@@ -514,6 +514,7 @@ static void ft_wait(t_cmd *cmdlist, t_token *token)
     t_cmd *tmp;
     int pid;
 
+    printf("Exiting...\n");
     list = get_data();
     len_cmd = len_cmdblocks(token);
     tmp = cmdlist;
@@ -594,6 +595,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
         tmp = tmp->next;
     }
     ft_wait(cmdlist, list);
+    // free_cmd(&cmdlist);
     return (0);
 }
  //* Le prog lit et exec le dernier input/heredoc et le dernier append/trunc
