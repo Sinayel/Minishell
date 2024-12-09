@@ -1,0 +1,198 @@
+MINISHELL
+
+Qu'est-ce au'un shell :
+
+    Un shell est essentiellement un processeur de macros qui exécute des commandes.
+    Un processeur de macros permet de développer du texte et des symboles pour créer des expressions plus complexes ( |, <, >, & ...).
+
+    Un shell Unix est à la fois un interpréteur de commandes et un langage de programmation,
+    On peut créer des fichiers contenant des commandes, qui deviennent eux-mêmes des commandes,
+    au même titre que celles du système, et permettent d’automatiser des tâches courantes,
+    Les shells peuvent être utilisés en mode interactif (en tapant des commandes via le clavier),
+    ou non-interactif (en exécutant des commandes à partir d'un fichier).
+
+    Ils permettent d’exécuter des commandes GNU de manière synchrone (le shell attend la fin de l'exécution avant d’accepter d'autres entrées),
+    ou asynchrone (les commandes s'exécutent en parallèle avec le shell).
+
+    Le shell permet aussi de manipuler l’environnement des commandes.
+
+    Les shells disposent également de commandes internes (builtins) qui ne peuvent pas être exécutées par des utilitaires externes,
+    comme cd, break, ou exec, car elles modifient directement le shell.
+
+
+Resumer :
+
+    Enfin, bien que l'exécution de commandes soit essentielle, la véritable puissance des shells vient de leurs langages de programmation intégrés,
+    avec des variables, des structures de contrôle, des fonctions, etc. Ils offrent aussi des fonctionnalités spécifiques à l'usage interactif, comme le contrôle des jobs,
+    l'édition des lignes de commande, l'historique et les alias.
+
+
+Definitions :
+
+    - POSIX : Normes de systèmes ouverts basées sur Unix. Bash se concentre sur la partie Shell et Utilitaires du standard POSIX 1003.1.
+    - Builtin : Commande interne au shell, non présente sous forme d'exécutable dans le système de fichiers.
+    - Control operator : Jeton effectuant une fonction de contrôle, comme ‘||’, ‘&&’, ‘&’, ‘;’, etc.
+    - Exit status : Valeur retournée par une commande à son appelant (max 255).
+    - Filename : Chaîne de caractères identifiant un fichier.
+    - Job : Ensemble de processus liés dans un même groupe de processus.
+    - Job Contrôle : Mécanisme pour suspendre ou reprendre des processus.
+    - Métacaractère : Caractère non cité qui sépare des mots (comme ‘|’, ‘&’, ‘;’, etc.).
+    - Operator : Opérateur de contrôle ou de redirection.
+    - Process group : Ensemble de processus partageant le même identifiant de groupe.
+    - Process group ID : Identifiant unique d'un groupe de processus.
+    - Reserved word : Mot ayant une signification spéciale pour le shell, comme for ou while.
+    - Signal : Mécanisme pour notifier un processus d'un événement système.
+    - Spécial builtin : Commande interne classée comme spéciale par POSIX.
+    - Token : Séquence de caractères considérée comme une unité par le shell (mot ou opérateur).
+
+
+Shell Syntax :
+    Si l'entrée indique le début d'un commentaire, l'interpréteur de commandes ignore le symbole de commentaire ('#') et le reste de la ligne.
+    Sinon il lit son entrée et la divise en mots et en opérateurs.
+    L'interpréteur de commandes analyse ensuite ces jetons en commandes et autres constructions, supprime la signification spéciale de certains mots,
+    redirige l'entrée et la sortie si nécessaire, exécute la commande spécifiée, attend l'état de sortie de la commande et rend cet état de sortie disponible pour une inspection ou un traitement ultérieur.
+
+
+Shell Operation :
+
+    Il execute les operation dans cette ordre : 
+    0) Inputs ->
+    1) Décompose Input en mots/opérateurs ->
+    2) Parses les tokens en commandes simples et composées ->
+    3) Décompose les éléments expansés en plusieurs fd de commandes ->
+    4) Effectue les redirections nécessaires et supprime les opérateurs de redirection et leurs opérandes de la liste des arguments ->
+    5) Execute les commandes ->
+    6) attend la commande de fin.
+
+
+Quoting :
+
+    La citation est utilisée pour supprimer la signification spéciale de certains caractères ou mots pour l'interpréteur de commandes.
+    Chacun des métacaractères de l'interpréteur de commandes a une signification particulière pour l'interpréteur de commandes et doit être mis entre guillemets.
+    Lorsque les fonctions d'expansion de l'historique des commandes sont utilisées, le caractère d'expansion de l'historique, généralement '!', doit être mis entre guillemets pour empêcher l'expansion de l'historique.
+
+
+Escape Character :
+    Une barre oblique inverse non citée '\' est le caractère d'échappement de Bash.
+
+
+Single Quotes :
+    caractères entre guillemets simples (''') préserve la valeur littérale de chaque caractère à l'intérieur des guillemets. Un guillemet simple ne peut pas se trouver entre des guillemets simples, même s'il est précédé d'une barre oblique inverse.
+
+
+Double Quotes :
+    Dans les guillemets doubles ("), les caractères conservent leur valeur sauf pour $, `, \ et ! (si l'expansion d'historique est activée). En mode POSIX, ! n'a plus de signification spéciale. Les backslashes ne sont utiles que devant $, `, ", \ ou un saut de ligne. Un guillemet double peut être inclus en le précédant d'un backslash.
+
+
+ANSI-C Quoting :
+    Voir manuel a 3.1.2.4
+
+
+Simple Commands :
+    C'est une commande envoyer dans le shell séparer par des espace et terminer pas un opérateur de contrôle du shell.
+    L'état de retour d'une commande simple est son état de sortie tel qu'il est fourni par la fonction waitpid.
+    128+n si la commande a été interrompue par le signal n(ctrl+c).
+
+Pipelines :
+    Une pipeline est une sequence d'une ou de plusieurs commandes séparées par un | ou |&.
+    Le format d'une pipeline ressemble a ça :
+    [time [-p]] [!] command1 [ | or |& command2 ] …
+    chaque commande lit la sortie de la commande précédente.
+    Si |& est utilise alors l'erreur standard de la commande 1 vers la commande 2
+
+
+Liste :
+    && = commande 1 ET commande 2
+    || = commande 1 OU commande 2
+    ; = 
+    commande 1;
+    commande 2;
+    ; = une commande indépendante chacune comme si on revenais a la ligner et on commencer une nouvelle commande donc si la premier crash il va faire la deuxième(si celle la ne crash pas nn plus).
+
+
+Variable :
+
+    Declarer une variable = nom=[valeur].
+    Si la variable creer n'est assigner a aucune valeur alors sa valeur de base sera NULL,
+    Pour supprimer une variable il faut utiliser la commande unset.
+    Le signe ~ est utiliser pour représenter un chemins (comme ~ pour le répertoire de l'utilisateur),
+    Si la variable est marquée comme un nombre (attribut integer), sa valeur sera traitée comme un calcul mathématique, même sans utiliser la syntaxe spéciale pour cela comme " $((...)) ".
+    $@ = une variable spéciale dans les scripts shell représentant tous les arguments passés à un script.
+
+
+Paramètre spéciaux :
+
+    * : Représente tous les paramètres positionnels. Si non entre guillemets, ils sont séparés en plusieurs mots. Si entre guillemets doubles, ils sont réunis en un seul mot séparé par le premier caractère de la variable IFS (séparateur interne des champs).
+
+    @ : Développe aussi les paramètres positionnels. Entre guillemets doubles, chaque paramètre devient un mot distinct. Sans guillemets et s'il n'y a pas de paramètres, rien ne s'affiche.
+
+    # : Indique le nombre total de paramètres positionnels.
+
+    ? : Reflète le statut de la dernière commande exécutée (succès ou échec).
+
+    - : Représente les options de l'interpréteur (bash) utilisées.
+
+    $$ : Correspond au PID (identifiant de processus) du shell en cours.
+
+    ! : Indique le PID de la dernière tâche exécutée en arrière-plan.
+
+    0 : Montre le nom du script ou de l'interpréteur en cours.
+
+    _ : Contient le chemin absolu de l'interpréteur ou du dernier fichier exécuté.
+
+    En gros, ces paramètres permettent de récupérer diverses informations et gérer l'exécution de commandes ou de scripts bash.
+
+
+Redirection :
+
+    1. Redirection de l'entrée avec <
+    Description : Lorsque tu utilises le symbole <, tu dis à ton programme de lire l'entrée à partir d'un fichier au lieu du clavier (ou de l'entrée standard).
+
+    Exemple :
+        Si tu as un programme qui attend une entrée de l'utilisateur (comme une commande cat), au lieu de taper le texte directement dans le terminal, tu peux lire depuis un fichier.
+    Commande :
+        cat < fichier.txt
+
+    Explication : Ici, le programme cat lira le contenu de fichier.txt au lieu de demander un input de ta part.
+
+    2. Redirection de la sortie avec >
+        Description : Le symbole > redirige la sortie de ton programme vers un fichier. Si le fichier existe déjà, il sera écrasé.
+
+    Exemple :
+        Supposons que tu veux enregistrer le résultat d'une commande dans un fichier.
+    Commande :
+        ls > resultat.txt
+
+    Explication : Ici, la commande ls (qui liste les fichiers et dossiers) enverra son résultat dans le fichier resultat.txt. Si ce fichier existait déjà, il sera écrasé avec le nouveau contenu.
+
+    3. Redirection avec un délimiteur << (Heredoc)
+        Description : Le symbole << permet de créer une "redirection d'entrée" qui continue à lire jusqu'à ce qu'il rencontre une ligne contenant un délimiteur spécifique. Ce délimiteur marque la fin de l'entrée. Mais attention, contrairement à d'autres redirections, cela n'ajoute rien à l'historique des commandes (pas de sauvegarde de ce texte dans l'historique).
+
+    Exemple :
+        Si tu veux fournir plusieurs lignes de texte à un programme sans avoir à les écrire dans un fichier :
+    Commande :
+        cat << FIN
+        Ceci est une ligne.
+        Et voici une autre.
+        FIN
+
+    Explication : cat va lire tout ce que tu tapes jusqu'à ce qu'il trouve la ligne contenant uniquement FIN. Tout ce qui est entre le début de la commande et FIN sera utilisé comme entrée.
+
+    4. Redirection en mode append avec >>
+        Description : Le symbole >> fonctionne comme >, sauf que, au lieu d'écraser un fichier existant, il va ajouter (ou "append") le nouveau contenu à la fin du fichier.
+
+    Exemple :
+        Si tu veux ajouter du texte à la fin d'un fichier sans supprimer ce qui est déjà dedans :
+    Commande :
+        echo "Nouveau texte" >> resultat.txt
+
+    Explication : Ici, le texte "Nouveau texte" sera ajouté à la fin du fichier resultat.txt. Si le fichier n'existe pas, il sera créé. Si le fichier existe déjà, il ne sera pas écrasé, juste modifié pour ajouter cette nouvelle ligne à la fin.
+
+    Résumé des symboles :
+        < : Redirige l'entrée depuis un fichier.
+        > : Redirige la sortie vers un fichier (en écrasant).
+        << : Lit jusqu'à un délimiteur défini (redirection "Heredoc").
+        >> : Redirige la sortie vers un fichier en mode append (ajout à la fin sans écraser).
+
+Return Value :
+    Comparer chaque return value avec le shell posix (parce que sinn c'est la merde)

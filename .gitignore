@@ -1,0 +1,7 @@
+Minishell.dSYM/     // debug symbols
+Minishell           // executable file
+a.out               // executable file
+supp.supp           // valgrind output
+.vscode/            // vscode settings
+test.c              // test file
+vgcore.*            // valgrind output

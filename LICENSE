@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Private Use License
 
 Copyright (c) 2024 SinayelCorporation
@@ -11,6 +12,21 @@ The following conditions must be met:
 2. The Software is provided for private use only, and must not be used in any commercial or public setting without prior written permission from the copyright holder.
 3. No modifications or derivative works of the Software are permitted.
 4. The copyright notice must remain intact in all copies of the Software.
+=======
+MIT License
+
+Copyright (c) 2024 Yanis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+>>>>>>> parsing
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
