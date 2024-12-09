@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/09 19:28:16 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/09 20:11:53 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -398,7 +398,6 @@ void ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathli
     tmp = cmdlist;
     if (is_builtin(tmp->cmd_arg[0]) == 1)
     {
-        printf("buitin\n");
         redir_builtin(cmdlist, pipefd);
         built(list, tmp, envlist, pathlist);
     }
