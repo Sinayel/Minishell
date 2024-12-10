@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/09 18:26:53 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/10 20:04:42 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,13 @@ t_path	*return_path(t_env *env)
 	path = NULL;
 	i = 0;
 	tmp = return_env_value(env, "PATH");
+	if (!tmp)
+		return (NULL);
 	path_breaker = ft_split_for_path(tmp, ':');
 	if(!path_breaker)
 	{
 		free(tmp);
-		return NULL;
+		return (NULL);
 	}
 	while (path_breaker[i])
 	{
@@ -49,12 +51,12 @@ void errno_check(int err)
 		ft_putstr_fd("Permission denied\n", 2);
 		data->error = 126;
 	}
-	else if (err == EISDIR)
-	{
-		// printf("%s: ", token);
-		ft_putstr_fd("Is a directory\n", 2);
-		data->error = 126;
-	}
+	// else if (err == EISDIR)
+	// {
+	// 	// printf("%s: ", token);
+	// 	ft_putstr_fd("Is a directory\n", 2);
+	// 	data->error = 126;
+	// }
 	else
 	{
 		// printf("%s: ", token);
@@ -71,7 +73,7 @@ int is_directory(const char *path)
 
 int check_access(char *path)
 {
-    if (access(path, R_OK) == -1)
+    if (access(path, X_OK) == -1)
 	{
         if (errno == EISDIR || errno == EACCES)
 		{
@@ -89,16 +91,16 @@ int double_check(t_path *path, char *input)
     int result;
 
 	word = NULL;
+    if (is_directory(input))
+	{
+        printf("%s: Is a directory\n", input);
+        return (1);
+	}
+    result = check_access(input);
+    if (result == 1 || result == 0)
+        return (result);
     while (path)
 	{
-        if (is_directory(input))
-		{
-            printf("%s: Is a directory\n", input);
-            return (1);
-		}
-        result = check_access(input);
-        if (result == 1 || result == 0)
-            return (result);
         word = ft_magouilles(path->name, "/", input);
         if (is_directory(word))
 		{
@@ -118,7 +120,7 @@ int double_check(t_path *path, char *input)
         path = path->next;
     }
 	// printf("%s: Command not found\n", word);
-	errno_check(0);
+	// errno_check(0);
 	free(word);
     return 1;
 }

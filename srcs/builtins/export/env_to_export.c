@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_to_export.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 18:47:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 15:41:45 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/10 16:34:18 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,13 @@ char	**env_to_export(t_env *env_list)
 	temp = env_list;
 	i = 0;
 	len = cmb_env(temp);
+	if (return_env_value(env_list, "OLDPWD") == NULL)
+		len++;
 	env_export = (char **)malloc(sizeof(char *) * (len + 1));
 	if (!env_export)
 		return (NULL);
+	if (return_env_value(env_list, "OLDPWD") == NULL)
+		env_export[i++] = ft_strdup("OLDPWD");
 	while (temp)
 	{
 		env_export[i] = ft_magouilles(temp->name, "=", temp->value);

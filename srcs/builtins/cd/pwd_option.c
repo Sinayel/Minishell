@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pwd_option.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:59:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 17:59:24 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/10 16:38:09 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	ch_oldpwd(t_env **env_list)
 	if (oldpwd == NULL)
 	{
 		append_env_var(env_list, "OLDPWD", cwd);
-		export->content = append_to_export(export->content, oldpwd_join);
+		export->content = replace_one_in_export(export->content, oldpwd_join);
 		free(oldpwd_join);
 		return ;
 	}
