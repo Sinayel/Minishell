@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/09 20:07:15 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/10 21:34:39 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ typedef struct s_data
 	char			*input;
 	int				pid;
 	int				error;
+	struct s_cmd	*cmd;
 }					t_data;
 
 // 5 -------------------  Tokenization  -------------------

@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/10 20:06:05 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/10 21:35:52 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
         free(list->input);
     if (env)
         ft_env_lstclear(&env);
-    // if (cmdlist)
-    //     free_cmd(&cmdlist);
+    if (cmdlist)
+        free_cmd(&cmdlist);
     if (pathlist)
         ft_free_path(pathlist);
     if (pipefd[0] >= 0)
@@ -212,7 +212,7 @@ void free_export_exec(void)
         free_tabtab(export->content);
 }
 
-static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
+static int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
 {
     int save_outfile;
     char *cmd_buff;
@@ -224,17 +224,15 @@ static int built(t_token *list,t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
         save_outfile = dup(1);
         dup2(cmdlist->outfile, 1);
     }
-    // if (ft_strcmp(cmd_buff, "export") == 0 && !cmdlist->next)
     if (ft_strcmp(cmd_buff, "exit") == 0)
         free_cmd(&cmdlist);
     cmd(cmd_buff, list, envlist, pathlist);
-    if (cmdlist && cmdlist->outfile >=0)
+    if (cmdlist && cmdlist->outfile >= 0)
     {
         dup2(save_outfile, 1);
         close(save_outfile);
     }
     free(cmd_buff);
-    free_cmd(&cmdlist);
     return (0);
 }
 
@@ -389,22 +387,21 @@ void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipef
 
 void  ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathlist, int *pipefd)
 {
-    t_cmd *tmp;
-
-    tmp = cmdlist;
-    if (is_builtin(tmp->cmd_arg[0]) == 1)
+    int check;
+    
+    check = double_check(pathlist, cmdlist->cmd_arg[0]);
+    if (is_builtin(cmdlist->cmd_arg[0]) == 1)
     {
         redir_builtin(cmdlist, pipefd);
-        built(list, tmp, envlist, pathlist);
-        // free_cmd(&tmp);
+        built(list, cmdlist, envlist, pathlist);
     }
-    else if (is_builtin(tmp->cmd_arg[0]) == 0 && double_check(pathlist, cmdlist->cmd_arg[0]) == 0)
-        not_builtin_child(tmp, envlist, pathlist, pipefd);
-    else if (double_check(pathlist, cmdlist->cmd_arg[0]) == 1)
-        free_cmd(&tmp);
+    else if (is_builtin(cmdlist->cmd_arg[0]) == 0 && check == 0)
+        not_builtin_child(cmdlist, envlist, pathlist, pipefd);
+    else if (check == 1)
+        free_cmd(&cmdlist);
     free_export_exec();
     ft_token_lstclear(&list);
-    free_all_fork(tmp, pathlist, pipefd, envlist);
+    free_all_fork(cmdlist, pathlist, pipefd, envlist);
 }
 
 int heredoc_handler(char *str, t_env *envlist, int fd)
@@ -510,7 +507,6 @@ static void ft_wait(t_cmd *cmdlist, t_token *token)
     t_cmd *tmp;
     int pid;
 
-    printf("Exiting...\n");
     list = get_data();
     len_cmd = len_cmdblocks(token);
     tmp = cmdlist;
@@ -530,8 +526,6 @@ static void ft_wait(t_cmd *cmdlist, t_token *token)
     }
     if (access(".tmp.heredoc", F_OK) == 0)
         unlink(".tmp.heredoc");
-    // free_cmd(&tmp);
-    free_cmd(&cmdlist);
 }
 
 static int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *list, int *pipefd)
@@ -544,7 +538,6 @@ static int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *l
         return (1);
     else if (!data->pid)
     {
-        
         if (cmdlist->cmd_arg && cmdlist->cmd_arg[0])
             ft_embouchure(cmdlist, list, envlist, pathlist, pipefd);
         else
@@ -573,14 +566,13 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     ft_redir(list , tmp, envlist);
     if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]) == true)
         return (built(list, tmp, envlist, pathlist));
-    // print_cmd(tmp);
-    if (pipe(pipefd) == -1)
-    {
-        free_cmd(&cmdlist);
-        return (1);
-    }
-    exec_cmd(tmp, envlist, pathlist, list, pipefd);
-    tmp = tmp->next;
+    // if (pipe(pipefd) == -1)
+    // {
+    //     free_cmd(&cmdlist);
+    //     return (1);
+    // }
+    // exec_cmd(cmdlist, envlist, pathlist, list, pipefd);
+    // tmp = tmp->next;
     while (tmp)
     {
         if (pipe(pipefd) == -1)
@@ -591,8 +583,8 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
         exec_cmd(tmp, envlist, pathlist, list, pipefd);
         tmp = tmp->next;
     }
+    // free_cmd(&tmp);
     ft_wait(cmdlist, list);
-    // free_cmd(&cmdlist);
+    free_cmd(&cmdlist);
     return (0);
 }
- //* Le prog lit et exec le dernier input/heredoc et le dernier append/trunc
