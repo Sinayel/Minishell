@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:12:34 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/12 19:55:22 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/12 20:27:30 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	for_check_exit(char *str, t_token *list, t_env *env, t_path *path)
 	t_data *data;
 	data = get_data();
 	if (ft_strcmp(str, "exit") == 0)
-		return (ft_exit(data, list, env, path));
+		return (feat_arg_exit(data, list, env, path));
 	return (0);
 }
 

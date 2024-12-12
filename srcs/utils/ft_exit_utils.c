@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:21:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/12 19:57:17 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/12 20:26:21 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,33 @@ int	ft_exit(t_data *data, t_token *list, t_env *env, t_path *path)
 	free_all(list, env, path);
 	exit(ret);
 	return 0;
+}
+
+int feat_arg_exit(t_data *data, t_token *list, t_env *env, t_path *path)
+{
+	int		len;
+	t_token	*tmp;
+	char	*value_for_exit;
+	int		i;
+	int		j;
+
+	len = len_for_cd(list);
+	tmp = list->next;
+	if (len == 0)
+		return (ft_exit(data, list, env, path));
+	value_for_exit = (char *)malloc(sizeof(char) * (len + 1));
+	init_var_i(&i, &j);
+	while (tmp && tmp->type > 5)
+	{
+		while (tmp->token[j])
+			value_for_exit[i++] = tmp->token[j++];
+		if (tmp->next && tmp->next->type == ARG)
+			return (printf("bash: cd: too many arguments\n"));
+		j = 0;
+		tmp = tmp->next;
+	}
+	value_for_exit[i] = '\0';
+	ft_exit(data, list, env, path);
+	free(value_for_exit);
+	return (0);
 }

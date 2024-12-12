@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/12 20:08:20 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/12 20:26:41 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,11 +173,12 @@ int					option_for_cd_(char *input, t_data *data, t_env *env_list,
 void				ch_pwd(t_env **env_list);
 
 //* -----------------------  Exit  ------------------------		// (YANS)
-int				ft_exit(t_data *data, t_token *list, t_env *env, t_path *path);
+int					ft_exit(t_data *data, t_token *list, t_env *env, t_path *path);
 bool				is_valid_number(const char *str);
 int					for_check_exit(char *str, t_token *list, t_env *env,
 						t_path *path);
 int					check_if_exit(t_token *list, t_env *env);
+int 				feat_arg_exit(t_data *data, t_token *list, t_env *env, t_path *path);
 
 //* -----------------------  Echo  ------------------------		// (YANS)
 int					echo(t_token *list);
