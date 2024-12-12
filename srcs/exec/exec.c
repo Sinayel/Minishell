@@ -6,13 +6,13 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/12 11:58:13 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 12:56:11 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void    free_all_fork(t_cmd **cmdlist, t_path *pathlist, int *pipefd, t_env *env)
+void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
 {
     t_data *list;
 
@@ -26,8 +26,8 @@ void    free_all_fork(t_cmd **cmdlist, t_path *pathlist, int *pipefd, t_env *env
         free(list->input);
     if (env)
         ft_env_lstclear(&env);
-    if (*cmdlist)
-        free_cmd(cmdlist);
+    if (cmdlist)
+        free_cmd(&cmdlist);
     if (pathlist)
         ft_free_path(pathlist);
     if (pipefd[0] >= 0)
@@ -359,7 +359,7 @@ void  ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathl
         printf("Command not found\n");
     free_export_exec();
     ft_token_lstclear(&list);
-    free_all_fork(&cmdlist, pathlist, pipefd, envlist);
+    free_all_fork(cmdlist, pathlist, pipefd, envlist);
 }
 
 int heredoc_handler(char *str, t_env *envlist, int fd)
@@ -499,7 +499,7 @@ static int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *l
         if (cmdlist->cmd_arg && cmdlist->cmd_arg[0])
             ft_embouchure(cmdlist, list, envlist, pathlist, pipefd);
         else
-            free_all_fork(&cmdlist, pathlist, pipefd, envlist);
+            free_all_fork(cmdlist, pathlist, pipefd, envlist);
     }
     else
         parent_process(pipefd, cmdlist);
