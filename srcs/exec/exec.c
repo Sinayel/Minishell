@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/12 12:56:11 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 14:09:47 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
         free(list->input);
     if (env)
         ft_env_lstclear(&env);
-    if (cmdlist)
-        free_cmd(&cmdlist);
+    if (list->cmd)
+        free_cmd(&list->cmd);
     if (pathlist)
         ft_free_path(pathlist);
     if (pipefd[0] >= 0)
@@ -49,6 +49,8 @@ void free_cmd_vars(t_cmd *list)
         close(list->outfile);
     list->outfile = -2;
     free_tabtab(list->cmd_arg);
+    free(list);
+    list = NULL;
 }
 
 void free_cmd(t_cmd **list)
@@ -59,17 +61,15 @@ void free_cmd(t_cmd **list)
 
     if (list == NULL || *list == NULL)
         return;
-    len  = len_cmd(*list) - 1;
+    len = len_cmd(*list) - 1;
     current = *list;
     while (current && len--)
     {
         tmp = current;
         current = current->next;
         free_cmd_vars(tmp);
-        free(tmp);
     }
     free_cmd_vars(current);
-    free(current);
     *list = NULL;
 }
 
@@ -340,13 +340,14 @@ void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipef
     }
     if (path)
         free(path);
+    free_tabtab(tabtab);
     signal(SIGINT, SIG_DFL);
 }
 
 void  ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathlist, int *pipefd)
 {
     int check;
-    
+
     check = double_check(pathlist, cmdlist->cmd_arg[0]);
     if (is_builtin(cmdlist->cmd_arg[0]) == 1)
     {
@@ -511,23 +512,19 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     t_cmd *cmdlist;
     t_cmd *tmp;
     int pipefd[2];
+    t_data *data;
 
+    data = get_data();
     pipefd[0] = -1;
     pipefd[1] = -1;
     cmdlist = token_to_cmd(list);
+    data->cmd = cmdlist;
     tmp = cmdlist;
     if (!tmp)
         return (1);
     ft_redir(list , tmp, envlist);
     if (cmdlist && cmdlist->cmd_arg[0] && cmdlist->next == NULL && is_builtin(tmp->cmd_arg[0]) == true)
         return (built(list, tmp, envlist, pathlist));
-    // if (pipe(pipefd) == -1)
-    // {
-    //     free_cmd(&cmdlist);
-    //     return (1);
-    // }
-    // exec_cmd(cmdlist, envlist, pathlist, list, pipefd);
-    // tmp = tmp->next;
     while (tmp)
     {
         if (pipe(pipefd) == -1)
@@ -538,7 +535,6 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
         exec_cmd(tmp, envlist, pathlist, list, pipefd);
         tmp = tmp->next;
     }
-    free_cmd(&tmp);
     ft_wait(cmdlist, list);
     free_cmd(&cmdlist);
     return (0);
