@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/12 11:45:30 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 11:58:13 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,9 +172,6 @@ static int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist
     char *cmd_buff;
     t_data *data;
 
-    (void)list;
-    (void)envlist;
-    (void)pathlist;
     data = get_data();
     cmd_buff = ft_strdup(cmdlist->cmd_arg[0]);
     save_outfile = -1;
