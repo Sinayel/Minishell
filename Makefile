@@ -28,7 +28,7 @@ PARSING_SRC = srcs/parsing/token/id_token.c \
 
 BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/env/create_env.c \
-			  srcs/builtins/echo/echo.c \
+			  srcs/builtins/echo/ft_echo.c \
 			  srcs/builtins/pwd/pwd.c \
 			  srcs/builtins/cd/cd.c \
 			  srcs/builtins/cd/pwd_option.c \
