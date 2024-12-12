@@ -22,3 +22,9 @@ int main()
     printf("t_token : %s\n", data->token->token);
 
 }
+
+FTSTRLENparenthesisopen the parenthesisjump lineoK
+Int iEqual zero
+WhileSTRI
+I plus plus
+ReturnII

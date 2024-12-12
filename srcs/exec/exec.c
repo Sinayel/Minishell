@@ -6,17 +6,16 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/12 14:43:07 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 16:01:32 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
+void    free_all_fork(t_path *pathlist, int *pipefd, t_env *env)
 {
     t_data *list;
 
-    (void)cmdlist;
     list = get_data();
     // if (datalist->input)
     //     free(datalist->input);
@@ -148,7 +147,7 @@ void print_cmd(t_cmd *list)
     printf("-> NULL\n");
 }
 
-static void redir_builtin(t_cmd *cmdlist, int *pipefd)
+void redir_builtin(t_cmd *cmdlist, int *pipefd)
 {
     close(pipefd[0]);
     if (cmdlist->outfile < 0 && cmdlist)
@@ -166,7 +165,7 @@ void free_export_exec(void)
         free_tabtab(export->content);
 }
 
-static int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
+int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
 {
     int save_outfile;
     char *cmd_buff;
@@ -180,10 +179,8 @@ static int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist
         save_outfile = dup(1);
         dup2(cmdlist->outfile, 1);
     }
-    if (ft_strcmp(cmd_buff, "exit") == 0)
-    {
+    if (ft_strcmp(cmd_buff, "exit") == 0 && data->cmd->next == NULL)
         free_cmd(&data->cmd);
-    }
     cmd(cmd_buff, list, envlist, pathlist);
     if (cmdlist && cmdlist->outfile >= 0)
     {
@@ -310,7 +307,7 @@ int parent_process(int *fd, t_cmd *cmdlist)
     return (data->error);
 }
 
-static void redir_in_out(t_cmd *list, int *fd)
+void redir_in_out(t_cmd *list, int *fd)
 {
     close(fd[0]);
     if (list->infile >= 0)
@@ -334,6 +331,7 @@ void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipef
     char **tabtab;
 
     path = NULL;
+    // printf("ALLLLLO EST CE QUE ECHO EST UN BUILTIN OU PAS ?!?!?!?!?\n");
     redir_in_out(list, pipefd);
     if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
@@ -362,7 +360,7 @@ void  ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathl
         printf("Command not found\n");
     free_export_exec();
     ft_token_lstclear(&list);
-    free_all_fork(cmdlist, pathlist, pipefd, envlist);
+    free_all_fork(pathlist, pipefd, envlist);
 }
 
 int heredoc_handler(char *str, t_env *envlist, int fd)
@@ -460,7 +458,7 @@ int ft_redir(t_token *list, t_cmd *cmdlist, t_env *envlist)
     return (0);
 }
 
-static void ft_wait(t_cmd *cmdlist, t_token *token)
+void ft_wait(t_cmd *cmdlist, t_token *token)
 {
     int status;
     int len_cmd;
@@ -489,7 +487,7 @@ static void ft_wait(t_cmd *cmdlist, t_token *token)
         unlink(".tmp.heredoc");
 }
 
-static int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *list, int *pipefd)
+int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *list, int *pipefd)
 {
     t_data *data;
 
@@ -502,7 +500,7 @@ static int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *l
         if (cmdlist->cmd_arg && cmdlist->cmd_arg[0])
             ft_embouchure(cmdlist, list, envlist, pathlist, pipefd);
         else
-            free_all_fork(cmdlist, pathlist, pipefd, envlist);
+            free_all_fork(pathlist, pipefd, envlist);
     }
     else
         parent_process(pipefd, cmdlist);
