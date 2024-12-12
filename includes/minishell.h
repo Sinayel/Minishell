@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/10 21:34:39 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 11:15:12 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ typedef struct s_data
 	char			*input;
 	int				pid;
 	int				error;
-	struct s_cmd	*cmd;
 }					t_data;
 
 // 5 -------------------  Tokenization  -------------------

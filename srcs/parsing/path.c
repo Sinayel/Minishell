@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/10 21:26:13 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 11:07:42 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,6 @@ int double_check(t_path *path, char *input)
         free(word);
         path = path->next;
     }
-	// printf("%s: Command not found\n", word);
 	// errno_check(0);
 	free(word);
     return 1;

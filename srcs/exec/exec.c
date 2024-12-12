@@ -6,13 +6,13 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/10 21:35:52 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 11:45:30 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
+void    free_all_fork(t_cmd **cmdlist, t_path *pathlist, int *pipefd, t_env *env)
 {
     t_data *list;
 
@@ -26,8 +26,8 @@ void    free_all_fork(t_cmd *cmdlist, t_path *pathlist, int *pipefd, t_env *env)
         free(list->input);
     if (env)
         ft_env_lstclear(&env);
-    if (cmdlist)
-        free_cmd(&cmdlist);
+    if (*cmdlist)
+        free_cmd(cmdlist);
     if (pathlist)
         ft_free_path(pathlist);
     if (pipefd[0] >= 0)
@@ -72,37 +72,6 @@ void free_cmd(t_cmd **list)
     free(current);
     *list = NULL;
 }
-
-// void free_cmd(t_cmd **list)
-// {
-//     t_cmd *tmp;
-//     t_cmd *next;
-
-//     if (list == NULL || *list == NULL)
-//         return;
-//     tmp = *list;
-//     while (tmp)
-//     {
-//         next = tmp->next;
-//         // Libération des arguments de la commande
-//         if (tmp->infile >= 0)
-//             close(tmp->infile);
-//         if (tmp->outfile >= 0)
-//             close(tmp->outfile);
-//         if (tmp->cmd_arg)
-//         {
-//             free_tabtab(tmp->cmd_arg);
-//             tmp->cmd_arg = NULL;
-//         }
-//         // Libération du nœud de commande
-//         free(tmp);
-//         tmp = next;
-//     }
-//     if (access(".tmp.heredoc", F_OK) == 0)
-//         unlink(".tmp.heredoc");
-//     // Mettre le pointeur original à NULL
-//     *list = NULL;
-// }
 
 int len_cmd(t_cmd *list)
 {
@@ -179,21 +148,6 @@ void print_cmd(t_cmd *list)
     printf("-> NULL\n");
 }
 
-int launch_builtin(t_token *list, t_env *envlist, t_path *path)
-{
-    t_token *tmp;
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! PROBLEEEEEEEEEEEEEEEEMMMMMMMMEEEEEEEEE   !!!!
-    tmp = list;
-
-    while (tmp)
-    {
-        if (tmp->type == CMD)
-            cmd(tmp->token, tmp, envlist, path);
-        tmp = tmp->next;
-    }
-    return (0); 
-}
-
 static void redir_builtin(t_cmd *cmdlist, int *pipefd)
 {
     close(pipefd[0]);
@@ -216,7 +170,12 @@ static int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist
 {
     int save_outfile;
     char *cmd_buff;
+    t_data *data;
 
+    (void)list;
+    (void)envlist;
+    (void)pathlist;
+    data = get_data();
     cmd_buff = ft_strdup(cmdlist->cmd_arg[0]);
     save_outfile = -1;
     if (cmdlist->outfile >= 0)
@@ -232,6 +191,8 @@ static int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist
         dup2(save_outfile, 1);
         close(save_outfile);
     }
+    if (!cmdlist->next && data->pid == 4242)
+        free_cmd(&cmdlist);
     free(cmd_buff);
     return (0);
 }
@@ -397,11 +358,11 @@ void  ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathl
     }
     else if (is_builtin(cmdlist->cmd_arg[0]) == 0 && check == 0)
         not_builtin_child(cmdlist, envlist, pathlist, pipefd);
-    else if (check == 1)
-        free_cmd(&cmdlist);
+    else if (check == 1 && is_builtin(cmdlist->cmd_arg[0]) == 0)
+        printf("Command not found\n");
     free_export_exec();
     ft_token_lstclear(&list);
-    free_all_fork(cmdlist, pathlist, pipefd, envlist);
+    free_all_fork(&cmdlist, pathlist, pipefd, envlist);
 }
 
 int heredoc_handler(char *str, t_env *envlist, int fd)
@@ -541,7 +502,7 @@ static int exec_cmd(t_cmd *cmdlist, t_env *envlist, t_path *pathlist, t_token *l
         if (cmdlist->cmd_arg && cmdlist->cmd_arg[0])
             ft_embouchure(cmdlist, list, envlist, pathlist, pipefd);
         else
-            free_all_fork(cmdlist, pathlist, pipefd, envlist);
+            free_all_fork(&cmdlist, pathlist, pipefd, envlist);
     }
     else
         parent_process(pipefd, cmdlist);
@@ -552,11 +513,8 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
 {
     t_cmd *cmdlist;
     t_cmd *tmp;
-    t_data *data;
     int pipefd[2];
 
-    data = get_data();
-    data->pid = 0;
     pipefd[0] = -1;
     pipefd[1] = -1;
     cmdlist = token_to_cmd(list);
@@ -564,7 +522,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     if (!tmp)
         return (1);
     ft_redir(list , tmp, envlist);
-    if (tmp && tmp->cmd_arg[0] && tmp->next == NULL && is_builtin(tmp->cmd_arg[0]) == true)
+    if (cmdlist && cmdlist->cmd_arg[0] && cmdlist->next == NULL && is_builtin(tmp->cmd_arg[0]) == true)
         return (built(list, tmp, envlist, pathlist));
     // if (pipe(pipefd) == -1)
     // {
@@ -583,7 +541,7 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
         exec_cmd(tmp, envlist, pathlist, list, pipefd);
         tmp = tmp->next;
     }
-    // free_cmd(&tmp);
+    free_cmd(&tmp);
     ft_wait(cmdlist, list);
     free_cmd(&cmdlist);
     return (0);
