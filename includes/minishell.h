@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/12 14:05:21 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 20:08:20 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #define INT_MAX 2147483647
 
 #include <stdio.h>
+#include <limits.h>
 #include <readline/history.h>
 #include <readline/readline.h>
 #include <sys/types.h>
@@ -123,7 +124,7 @@ void				skip_and_initialize_tmp(char **tmp, char *str, int *i,
 int					parsing_exec(t_token *list, t_env *env, t_data *data);
 
 // Cmd
-int					cmd(char *str, t_token *list, t_env *env, t_path *path);
+int					cmd(char **str, t_token *list, t_env *env, t_path *path);
 int					check_cmd(t_token *list, t_env *env);
 
 // Check dollar
@@ -172,7 +173,7 @@ int					option_for_cd_(char *input, t_data *data, t_env *env_list,
 void				ch_pwd(t_env **env_list);
 
 //* -----------------------  Exit  ------------------------		// (YANS)
-int					ft_exit(t_token *list, t_env *env, t_path *path);
+int				ft_exit(t_data *data, t_token *list, t_env *env, t_path *path);
 bool				is_valid_number(const char *str);
 int					for_check_exit(char *str, t_token *list, t_env *env,
 						t_path *path);
@@ -238,7 +239,6 @@ int					copy_string(char *dest, char *src, int v);
 int					ft_strlen_tabtab_gpt(char **split_arg);
 
 //* -------------------------- EXEC ------------------------
-int					cmd(char *str, t_token *list, t_env *env, t_path *path);
 t_cmd 				*token_to_cmd(t_token *list);
 void 				print_cmd(t_cmd *list);
 int 				ft_exec(t_token *list, t_env *envlist, t_path *pathlist);

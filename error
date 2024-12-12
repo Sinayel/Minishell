@@ -1,0 +1,13 @@
+[6] exit -> [7] else -> [7] if -> [7] (tmp- -> [3] > -> [7] next -> [7] && -> [7] tmp- -> [3] > -> [7] next- -> [3] > -> [7] next) -> [7] { -> [7] print_error(exit: too many arguments\n); -> [7] data- -> [3] > -> [7] error -> [7] = -> [7] 1; -> [7] return -> [7] ; -> [7] } -> NULL
+[?2004hMinishell> 
+[?2004lNULL
+[?2004hMinishell> ^C[?2004l
+Minishell> [?2004h
+[?2004lNULL
+[?2004hMinishell> 
+[?2004lNULL
+[?2004hMinishell> 
+[?2004lNULL
+[?2004hMinishell> ^C[?2004l
+Minishell> [?2004h[?2004l
+exit

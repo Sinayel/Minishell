@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/12 17:01:43 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 20:05:19 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,9 +180,9 @@ int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
         save_outfile = dup(1);
         dup2(cmdlist->outfile, 1);
     }
-    if ((ft_strcmp(cmd_buff, "exit") == 0 && data->cmd->next == NULL))
+    if ((ft_strcmp(cmd_buff, "exit") == 0 && list->next->next == NULL))
         free_cmd(&data->cmd);
-    cmd(cmd_buff, list, envlist, pathlist);
+    cmd(&cmd_buff, list, envlist, pathlist);
     if (cmdlist && cmdlist->outfile >= 0)
     {
         dup2(save_outfile, 1);
@@ -190,7 +190,8 @@ int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
     }
     if (!cmdlist->next && data->pid == 4242)
         free_cmd(&data->cmd);
-    free(cmd_buff);
+    if(cmd_buff != NULL)
+        free(cmd_buff);
     signal(SIGPIPE, SIG_IGN);
     return (0);
 }

@@ -3,33 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/12 14:30:45 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 20:05:00 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	cmd(char *str, t_token *list, t_env *env, t_path *path)
+int	cmd(char **str, t_token *list, t_env *env, t_path *path)
 {
-	if (ft_strcmp(str, "cd") == 0)
+	t_data *data;
+	data = get_data();
+	if (ft_strcmp(*str, "cd") == 0)
 		return (ft_arg_cd(env, list));
-	if (ft_strcmp(str, "pwd") == 0)
+	if (ft_strcmp(*str, "pwd") == 0)
 		return (ft_pwd(NULL));
-	if (ft_strcmp(str, "unset") == 0)
+	if (ft_strcmp(*str, "unset") == 0)
 		return (ft_arg_unset(env, list));
-	if (ft_strcmp(str, "env") == 0)
+	if (ft_strcmp(*str, "env") == 0)
 		return (print_env(env));
-	if (ft_strcmp(str, "echo") == 0)
+	if (ft_strcmp(*str, "echo") == 0)
 		return (echo(list));
-	if (ft_strcmp(str, "exit") == 0)
+	if (ft_strcmp(*str, "exit") == 0)
 	{
-		free(str);
-		return (ft_exit(list, env, path));
+		free(*str);
+		*str = NULL;
+		return (ft_exit(data, list, env, path));
 	}
-	if (ft_strcmp(str, "export") == 0)
+	if (ft_strcmp(*str, "export") == 0)
 		return (ft_arg_export(env, list));
 	return 1;
 }
