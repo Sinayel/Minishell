@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/12 16:01:32 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/12 17:01:43 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void    free_all_fork(t_path *pathlist, int *pipefd, t_env *env)
 {
     t_data *list;
 
+    ft_putstr_fd("TU FREE OU PAS ENFLURE ?!?!?!?!?\n", 1);
     list = get_data();
     // if (datalist->input)
     //     free(datalist->input);
@@ -150,7 +151,7 @@ void print_cmd(t_cmd *list)
 void redir_builtin(t_cmd *cmdlist, int *pipefd)
 {
     close(pipefd[0]);
-    if (cmdlist->outfile < 0 && cmdlist)
+    if (cmdlist->outfile < 0)
         cmdlist->outfile = pipefd[1];
     else
         close(pipefd[1]);
@@ -179,7 +180,7 @@ int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
         save_outfile = dup(1);
         dup2(cmdlist->outfile, 1);
     }
-    if (ft_strcmp(cmd_buff, "exit") == 0 && data->cmd->next == NULL)
+    if ((ft_strcmp(cmd_buff, "exit") == 0 && data->cmd->next == NULL))
         free_cmd(&data->cmd);
     cmd(cmd_buff, list, envlist, pathlist);
     if (cmdlist && cmdlist->outfile >= 0)
@@ -190,6 +191,7 @@ int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
     if (!cmdlist->next && data->pid == 4242)
         free_cmd(&data->cmd);
     free(cmd_buff);
+    signal(SIGPIPE, SIG_IGN);
     return (0);
 }
 
