@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:21:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/12 20:26:21 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/12 20:53:05 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,22 +45,23 @@ bool	print_error(char *str)
 	return (true);
 }
 
-int	ft_exit(t_data *data, t_token *list, t_env *env, t_path *path)
+int	ft_exit(t_token *list, t_env *env, t_path *path, char **args)
 {
 	int	ret;
 	int	err;
 	t_token *tmp;
+	t_data *data;
 
+	data = get_data();
 	tmp = list;
 	ret = 0;
 	err = 0;
-	if (tmp->next && tmp->next->next)
+	if (!args)
 	{
-		print_error("exit: too many arguments\n");
-		data->error = 1;
-		return 1;
+		free_all(list, env, path);
+		exit(data->error);
 	}
-	else if (tmp->next)
+	else if (args[1])
 	{
 		ret = almost_atoi(tmp->next->token, &err);
 		if (err)
@@ -72,29 +73,33 @@ int	ft_exit(t_data *data, t_token *list, t_env *env, t_path *path)
 			exit(2);
 		}
 	}
-	else if (!tmp->next)
+	else if (args[1] && args[2])
 	{
-		free_all(list, env, path);
-		exit(data->error);
+		print_error("exit: too many arguments\n");
+		data->error = 1;
+		return 1;
 	}
 	free_all(list, env, path);
 	exit(ret);
 	return 0;
 }
 
-int feat_arg_exit(t_data *data, t_token *list, t_env *env, t_path *path)
+int feat_arg_exit(t_token *list, t_env *env, t_path *path)
 {
 	int		len;
 	t_token	*tmp;
 	char	*value_for_exit;
+	char 	**split_exit;
 	int		i;
 	int		j;
+	int		v;
+	v = 0;
 
 	len = len_for_cd(list);
 	tmp = list->next;
 	if (len == 0)
-		return (ft_exit(data, list, env, path));
-	value_for_exit = (char *)malloc(sizeof(char) * (len + 1));
+		return (ft_exit(list, env, path, NULL));
+	value_for_exit = (char *)malloc(sizeof(char) * (len + len));
 	init_var_i(&i, &j);
 	while (tmp && tmp->type > 5)
 	{
@@ -103,10 +108,14 @@ int feat_arg_exit(t_data *data, t_token *list, t_env *env, t_path *path)
 		if (tmp->next && tmp->next->type == ARG)
 			return (printf("bash: cd: too many arguments\n"));
 		j = 0;
+		v++;
+		if(tmp->next)
+			value_for_exit[i++] = ' ';
 		tmp = tmp->next;
 	}
 	value_for_exit[i] = '\0';
-	ft_exit(data, list, env, path);
+	split_exit = ft_split(value_for_exit, ' ');
+	ft_exit(list, env, path, split_exit);
 	free(value_for_exit);
 	return (0);
 }
