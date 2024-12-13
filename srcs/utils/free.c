@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:58:53 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/04 18:57:32 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/13 22:43:23 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	free_all(t_token *list, t_env *env, t_path *path)
 	if (export && export->content)
 		free_tabtab(export->content);
 	ft_env_lstclear(&env);
+	free_cmd(&data->cmd);
 	ft_token_lstclear(&list);
 	ft_free_path(path);
 	if (data && data->input)
