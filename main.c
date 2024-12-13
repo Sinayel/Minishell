@@ -6,21 +6,21 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/13 19:47:53 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/13 19:49:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
 
-//! ◦ PIPEX										|  (JULIO)  X
-//! ◦ UNSET with no options                    |  (JULIO)  X
-//! ◦ EXPORT with no options                   |  (JULIO)  X
+//! ◦ PIPEX									   |  (JULIO)  98%
+//! ◦ UNSET with no options                    |  (JULIO) [V]
+//! ◦ EXPORT with no options                   |  (JULIO) [V]
 //! ◦ CD with only a relative or absolute path |  (JULIO) [V]
 //! ◦ PWD with no options                      |  (JULIO) [V]
 //! ◦ ENV with no options or arguments         |  (JULIO) [V]
 //! ◦ EXIT                                     |  (YANS)  [V]
 //! ◦ ECHO                                     |  (YANS)  [V]
-//! ◦ PID										|  (YANS)  [V]
+//! ◦ PID									   |  (YANS)  [V]
 //! ◦ PARSING (99% du projet)                  |  (YANS)  [V]
 
 t_data	*get_data(void)
