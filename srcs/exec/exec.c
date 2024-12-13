@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/12 20:54:54 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 16:36:12 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,7 @@ int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
         free_cmd(&data->cmd);
     if (cmd_buff != NULL)
         free(cmd_buff);
+    signal(SIGINT, SIG_DFL);
     return (0);
 }
 
@@ -351,14 +352,14 @@ void  ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathl
     int check;
 
     check = double_check(pathlist, cmdlist->cmd_arg[0]);
-    if (is_builtin(cmdlist->cmd_arg[0]) == 1)
+    if (is_builtin(cmdlist->cmd_arg[0]) == true)
     {
         redir_builtin(cmdlist, pipefd);
         built(list, cmdlist, envlist, pathlist);
     }
-    else if (is_builtin(cmdlist->cmd_arg[0]) == 0 && check == 0)
+    else if (is_builtin(cmdlist->cmd_arg[0]) == false && check == 0)
         not_builtin_child(cmdlist, envlist, pathlist, pipefd);
-    else if (check == 1 && is_builtin(cmdlist->cmd_arg[0]) == 0)
+    else if (check == 1 && is_builtin(cmdlist->cmd_arg[0]) == false)
         printf("Command not found\n");
     free_export_exec();
     ft_token_lstclear(&list);
@@ -527,6 +528,13 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     ft_redir(list , tmp, envlist);
     if (cmdlist && cmdlist->cmd_arg[0] && cmdlist->next == NULL && is_builtin(tmp->cmd_arg[0]) == true)
         return (built(list, tmp, envlist, pathlist));
+    if (pipe(pipefd) == -1)
+    {
+        free_cmd(&cmdlist);
+        return (1);
+    }
+    exec_cmd(tmp, envlist, pathlist, list, pipefd);
+    tmp = tmp->next;
     while (tmp)
     {
         if (pipe(pipefd) == -1)
