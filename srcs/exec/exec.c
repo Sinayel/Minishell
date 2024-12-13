@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/12 20:05:19 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/12 20:54:54 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,9 +190,8 @@ int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
     }
     if (!cmdlist->next && data->pid == 4242)
         free_cmd(&data->cmd);
-    if(cmd_buff != NULL)
+    if (cmd_buff != NULL)
         free(cmd_buff);
-    signal(SIGPIPE, SIG_IGN);
     return (0);
 }
 
