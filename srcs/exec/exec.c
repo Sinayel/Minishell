@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/13 20:02:08 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 22:09:39 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -548,6 +548,11 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
         tmp = tmp->next;
     }
     ft_wait(cmdlist, list);
-    free_cmd(&cmdlist);
+    if (data->cmd)
+        free_cmd(&data->cmd);
+    if (pipefd[0] >= 0)
+        close(pipefd[0]);
+    if (pipefd[1] >= 0)
+        close(pipefd[1]);
     return (0);
 }
