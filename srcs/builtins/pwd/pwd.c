@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:30:11 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/13 22:24:39 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 23:02:31 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ int	ft_arg_pwd(t_token *list)
 	int		len;
 
 	len = len_for_cd(list);
-	tmp = list->next;
+	while (ft_strcmp("pwd", tmp->token) != 0 && tmp)
+		tmp = tmp->next;
 	if (len == 0)
 		return (ft_pwd(NULL));
 	if (len > 1)
