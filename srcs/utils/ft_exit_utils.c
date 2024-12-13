@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:21:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/13 19:15:59 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/12 20:53:05 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@ int feat_arg_exit(t_token *list, t_env *env, t_path *path)
 		while (tmp->token[j])
 			value_for_exit[i++] = tmp->token[j++];
 		if (tmp->next && tmp->next->type == ARG)
-			return (printf("bash: exit: too many arguments\n"));
+			return (printf("bash: cd: too many arguments\n"));
 		j = 0;
 		v++;
 		if(tmp->next)
