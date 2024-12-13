@@ -13,8 +13,7 @@ RM = rm -f
 VGCORE_FILES = vgcore.*
 NAME = minishell
 
-DOLLAR_SRC =  srcs/parsing/dollar/pid.c \
-			  srcs/parsing/dollar/dollar.c \
+DOLLAR_SRC =  srcs/parsing/dollar/dollar.c \
 			  srcs/parsing/dollar/len_dollar.c \
 			  srcs/parsing/dollar/code_error.c \
 
@@ -56,8 +55,6 @@ UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/utils_token2.c \
 			srcs/utils/ft_exit_utils.c \
 			srcs/utils/ft_split.c \
-			srcs/utils/ft_strtol.c \
-			srcs/utils/ft_strtol_utils.c \
 			srcs/error/msg.c \
 
 MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC) $(DOLLAR_SRC)

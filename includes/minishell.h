@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/13 22:29:32 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 22:56:57 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,11 +132,6 @@ char				*proccess_dollar_value(char *str, t_env *env);
 int					len_for_dollar(char *str, t_env *env, t_dollar_len *var);
 bool				verif_token(char c);
 int					len_for_tmp(char *str);
-
-// Pid
-char				*pid_len(int len, char *pid, char *str);
-char				*get_pid(int len, char *str, char *pid);
-char				*proccess_pid(char *str);
 
 // Check pipe,quote,redir
 int					check_pipe(t_token *list);
@@ -274,14 +269,6 @@ bool				is_redirection(char *c);
 bool				is_quote(char c);
 int					ft_isspace(int c);
 
-// Ft_strtol
-int					char_to_digit(char c);
-int					initialize_base(const char **nptr, int base);
-int					compute_sign_and_base(const char **nptr, int base,
-						int *sign);
-int					handle_sign(const char **nptr);
-int					base_for_strtol(const char **nptr, int base);
-
 // Dollar
 char				*free_dollar(t_dollar *var, char *tmp);
 void				return_quote(char *str, t_dollar *var);
@@ -291,7 +278,6 @@ void				env_return_value(char *str, t_dollar *var, t_env *env,
 void				init_dollar_var(t_dollar *var, t_env *env, char *str);
 void				free_tabtab(char **tab);
 char				**ft_split_for_path(char const *s, char c);
-long int			ft_strtol(const char *nptr, char **endptr, int base);
 
 // Cd
 int					ft_arg_cd(t_env *env, t_token *list);
