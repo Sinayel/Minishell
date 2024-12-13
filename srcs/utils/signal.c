@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 19:44:12 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/13 19:44:45 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/13 23:06:10 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,9 @@ void	handle_sigabrt(int code)
 
 void	signals2(void)
 {
+	t_data *data;
+	data = get_data();
+	data->error = 131;
 	signal(SIGQUIT, SIG_DFL);
 }
 
