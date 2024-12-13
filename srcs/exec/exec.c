@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/13 22:17:49 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 22:57:40 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,8 +180,8 @@ int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
         save_outfile = dup(1);
         dup2(cmdlist->outfile, 1);
     }
-    if ((ft_strcmp(cmd_buff, "exit") == 0 && list->next->next == NULL))
-        free_cmd(&data->cmd);
+    if ((ft_strcmp(cmd_buff, "exit") == 0))
+        close(save_outfile);
     cmd(&cmd_buff, list, envlist, pathlist);
     if (cmdlist && cmdlist->outfile >= 0)
     {
