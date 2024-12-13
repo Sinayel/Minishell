@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/13 16:36:12 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 19:12:27 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,9 +190,9 @@ int built(t_token *list, t_cmd *cmdlist, t_env *envlist, t_path *pathlist)
     }
     if (!cmdlist->next && data->pid == 4242)
         free_cmd(&data->cmd);
-    if (cmd_buff != NULL)
+    if(cmd_buff != NULL)
         free(cmd_buff);
-    signal(SIGINT, SIG_DFL);
+    signal(SIGPIPE, SIG_IGN);
     return (0);
 }
 
@@ -331,7 +331,7 @@ void redir_in_out(t_cmd *list, int *fd)
 void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipefd)
 {
     char *path;
-    char **tabtab;
+    char **tabtab = NULL;
 
     path = NULL;
     // printf("ALLLLLO EST CE QUE ECHO EST UN BUILTIN OU PAS ?!?!?!?!?\n");
@@ -339,11 +339,13 @@ void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipef
     if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
         tabtab = lst_to_tabtab(envlist);
+        signals2();
         execve(path, list->cmd_arg, tabtab);
     }
     if (path)
         free(path);
-    free_tabtab(tabtab);
+    if(tabtab)
+        free_tabtab(tabtab);
     signal(SIGINT, SIG_DFL);
 }
 
@@ -352,14 +354,14 @@ void  ft_embouchure(t_cmd *cmdlist, t_token *list, t_env *envlist, t_path *pathl
     int check;
 
     check = double_check(pathlist, cmdlist->cmd_arg[0]);
-    if (is_builtin(cmdlist->cmd_arg[0]) == true)
+    if (is_builtin(cmdlist->cmd_arg[0]) == 1)
     {
         redir_builtin(cmdlist, pipefd);
         built(list, cmdlist, envlist, pathlist);
     }
-    else if (is_builtin(cmdlist->cmd_arg[0]) == false && check == 0)
+    else if (is_builtin(cmdlist->cmd_arg[0]) == 0 && check == 0)
         not_builtin_child(cmdlist, envlist, pathlist, pipefd);
-    else if (check == 1 && is_builtin(cmdlist->cmd_arg[0]) == false)
+    else if (check == 1 && is_builtin(cmdlist->cmd_arg[0]) == 0)
         printf("Command not found\n");
     free_export_exec();
     ft_token_lstclear(&list);
@@ -528,13 +530,6 @@ int ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
     ft_redir(list , tmp, envlist);
     if (cmdlist && cmdlist->cmd_arg[0] && cmdlist->next == NULL && is_builtin(tmp->cmd_arg[0]) == true)
         return (built(list, tmp, envlist, pathlist));
-    if (pipe(pipefd) == -1)
-    {
-        free_cmd(&cmdlist);
-        return (1);
-    }
-    exec_cmd(tmp, envlist, pathlist, list, pipefd);
-    tmp = tmp->next;
     while (tmp)
     {
         if (pipe(pipefd) == -1)
