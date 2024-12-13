@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/13 22:28:04 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 23:16:58 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	cmd(char **str, t_token *list, t_env *env, t_path *path)
 	if (ft_strcmp(*str, "cd") == 0)
 		return (ft_arg_cd(env, list));
 	if (ft_strcmp(*str, "pwd") == 0)
-		return (ft_arg_pwd(list));
+		return (ft_pwd(NULL));
 	if (ft_strcmp(*str, "unset") == 0)
 		return (ft_arg_unset(env, list));
 	if (ft_strcmp(*str, "env") == 0)
