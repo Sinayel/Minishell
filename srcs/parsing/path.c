@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/12 11:07:42 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 23:30:16 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,6 @@ void errno_check(int err)
 		ft_putstr_fd("Permission denied\n", 2);
 		data->error = 126;
 	}
-	// else if (err == EISDIR)
-	// {
-	// 	// printf("%s: ", token);
-	// 	ft_putstr_fd("Is a directory\n", 2);
-	// 	data->error = 126;
-	// }
 	else
 	{
 		// printf("%s: ", token);
@@ -111,7 +105,7 @@ int double_check(t_path *path, char *input)
         result = check_access(word);
         if (result == 1 || result == 0)
 		{
-			printf("path ====== %s\n\n\n", 		word);
+			// printf("path ====== %s\n\n\n", 		word);
             free(word);
             return (result);
         }

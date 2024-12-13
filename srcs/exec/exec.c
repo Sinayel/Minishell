@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/13 22:57:40 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 23:31:48 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void    free_all_fork(t_path *pathlist, int *pipefd, t_env *env)
 {
     t_data *list;
 
-    ft_putstr_fd("TU FREE OU PAS ENFLURE ?!?!?!?!?\n", 1);
     list = get_data();
     // if (datalist->input)
     //     free(datalist->input);
@@ -334,7 +333,6 @@ void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipef
     char **tabtab = NULL;
 
     path = NULL;
-    // printf("ALLLLLO EST CE QUE ECHO EST UN BUILTIN OU PAS ?!?!?!?!?\n");
     redir_in_out(list, pipefd);
     if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
