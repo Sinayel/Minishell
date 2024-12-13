@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/13 16:36:12 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/13 19:45:46 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -331,7 +331,7 @@ void redir_in_out(t_cmd *list, int *fd)
 void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipefd)
 {
     char *path;
-    char **tabtab;
+    char **tabtab = NULL;
 
     path = NULL;
     // printf("ALLLLLO EST CE QUE ECHO EST UN BUILTIN OU PAS ?!?!?!?!?\n");
@@ -339,11 +339,13 @@ void not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist, int *pipef
     if (checkpath(pathlist, list->cmd_arg[0], &path))
     {
         tabtab = lst_to_tabtab(envlist);
+        signals2();
         execve(path, list->cmd_arg, tabtab);
     }
     if (path)
         free(path);
-    free_tabtab(tabtab);
+    if(tabtab)
+        free_tabtab(tabtab);
     signal(SIGINT, SIG_DFL);
 }
 

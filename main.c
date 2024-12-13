@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/06 18:17:01 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/13 19:47:53 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,6 @@
 //! ◦ ECHO                                     |  (YANS)  [V]
 //! ◦ PID										|  (YANS)  [V]
 //! ◦ PARSING (99% du projet)                  |  (YANS)  [V]
-
-void	signal_handler(int signum)
-{
-	t_data	*data;
-
-	data = get_data();
-	if (signum == SIGINT)
-	{
-		data->error = 130;
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-}
 
 t_data	*get_data(void)
 {
@@ -58,7 +43,7 @@ void	init_variable(int argc, char **argv, t_env *env)
 	data->input = NULL;
 	(void)argc;
 	(void)argv;
-	signal(SIGINT, signal_handler);
+	signals();
 }
 
 bool	exit_shell(t_data *data, t_env *env, t_token *list)

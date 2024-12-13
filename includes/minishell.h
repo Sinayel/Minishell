@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/12 20:47:51 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/13 19:46:43 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,21 @@
 #define INT_MIN -2147483648
 #define INT_MAX 2147483647
 
-#include <stdio.h>
+#include "../libft/libft.h"
+#include <errno.h>
+#include <fcntl.h>
 #include <limits.h>
 #include <readline/history.h>
 #include <readline/readline.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include "../libft/libft.h"
-#include <fcntl.h>
 #include <signal.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <unistd.h>
-#include <errno.h>
 
 typedef struct s_dollar
 {
@@ -90,11 +90,11 @@ typedef struct s_token
 
 typedef struct s_cmd
 {
-	char **cmd_arg;
-	int infile;
-	int outfile;
-	struct s_cmd *next;
-}			t_cmd;
+	char			**cmd_arg;
+	int				infile;
+	int				outfile;
+	struct s_cmd	*next;
+}					t_cmd;
 
 typedef struct s_data
 {
@@ -146,7 +146,7 @@ int					for_trunc_and_heredoc(t_token *tmp);
 int					return_next_next(t_token *tmp);
 
 //	Path
-int 				double_check(t_path *path, char *input);
+int					double_check(t_path *path, char *input);
 t_path				*return_path(t_env *env);
 void				ft_free_path(t_path *path);
 
@@ -173,12 +173,13 @@ int					option_for_cd_(char *input, t_data *data, t_env *env_list,
 void				ch_pwd(t_env **env_list);
 
 //* -----------------------  Exit  ------------------------		// (YANS)
-int	ft_exit(t_token *list, t_env *env, t_path *path, char **args);
+int					ft_exit(t_token *list, t_env *env, t_path *path,
+						char **args);
 bool				is_valid_number(const char *str);
 int					for_check_exit(char *str, t_token *list, t_env *env,
 						t_path *path);
 int					check_if_exit(t_token *list, t_env *env);
-int feat_arg_exit(t_token *list, t_env *env, t_path *path);
+int					feat_arg_exit(t_token *list, t_env *env, t_path *path);
 
 //* -----------------------  Echo  ------------------------		// (YANS)
 int					echo(t_token *list);
@@ -240,12 +241,12 @@ int					copy_string(char *dest, char *src, int v);
 int					ft_strlen_tabtab_gpt(char **split_arg);
 
 //* -------------------------- EXEC ------------------------
-t_cmd 				*token_to_cmd(t_token *list);
-void 				print_cmd(t_cmd *list);
-int 				ft_exec(t_token *list, t_env *envlist, t_path *pathlist);
+t_cmd				*token_to_cmd(t_token *list);
+void				print_cmd(t_cmd *list);
+int					ft_exec(t_token *list, t_env *envlist, t_path *pathlist);
 void				free_cmd(t_cmd **list);
 int					len_cmd(t_cmd *list);
-bool 				is_builtin(char *str);
+bool				is_builtin(char *str);
 
 //! --------------------------------------------------------
 
@@ -299,3 +300,8 @@ void				ch_oldpwd(t_env **env_list);
 void				utils_ch_oldpwd(t_export *export, char *oldpwd_join,
 						char *cwd, t_env **env_list);
 int					cmb_word(char *str);
+void				signals(void);
+void				signals2(void);
+void				handle_sigabrt(int code);
+void				handle_sigsegv(int code);
+void				signal_handler(int signum);

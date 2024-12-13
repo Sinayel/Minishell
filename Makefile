@@ -52,6 +52,7 @@ UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/utils_dollar.c \
 			srcs/utils/for_list.c \
 			srcs/utils/utils_token.c \
+			srcs/utils/signal.c \
 			srcs/utils/utils_token2.c \
 			srcs/utils/ft_exit_utils.c \
 			srcs/utils/ft_split.c \
