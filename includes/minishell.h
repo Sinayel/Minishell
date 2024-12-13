@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/13 19:46:43 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/13 22:29:32 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ t_env				*create_env_var(char *name, char *value);
 
 //* -----------------------  Pwd  -------------------------		// (JULIO)
 int					ft_pwd(char *arg);
+int					ft_arg_pwd(t_token *list);
 
 //* -----------------------  Cd  --------------------------		// (JULIO)
 int					ft_cd(t_env *env_list, char *input);
