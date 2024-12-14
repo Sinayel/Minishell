@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 18:25:43 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 19:36:02 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ void	print_cmd(t_cmd *list)
 void	redir_builtin(t_cmd *cmd, int *pipefd)
 {
 	close(pipefd[0]);
-	if (cmd->outfile < 0)
+	if (cmd->outfile < 0 && cmd->next != NULL)
 		cmd->outfile = pipefd[1];
 	else
 		close(pipefd[1]);
@@ -193,7 +193,7 @@ int	built(t_token *list, t_cmd *tcmd, t_env *envlist, t_path *path)
 	}
 	if ((ft_strcmp(cmd_buff, "exit") == 0) && save_outfile >= 0)
 		close(save_outfile);
-	cmd(&cmd_buff, list, envlist, path);
+	cmd(tcmd, list, envlist, path);
 	if (tcmd && tcmd->outfile >= 0)
 	{
 		dup2(save_outfile, 1);

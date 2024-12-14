@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 15:23:10 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 19:34:20 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void				skip_and_initialize_tmp(char **tmp, char *str, int *i,
 int					parsing_exec(t_token *list, t_env *env, t_data *data);
 
 // Cmd
-int					cmd(char **str, t_token *list, t_env *env, t_path *path);
+int					cmd(t_cmd *cmd, t_token *list, t_env *env, t_path *path);
 int					check_cmd(t_token *list, t_env *env);
 
 // Check dollar
@@ -183,7 +183,7 @@ int					check_if_exit(t_token *list, t_env *env);
 int					feat_arg_exit(t_token *list, t_env *env, t_path *path);
 
 //* -----------------------  Echo  ------------------------		// (YANS)
-int					echo(t_token *list);
+int					echo(t_token *list, t_cmd *cmd);
 
 //* -----------------------  Unset  -----------------------		// (JULIO)
 int					ft_arg_unset(t_env *env, t_token *list);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 18:18:02 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 19:35:16 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	main(int argc, char *argv[], char **env)
 			add_history(data->input);
 			parsing_exec(list, env_list, data);
 		}
-		print_list(list);
+		// print_list(list);
 		ft_token_lstclear(&list);
 		if (data->input)
 			free(data->input);

@@ -3,36 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 15:22:32 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 19:34:45 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	cmd(char **str, t_token *list, t_env *env, t_path *path)
+int	cmd(t_cmd *cmd, t_token *list, t_env *env, t_path *path)
 {
-	if (ft_strcmp(*str, "cd") == 0)
+	if (ft_strcmp(cmd->cmd_arg[0], "cd") == 0)
 		return (ft_arg_cd(env, list));
-	else if (ft_strcmp(*str, "pwd") == 0)
+	else if (ft_strcmp(cmd->cmd_arg[0], "pwd") == 0)
 		return (ft_pwd(NULL));
-	else if (ft_strcmp(*str, "unset") == 0)
+	else if (ft_strcmp(cmd->cmd_arg[0], "unset") == 0)
 		return (ft_arg_unset(env, list));
-	else if (ft_strcmp(*str, "env") == 0)
+	else if (ft_strcmp(cmd->cmd_arg[0], "env") == 0)
 		return (print_env(env));
-	else if (ft_strcmp(*str, "echo") == 0)
-		return (echo(list));
-	else if (ft_strcmp(*str, "exit") == 0)
+	else if (ft_strcmp(cmd->cmd_arg[0], "echo") == 0)
+		return (echo(list, cmd));
+	else if (ft_strcmp(cmd->cmd_arg[0], "exit") == 0)
 	{
 		// ft_token_lstclear(&list);
 		// free_all_fork(pathlist, pipefd, envlist);
-		free(*str);
-		*str = NULL;
+		//!  free cmd peut etre
+		// free(*str);
+		// *str = NULL;
 		return (feat_arg_exit(list, env, path));
 	}
-	else if (ft_strcmp(*str, "export") == 0)
+	else if (ft_strcmp(cmd->cmd_arg[0], "export") == 0)
 		return (ft_arg_export(env, list));
 	return 1;
 }
