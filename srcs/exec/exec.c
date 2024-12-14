@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 13:57:48 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 14:18:07 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,7 +365,7 @@ void	not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist,
 		free(path);
 	if (tabtab)
 		free_tabtab(tabtab);
-	signal(SIGINT, SIG_DFL);
+	// signal(SIGINT, SIG_DFL);
 }
 
 void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
@@ -574,9 +574,9 @@ int	ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
 	ft_wait(data->cmd, list);
 	if (data->cmd || tmp)
 		free_cmd();
-	if (pipefd[0] >= 0)
-		close(pipefd[0]);
-	if (pipefd[1] >= 0)
-		close(pipefd[1]);
+	// if (pipefd[0] >= 0)
+	// 	close(pipefd[0]);
+	// if (pipefd[1] >= 0)
+	// 	close(pipefd[1]);
 	return (0);
 }
