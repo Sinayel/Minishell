@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 14:18:56 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 15:30:37 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,18 @@ int check_access(char *path)
 
 int double_check(t_path *path, char *input)
 {
+	t_data *data;
     char *word;
     int result;
 
+	data = get_data();
 	word = NULL;
+	if (strcmp(input, "") == 0)
+		return 1;
     if (is_directory(input))
 	{
         printf("%s: Is a directory\n", input);
+		data->error = 126;
         return (1);
 	}
     result = check_access(input);
@@ -99,6 +104,7 @@ int double_check(t_path *path, char *input)
         if (is_directory(word))
 		{
             printf("%s: Is a directory\n", word);
+			data->error = 126;
             free(word);
             return (1);
         }

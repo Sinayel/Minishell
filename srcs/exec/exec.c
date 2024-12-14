@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 15:06:13 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 15:17:05 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -368,7 +368,9 @@ void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
 		t_path *pathlist, int *pipefd)
 {
 	int	check;
+	t_data *data;
 
+	data = get_data();
 	check = double_check(pathlist, cmd->cmd_arg[0]);
 	if (is_builtin(cmd->cmd_arg[0]) == true)
 	{
@@ -378,7 +380,10 @@ void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
 	else if (is_builtin(cmd->cmd_arg[0]) == false && check == 0)
 		not_builtin_child(cmd, envlist, pathlist, pipefd);
 	else if (check == 1 && is_builtin(cmd->cmd_arg[0]) == false)
+	{
+		data->error = 127;
 		printf("Command not found\n");
+	}
 	free_export_exec();
 	ft_token_lstclear(&list);
 	free_all_fork(pathlist, pipefd, envlist);
