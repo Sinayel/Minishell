@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/13 23:16:58 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 01:05:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,13 @@ int	cmd(char **str, t_token *list, t_env *env, t_path *path)
 		return (echo(list));
 	if (ft_strcmp(*str, "exit") == 0)
 	{
+		// ft_token_lstclear(&list);
+		// free_all_fork(pathlist, pipefd, envlist);
+		free_cmd();
 		free(*str);
 		*str = NULL;
-		return (feat_arg_exit(list, env, path));
+		ft_free_path(path);
+		return (check_if_exit(list, env));
 	}
 	if (ft_strcmp(*str, "export") == 0)
 		return (ft_arg_export(env, list));
