@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:58:53 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 14:14:19 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 15:13:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,25 @@ bool	is_valid_number(const char *str)
 		i++;
 	}
 	return (true);
+}
+
+void	ft_env_lstclear(t_env **lst)
+{
+	t_env	*tmp;
+
+	if (!lst || !*lst)
+		return ;
+	while (*lst)
+	{
+		tmp = (*lst)->next;
+		if ((*lst)->name)
+			free((*lst)->name);
+		if ((*lst)->value)
+			free((*lst)->value);
+		free(*lst);
+		*lst = tmp;
+	}
+	*lst = NULL;
 }
 
 void	free_all(t_token *list, t_env *env, t_path *path)
