@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 17:19:05 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 21:28:02 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ void errno_check(int err)
 	else
 	{
 		// printf("%s: ", token);
-		ft_putstr_fd(" Command not found\n", 2);
+		ft_putstr_fd(" command not found\n", 2);
 		data->error = 127;
 	}
 }

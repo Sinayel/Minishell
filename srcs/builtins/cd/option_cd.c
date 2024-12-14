@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_cd.c                                         :+:      :+:    :+:   */
+/*   option_cd.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 17:56:46 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/11/27 17:57:30 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 21:43:43 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ char	*cd_handle_dollar(t_env *env_list, char *input)
 	path = return_env_value(env_list, name);
 	if (!path)
 	{
-		printf("bash: cd: %s not set\n", name);
+		ft_putstr_fd("bash: cd: ", 2);
+		ft_putstr_fd(name, 2);
+		ft_putstr_fd(": not set\n", 2);
 		free(name);
 		return (NULL);
 	}
@@ -33,7 +35,7 @@ int	no_home_set(char *path, t_data *data)
 {
 	if (!path)
 	{
-		printf("bash: cd: HOME not set\n");
+		ft_putstr_fd("bash: cd: HOME not set\n", 2);
 		data->error = 1;
 		return (0);
 	}
@@ -50,9 +52,17 @@ void	mouv_cd(char *path, t_env *env_list, t_data *data)
 	if (chdir(initial_path) != 0)
 	{
 		if (errno == ENOTDIR)
-			printf("bash: cd: %s: Not a directory\n", path);
+		{
+			ft_putstr_fd("bash: cd: ", 2);
+			ft_putstr_fd(path, 2);
+			ft_putstr_fd(": Not a directory\n", 2);
+		}
 		if (errno == ENOENT)
-			printf("bash: cd: %s: No such file or directory\n", path);
+		{
+			ft_putstr_fd("bash: cd: ", 2);
+			ft_putstr_fd(path, 2);
+			ft_putstr_fd(": No such file or directory\n", 2);
+		}
 		else
 			perror("chdir");
 		data->error = 1;
@@ -85,7 +95,7 @@ int	option_for_cd_(char *input, t_data *data, t_env *env_list, char *path)
 		path = return_env_value(env_list, "OLDPWD");
 		if (!path)
 		{
-			printf("bash: cd: OLDPWD not set\n");
+			ft_putstr_fd("bash: cd: OLDPWD not set\n", 2);
 			data->error = 1;
 			return (0);
 		}

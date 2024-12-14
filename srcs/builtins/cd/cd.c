@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:43:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 15:48:43 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 21:45:01 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int error()
 	t_data *data;
 	data = get_data();
 	data->error = 1;
-	printf("bash: cd: too many arguments\n");
+	ft_putstr_fd("bash: cd: too many arguments\n", 2);
 	return 0;
 }
 

@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 21:08:25 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 21:47:42 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,7 +399,7 @@ void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
 	else if (check == 1 && is_builtin(cmd->cmd_arg[0]) == false)
 	{
 		data->error = 127;
-		ft_putstr_fd(" Command not found\n", 2);
+		ft_putstr_fd(" command not found\n", 2);
 	}
 	free_export_exec();
 	ft_token_lstclear(&list);
@@ -613,7 +613,8 @@ int	ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
 	tmp = data->cmd;
 	if (!tmp)
 		return (1);
-	ft_redir(list, tmp, envlist);
+	if (ft_redir(list, tmp, envlist) == 1)
+		return 1;
 	if (data->cmd && data->cmd->cmd_arg[0] && data->cmd->next == NULL
 		&& is_builtin(tmp->cmd_arg[0]) == true)
 		return (built(list, tmp, envlist, pathlist));
