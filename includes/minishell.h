@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 01:04:12 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 12:44:27 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #define INT_MIN -2147483648
 #define INT_MAX 2147483647
 
+#include <stdio.h>
 #include "../libft/libft.h"
 #include <errno.h>
 #include <fcntl.h>
@@ -28,7 +29,6 @@
 #include <readline/readline.h>
 #include <signal.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>

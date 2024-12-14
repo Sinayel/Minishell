@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 00:57:46 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 13:08:15 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,6 +223,7 @@ t_cmd	*token_to_cmd(t_token *list)
 			new_cmd->cmd_arg = malloc(sizeof(char *) * (len_in_block(tmp) + 1));
 			if (!new_cmd->cmd_arg)
 			{
+				free_tabtab(new_cmd->cmd_arg);
 				free(new_cmd);
 				return (NULL);
 			}
@@ -252,6 +253,8 @@ t_cmd	*token_to_cmd(t_token *list)
 		}
 		else
 			tmp = tmp->next;
+		if (cmd_head)
+		    free_cmd();
 	}
 	return (cmd_head);
 }

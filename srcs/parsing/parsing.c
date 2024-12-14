@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 01:05:50 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 12:59:02 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,15 @@ int	cmd(char **str, t_token *list, t_env *env, t_path *path)
 {
 	if (ft_strcmp(*str, "cd") == 0)
 		return (ft_arg_cd(env, list));
-	if (ft_strcmp(*str, "pwd") == 0)
+	else if (ft_strcmp(*str, "pwd") == 0)
 		return (ft_pwd(NULL));
-	if (ft_strcmp(*str, "unset") == 0)
+	else if (ft_strcmp(*str, "unset") == 0)
 		return (ft_arg_unset(env, list));
-	if (ft_strcmp(*str, "env") == 0)
+	else if (ft_strcmp(*str, "env") == 0)
 		return (print_env(env));
-	if (ft_strcmp(*str, "echo") == 0)
+	else if (ft_strcmp(*str, "echo") == 0)
 		return (echo(list));
-	if (ft_strcmp(*str, "exit") == 0)
+	else if (ft_strcmp(*str, "exit") == 0)
 	{
 		// ft_token_lstclear(&list);
 		// free_all_fork(pathlist, pipefd, envlist);
@@ -34,7 +34,7 @@ int	cmd(char **str, t_token *list, t_env *env, t_path *path)
 		ft_free_path(path);
 		return (check_if_exit(list, env));
 	}
-	if (ft_strcmp(*str, "export") == 0)
+	else if (ft_strcmp(*str, "export") == 0)
 		return (ft_arg_export(env, list));
 	return 1;
 }
