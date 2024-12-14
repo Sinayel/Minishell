@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 17:08:40 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 18:06:08 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,16 @@ int	len_in_block(t_token *list)
 	int	len;
 
 	len = 0;
-	while (list && (list->type == CMD || list->type == ARG))
+	while (list)
 	{
+		if (list->type == INPUT || list->type == HEREDOC || list->type == APPEND || list->type == TRUNC)
+		{
+			if (list->next->type == ARG)
+				list = list->next;
+			list = list->next;
+		}
+		if (list->type == PIPE)
+			break ;
 		len++;
 		list = list->next;
 	}
@@ -229,8 +237,19 @@ t_cmd	*token_to_cmd(t_token *list)
 				return (NULL);
 			}
 			i = 0;
-			while (tmp && (tmp->type == CMD || tmp->type == ARG))
+			while (tmp) // while (tmp && (tmp->type == CMD || tmp->type == ARG)) 
 			{
+				if (tmp->type == INPUT || tmp->type == HEREDOC || tmp->type == APPEND || tmp->type == TRUNC)
+				{
+					if (tmp->next->type == ARG)
+						tmp = tmp->next;
+					tmp = tmp->next;
+				}
+				if (tmp->type == PIPE)
+				{
+					tmp = tmp->next;
+					break;
+				}
 				new_cmd->cmd_arg[i] = ft_strdup(tmp->token);
 				if (!new_cmd->cmd_arg[i])
 				{

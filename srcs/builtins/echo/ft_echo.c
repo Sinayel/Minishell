@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 19:43:50 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/04 18:45:32 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 18:06:55 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,16 @@ int	echo(t_token *list)
 	}
 	if (tmp->next)
 		tmp = tmp->next;
-	while (tmp && tmp->type == ARG)
+	while (tmp)
 	{
+		if (tmp->type == INPUT || tmp->type == HEREDOC || tmp->type == APPEND || tmp->type == TRUNC)
+		{
+			if (tmp->next->type == ARG)
+				tmp = tmp->next;
+			tmp = tmp->next;
+		}
+		if (tmp->type == PIPE)
+			break ;
 		printf("%s", tmp->token);
 		if (tmp->next)
 			printf(" ");
