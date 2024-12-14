@@ -6,13 +6,13 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 12:59:02 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 13:56:45 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	cmd(char **str, t_token *list, t_env *env, t_path *path)
+int	cmd(char **str, t_token *list, t_env *env)
 {
 	if (ft_strcmp(*str, "cd") == 0)
 		return (ft_arg_cd(env, list));
@@ -31,7 +31,6 @@ int	cmd(char **str, t_token *list, t_env *env, t_path *path)
 		free_cmd();
 		free(*str);
 		*str = NULL;
-		ft_free_path(path);
 		return (check_if_exit(list, env));
 	}
 	else if (ft_strcmp(*str, "export") == 0)

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 13:08:15 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 13:57:48 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void	free_export_exec(void)
 		free_tabtab(export->content);
 }
 
-int	built(t_token *list, t_cmd *tcmd, t_env *envlist, t_path *pathlist)
+int	built(t_token *list, t_cmd *tcmd, t_env *envlist)
 {
 	int		save_outfile;
 	char	*cmd_buff;
@@ -188,7 +188,7 @@ int	built(t_token *list, t_cmd *tcmd, t_env *envlist, t_path *pathlist)
 	}
 	if ((ft_strcmp(cmd_buff, "exit") == 0) && save_outfile >= 0)
 		close(save_outfile);
-	cmd(&cmd_buff, list, envlist, pathlist);
+	cmd(&cmd_buff, list, envlist);
 	if (tcmd && tcmd->outfile >= 0)
 	{
 		dup2(save_outfile, 1);
@@ -218,12 +218,17 @@ t_cmd	*token_to_cmd(t_token *list)
 		{
 			new_cmd = malloc(sizeof(t_cmd));
 			if (!new_cmd)
+			{
+				if(cmd_head)
+					free_cmd();
 				return (NULL);
+			}
 			new_cmd->next = NULL;
 			new_cmd->cmd_arg = malloc(sizeof(char *) * (len_in_block(tmp) + 1));
 			if (!new_cmd->cmd_arg)
 			{
-				free_tabtab(new_cmd->cmd_arg);
+				if(cmd_head)
+					free_cmd();
 				free(new_cmd);
 				return (NULL);
 			}
@@ -237,6 +242,8 @@ t_cmd	*token_to_cmd(t_token *list)
 						free(new_cmd->cmd_arg[--i]);
 					free(new_cmd->cmd_arg);
 					free(new_cmd);
+					if(cmd_head)
+						free_cmd();
 					return (NULL);
 				}
 				tmp = tmp->next;
@@ -370,7 +377,7 @@ void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
 	if (is_builtin(cmd->cmd_arg[0]) == true)
 	{
 		redir_builtin(cmd, pipefd);
-		built(list, cmd, envlist, pathlist);
+		built(list, cmd, envlist);
 	}
 	else if (is_builtin(cmd->cmd_arg[0]) == false && check == 0)
 		not_builtin_child(cmd, envlist, pathlist, pipefd);
@@ -546,7 +553,7 @@ int	ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
 	ft_redir(list, tmp, envlist);
 	if (data->cmd && data->cmd->cmd_arg[0] && data->cmd->next == NULL
 		&& is_builtin(tmp->cmd_arg[0]) == true)
-		return (built(list, tmp, envlist, pathlist));
+		return (built(list, tmp, envlist));
 	if (pipe(pipefd) == -1)
 	{
 		free_cmd();

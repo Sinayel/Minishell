@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:43:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/10 16:45:53 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 13:33:59 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,15 @@ int	len_for_cd(t_token *list)
 	return (i);
 }
 
+int error()
+{
+	t_data *data;
+	data = get_data();
+	data->error = 127;
+	printf("bash: cd: too many arguments\n");
+	return 0;
+}
+
 int	ft_arg_cd(t_env *env, t_token *list)
 {
 	int		len;
@@ -94,7 +103,7 @@ int	ft_arg_cd(t_env *env, t_token *list)
 		while (tmp->token[j])
 			value_for_cd[i++] = tmp->token[j++];
 		if (tmp->next && tmp->next->type == ARG)
-			return (printf("bash: cd: too many arguments\n"));
+			return (error());
 		j = 0;
 		tmp = tmp->next;
 	}

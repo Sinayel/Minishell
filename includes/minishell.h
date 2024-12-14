@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 12:44:27 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 13:57:05 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void				skip_and_initialize_tmp(char **tmp, char *str, int *i,
 int					parsing_exec(t_token *list, t_env *env, t_data *data);
 
 // Cmd
-int					cmd(char **str, t_token *list, t_env *env, t_path *path);
+int					cmd(char **str, t_token *list, t_env *env);
 int					check_cmd(t_token *list, t_env *env);
 
 // Check dollar

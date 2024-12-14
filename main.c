@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 00:49:47 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 13:26:28 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ int	main(int argc, char *argv[], char **env)
 	data = get_data();
 	env_list = env_import(env);
 	init_variable(argc, argv, env_list);
+	signal(SIGPIPE, SIG_IGN);
 	while (1)
 	{
 		data->input = readline("Minishell> ");
