@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 19:44:12 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 14:08:39 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 14:54:17 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,5 +53,6 @@ void signals()
 {
 	signal(SIGINT, signal_handler);
 	signal(SIGSEGV, &handle_sigsegv);
+	signal(SIGPIPE, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }

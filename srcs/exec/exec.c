@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 15:24:29 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 15:06:13 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -524,7 +524,7 @@ int	exec_cmd(t_cmd *cmd, t_env *envlist, t_path *pathlist, t_token *list,
 	else if (!data->pid)
 	{
 		if (cmd->cmd_arg && cmd->cmd_arg[0])
-			ft_embouchure(data->cmd, list, envlist, pathlist, pipefd);
+			ft_embouchure(cmd, list, envlist, pathlist, pipefd);
 		else
 			free_all_fork(pathlist, pipefd, envlist);
 	}
