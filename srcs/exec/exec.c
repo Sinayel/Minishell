@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 14:18:07 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 15:24:29 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,6 @@ void	free_all_fork(t_path *pathlist, int *pipefd, t_env *env)
 	t_data	*list;
 
 	list = get_data();
-	// if (datalist->input)
-	//     free(datalist->input);
-	// if (list)
-	//     ft_token_lstclear(&list);
 	if (list->input)
 		free(list->input);
 	if (env)
@@ -172,7 +168,7 @@ void	free_export_exec(void)
 		free_tabtab(export->content);
 }
 
-int	built(t_token *list, t_cmd *tcmd, t_env *envlist)
+int	built(t_token *list, t_cmd *tcmd, t_env *envlist, t_path *path)
 {
 	int		save_outfile;
 	char	*cmd_buff;
@@ -188,7 +184,7 @@ int	built(t_token *list, t_cmd *tcmd, t_env *envlist)
 	}
 	if ((ft_strcmp(cmd_buff, "exit") == 0) && save_outfile >= 0)
 		close(save_outfile);
-	cmd(&cmd_buff, list, envlist);
+	cmd(&cmd_buff, list, envlist, path);
 	if (tcmd && tcmd->outfile >= 0)
 	{
 		dup2(save_outfile, 1);
@@ -377,7 +373,7 @@ void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
 	if (is_builtin(cmd->cmd_arg[0]) == true)
 	{
 		redir_builtin(cmd, pipefd);
-		built(list, cmd, envlist);
+		built(list, cmd, envlist, pathlist);
 	}
 	else if (is_builtin(cmd->cmd_arg[0]) == false && check == 0)
 		not_builtin_child(cmd, envlist, pathlist, pipefd);
@@ -553,7 +549,7 @@ int	ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
 	ft_redir(list, tmp, envlist);
 	if (data->cmd && data->cmd->cmd_arg[0] && data->cmd->next == NULL
 		&& is_builtin(tmp->cmd_arg[0]) == true)
-		return (built(list, tmp, envlist));
+		return (built(list, tmp, envlist, pathlist));
 	if (pipe(pipefd) == -1)
 	{
 		free_cmd();
