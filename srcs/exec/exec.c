@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 18:06:08 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 18:25:43 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ int	len_in_block(t_token *list)
 			if (list->next->type == ARG)
 				list = list->next;
 			list = list->next;
+			continue;
 		}
 		if (list->type == PIPE)
 			break ;
@@ -244,6 +245,7 @@ t_cmd	*token_to_cmd(t_token *list)
 					if (tmp->next->type == ARG)
 						tmp = tmp->next;
 					tmp = tmp->next;
+					continue;
 				}
 				if (tmp->type == PIPE)
 				{
