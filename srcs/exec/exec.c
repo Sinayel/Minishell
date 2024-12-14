@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 15:17:05 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 17:08:40 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -382,7 +382,7 @@ void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
 	else if (check == 1 && is_builtin(cmd->cmd_arg[0]) == false)
 	{
 		data->error = 127;
-		printf("Command not found\n");
+		ft_putstr_fd(" Command not found\n", 2);
 	}
 	free_export_exec();
 	ft_token_lstclear(&list);

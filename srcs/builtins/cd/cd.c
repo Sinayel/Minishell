@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:43:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 13:33:59 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 15:48:43 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int error()
 {
 	t_data *data;
 	data = get_data();
-	data->error = 127;
+	data->error = 1;
 	printf("bash: cd: too many arguments\n");
 	return 0;
 }

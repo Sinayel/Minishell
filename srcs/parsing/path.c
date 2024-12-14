@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 19:04:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 15:30:37 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 17:19:05 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,13 @@ void errno_check(int err)
 	if (err == EACCES)
 	{
 		// printf("%s: ", token);
-		ft_putstr_fd("Permission denied\n", 2);
+		ft_putstr_fd(" Permission denied\n", 2);
 		data->error = 126;
 	}
 	else
 	{
 		// printf("%s: ", token);
-		ft_putstr_fd("Command not found\n", 2);
+		ft_putstr_fd(" Command not found\n", 2);
 		data->error = 127;
 	}
 }
@@ -71,9 +71,12 @@ int check_access(char *path)
 	{
         if (errno == EISDIR || errno == EACCES)
 		{
-            errno_check(errno);
-            return 1; // Erreur permission ou repertoire
-        }
+			if(path[0] == '.' || path[0] == '/')
+			{
+				errno_check(errno);
+				return 3; // Erreur permission ou repertoire
+			}
+		}
         return 2; // Command not found
     }
     return 0; // Aucun problème
@@ -91,29 +94,36 @@ int double_check(t_path *path, char *input)
 		return 1;
     if (is_directory(input))
 	{
-        printf("%s: Is a directory\n", input);
-		data->error = 126;
-        return (1);
+		if (input[0] == '.' || input[0] == '/')
+		{
+			ft_putstr_fd(input, 2);
+			ft_putstr_fd(": Is a directory\n", 2);
+			data->error = 126;
+			return (2);
+		}
+		data->error = 127;
+		return (1);
 	}
     result = check_access(input);
-    if (result == 1 || result == 0)
+    if (result == 0 || result == 3)
         return (result);
     while (path)
 	{
         word = ft_magouilles(path->name, "/", input);
-        if (is_directory(word))
-		{
-            printf("%s: Is a directory\n", word);
-			data->error = 126;
-            free(word);
-            return (1);
-        }
-        result = check_access(word);
-        if (result == 1 || result == 0)
+		result = check_access(word);
+        if (result == 0)
 		{
 			// printf("path ====== %s\n\n\n", 		word);
             free(word);
             return (result);
+        }
+        if (is_directory(word))
+		{
+            ft_putstr_fd(word, 2);
+        	ft_putstr_fd(": Is a directory\n", 2);
+			data->error = 126;
+            free(word);
+            return (2);
         }
 		if (path->next == NULL)
 			break;
