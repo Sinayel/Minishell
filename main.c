@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 19:35:16 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 20:30:30 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 //! ◦ ECHO                                     |  (YANS)  [V]
 //! ◦ PID									   |  (YANS)  [V]
 //! ◦ PARSING (99% du projet)                  |  (YANS)  [V]
+
+int g_signal = 0;
 
 t_data	*get_data(void)
 {
@@ -79,6 +81,7 @@ int	main(int argc, char *argv[], char **env)
 	signal(SIGPIPE, SIG_IGN);
 	while (1)
 	{
+		data->pid = 4242;
 		data->input = readline("Minishell> ");
 		if (!exit_shell(data, env_list, list))
 			break ;

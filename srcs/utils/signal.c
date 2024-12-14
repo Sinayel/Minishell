@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 19:44:12 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 14:54:17 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 20:28:17 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,19 @@ void	signal_handler(int signum)
 	data = get_data();
 	if (signum == SIGINT)
 	{
-		data->error = 130;
-		printf("\n");
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
+		if (data->pid == 4242) // Processus parent
+		{
+			data->error = 130;
+			printf("\n");
+			rl_on_new_line();
+			rl_replace_line("", 0);
+			rl_redisplay();
+		}
+		else // Processus enfant
+		{
+			printf("\n");
+			data->error = 130;
+		}
 	}
 }
 
@@ -49,8 +57,12 @@ void	signals2(void)
 	signal(SIGQUIT, SIG_DFL);
 }
 
-void signals()
+void	signals(void)
 {
+	t_data	*data;
+
+	data = get_data();
+	data->pid = 4242;
 	signal(SIGINT, signal_handler);
 	signal(SIGSEGV, &handle_sigsegv);
 	signal(SIGPIPE, SIG_IGN);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 19:36:02 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/14 20:29:58 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,18 +180,16 @@ void	free_export_exec(void)
 int	built(t_token *list, t_cmd *tcmd, t_env *envlist, t_path *path)
 {
 	int		save_outfile;
-	char	*cmd_buff;
 	t_data	*data;
 
 	data = get_data();
-	cmd_buff = ft_strdup(tcmd->cmd_arg[0]);
 	save_outfile = -1;
     if (tcmd->outfile >= 0)
 	{
 		save_outfile = dup(1);
 		dup2(tcmd->outfile, 1);
 	}
-	if ((ft_strcmp(cmd_buff, "exit") == 0) && save_outfile >= 0)
+	if ((ft_strcmp(tcmd->cmd_arg[0], "exit") == 0) && save_outfile >= 0)
 		close(save_outfile);
 	cmd(tcmd, list, envlist, path);
 	if (tcmd && tcmd->outfile >= 0)
@@ -201,8 +199,6 @@ int	built(t_token *list, t_cmd *tcmd, t_env *envlist, t_path *path)
 	}
 	if (!tcmd->next && data->pid == 4242)
 		free_cmd();
-	if (cmd_buff != NULL)
-		free(cmd_buff);
 	return (0);
 }
 
@@ -549,6 +545,7 @@ int	exec_cmd(t_cmd *cmd, t_env *envlist, t_path *pathlist, t_token *list,
 		return (1);
 	else if (!data->pid)
 	{
+		signals2();
 		if (cmd->cmd_arg && cmd->cmd_arg[0])
 			ft_embouchure(cmd, list, envlist, pathlist, pipefd);
 		else

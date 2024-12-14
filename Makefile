@@ -75,7 +75,7 @@ $(NAMELFT):
 $(NAME): $(MINISHELL_SRC) $(NAMELFT)
 	@echo -e '\033[35mCreating Minishell... 🕗\n'
 	@echo $(ASCII_LOGO)
-	@$(CC) $(MINISHELL_SRC) $(NAMELFT) $(CFLAGS) $(LDFLAGS) $(INCLUDE) -o $(NAME)
+	@$(CC) $(CFLAGS) $(MINISHELL_SRC) $(NAMELFT) $(LDFLAGS) $(INCLUDE) -o $(NAME)
 	@echo -e '\033[33;32mMinishell created ! 🎉\033[0m'
 
 clean:
