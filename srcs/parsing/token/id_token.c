@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 18:21:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/04 18:35:02 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 18:34:22 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,19 @@ void	cmd_token(t_token *list)
 	tmp = tmp->next;
 	while (tmp != NULL)
 	{
-		if (last->type == PIPE && tmp->type == ARG)
+		if (last->type == PIPE && tmp->type < 5 && tmp->next != NULL && tmp->next->next != NULL)
+		{
+			tmp->next->type = ARG;
+			if (tmp->next->next->type == ARG)
+				tmp->next->next->type = CMD;
+		}
+		else if (last->type == PIPE && tmp->type == ARG)
 			tmp->type = CMD;
-		else if (tmp->type != PIPE && tmp->type >= PIPE)
-			tmp->type = ARG;
 		last = tmp;
 		tmp = tmp->next;
 	}
 }
+
 
 t_token	*id_token(t_token *list)
 {
