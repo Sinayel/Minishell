@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 16:21:47 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 13:53:30 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 14:05:41 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,16 @@ int	ft_exit(t_token *list, t_env *env, t_path *path, char **args)
 	return 0;
 }
 
+int error_free(char *str)
+{
+	t_data *data;
+	data = get_data();
+	data->error = 1;
+	free(str);
+	printf("bash: exit: too many arguments\n");
+	return 0;
+}
+
 int feat_arg_exit(t_token *list, t_env *env, t_path *path)
 {
 	int		len;
@@ -108,7 +118,7 @@ int feat_arg_exit(t_token *list, t_env *env, t_path *path)
 		while (tmp->token[j])
 			value_for_exit[i++] = tmp->token[j++];
 		if (tmp->next && tmp->next->type == ARG)
-			return (printf("bash: exit: too many arguments\n"));
+			return (error_free(value_for_exit));
 		j = 0;
 		v++;
 		if(tmp->next)

@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:58:53 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 13:58:33 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 14:14:19 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	free_all(t_token *list, t_env *env, t_path *path)
 		free(data->input);
 	if (export && export->content)
 		free_tabtab(export->content);
-	// free_cmd();
+	free_cmd();
 	ft_token_lstclear(&list);
 	ft_env_lstclear(&env);
 	if(path)
@@ -47,18 +47,16 @@ void	free_all(t_token *list, t_env *env, t_path *path)
 	rl_clear_history();
 }
 
-void	ft_free_path(t_path *path)
+void ft_free_path(t_path *path)
 {
-	t_path	*temp;
+    t_path *tmp;
 
-	if (!path)
-		return ;
-	while (path)
-	{
-		temp = path->next;
-		free(path->name);
-		free(path);
-		path = temp;
-	}
+    while (path)
+    {
+        tmp = path;
+        path = path->next;
+        free(tmp->name);
+        free(tmp);
+    }
 	path = NULL;
 }

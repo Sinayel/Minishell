@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 13:56:45 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 14:04:23 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	cmd(char **str, t_token *list, t_env *env)
 	{
 		// ft_token_lstclear(&list);
 		// free_all_fork(pathlist, pipefd, envlist);
-		free_cmd();
 		free(*str);
 		*str = NULL;
 		return (check_if_exit(list, env));
