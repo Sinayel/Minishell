@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:12:34 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 15:26:26 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 22:00:16 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int error_free(char *str)
 	data = get_data();
 	data->error = 1;
 	free(str);
-	printf("bash: exit: too many arguments\n");
+	ft_putstr_fd("bash: exit: too many arguments\n", 2);
 	return 0;
 }
 

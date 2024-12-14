@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   big_big_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 18:50:55 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/03 17:18:37 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 21:52:59 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,9 @@ void	handle_valid_argument(t_env *env_list, t_export *export, char *arg,
 
 void	handle_invalid_identifier(t_data *data, char *arg)
 {
-	printf("bash: export: '%s': not a valid identifier\n", arg);
+	ft_putstr_fd("bash: export: '", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
 	data->error = 1;
 }
 
