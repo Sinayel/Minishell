@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 20:29:58 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/14 21:08:25 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -463,45 +463,89 @@ int	here_doc(t_env *envlist, char *str)
 	return (fd);
 }
 
+int check_access_redir(char *str)
+{
+	t_data *data;
+	
+	data = get_data();
+	if (access(str, W_OK | R_OK) == -1)
+	{
+		if (errno == ENOENT)
+		{
+			ft_putstr_fd("bash: ", 2);
+			ft_putstr_fd(str, 2);
+			ft_putstr_fd(": No such file or directory\n", 2);
+			data->error = 1;
+			return (1);
+		}
+		if (errno == EACCES)
+		{
+			ft_putstr_fd("bash: ", 2);
+			ft_putstr_fd(str, 2);
+			ft_putstr_fd(": Permission denied\n", 2);
+			data->error = 1;
+			return (1);
+		}
+		
+	}
+	return (0);
+}
+
 int	ft_redir(t_token *list, t_cmd *cmd, t_env *envlist)
 {
 	t_token	*tmp;
 	t_cmd	*cmdt;
+	char *tmp_path;
+	int err;
 
 	cmdt = cmd;
 	tmp = list;
-	while (tmp) //! faudrait ptet parcourir t_cmd plutot que t_token
+	tmp_path = NULL;
+	err = 0;
+	
+	while (tmp)
 	{
+		if (tmp->type == PIPE)
+			cmdt = cmdt->next;
 		if (tmp->type == INPUT)
 		{
+			tmp_path = tmp->next->token;
 			if (cmdt->infile >= 0)
 				close(cmdt->infile);
 			cmdt->infile = open(tmp->next->token, O_RDONLY);
+			err = check_access_redir(tmp_path);
 		}
 		if (tmp->type == HEREDOC)
 		{
+			tmp_path = tmp->next->token;
 			if (cmdt->infile >= 0)
 				close(cmdt->infile);
 			cmdt->infile = here_doc(envlist, tmp->next->token);
 		}
-		while (cmdt->next != NULL)
-			cmdt = cmdt->next;
+		if (err == 1)
+			return (1);
 		if (tmp->type == TRUNC)
 		{
+			tmp_path = tmp->next->token;
 			if (cmdt->outfile >= 0)
 				close(cmdt->outfile);
 			cmdt->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_TRUNC,
 					0644);
+			err = check_access_redir(tmp_path);
 		}
 		if (tmp->type == APPEND)
 		{
+			tmp_path = tmp->next->token;
 			if (cmdt->outfile >= 0)
 				close(cmdt->outfile);
 			cmdt->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_APPEND,
 					0644);
+			err = check_access_redir(tmp_path);
 		}
 		tmp = tmp->next;
 	}
+	if (err == 1)
+		return (1);
 	return (0);
 }
 
