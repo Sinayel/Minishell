@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 19:44:12 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 22:12:29 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/15 14:55:09 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	signal_handler(int signum)
 	data = get_data();
 	if (signum == SIGINT)
 	{
-		if (data->pid == 4242) // Processus parent
+		if (data->pid == 4242)
 		{
 			data->error = 130;
 			printf("\n");
@@ -27,7 +27,7 @@ void	signal_handler(int signum)
 			rl_replace_line("", 0);
 			rl_redisplay();
 		}
-		else // Processus enfant
+		else
 		{
 			printf("\n");
 			data->error = 130;
@@ -50,9 +50,10 @@ void	handle_sigabrt(int code)
 
 void	signals2(void)
 {
-	t_data *data;
+	t_data	*data;
+
 	data = get_data();
-	data->error = 131;
+	data->error = 130;
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 }
@@ -65,6 +66,5 @@ void	signals(void)
 	data->pid = 4242;
 	signal(SIGINT, signal_handler);
 	signal(SIGSEGV, &handle_sigsegv);
-	signal(SIGPIPE, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }

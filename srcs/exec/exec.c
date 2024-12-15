@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/15 13:54:42 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/15 16:24:34 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,13 +50,14 @@ void	free_cmd_vars(t_cmd *list)
 
 void	free_cmd(void)
 {
-    t_data *data;
-    data = get_data();
-    t_cmd **list = &data->cmd;
+	t_data	*data;
+	t_cmd	**list;
 	t_cmd	*tmp;
 	t_cmd	*current;
 	int		len;
 
+	data = get_data();
+	list = &data->cmd;
 	if (list == NULL || *list == NULL)
 		return ;
 	len = len_cmd(*list) - 1;
@@ -111,12 +112,13 @@ int	len_in_block(t_token *list)
 	len = 0;
 	while (list)
 	{
-		if (list->type == INPUT || list->type == HEREDOC || list->type == APPEND || list->type == TRUNC)
+		if (list->type == INPUT || list->type == HEREDOC || list->type == APPEND
+			|| list->type == TRUNC)
 		{
 			if (list->next->type == ARG)
 				list = list->next;
 			list = list->next;
-			continue;
+			continue ;
 		}
 		if (list->type == PIPE)
 			break ;
@@ -184,7 +186,7 @@ int	built(t_token *list, t_cmd *tcmd, t_env *envlist, t_path *path)
 
 	data = get_data();
 	save_outfile = -1;
-    if (tcmd->outfile >= 0)
+	if (tcmd->outfile >= 0)
 	{
 		save_outfile = dup(1);
 		dup2(tcmd->outfile, 1);
@@ -200,83 +202,6 @@ int	built(t_token *list, t_cmd *tcmd, t_env *envlist, t_path *path)
 	if (!tcmd->next && data->pid == 4242)
 		free_cmd();
 	return (0);
-}
-
-t_cmd	*token_to_cmd(t_token *list)
-{
-	t_token	*tmp;
-	t_cmd	*cmd_head;
-	t_cmd	*cmd_tail;
-	t_cmd	*new_cmd;
-	int		i;
-
-	tmp = list;
-	cmd_head = NULL;
-	cmd_tail = NULL;
-	while (tmp)
-	{
-		if (tmp->type == CMD)
-		{
-			new_cmd = malloc(sizeof(t_cmd));
-			if (!new_cmd)
-			{
-				if(cmd_head)
-					free_cmd();
-				return (NULL);
-			}
-			new_cmd->next = NULL;
-			new_cmd->cmd_arg = malloc(sizeof(char *) * (len_in_block(tmp) + 1));
-			if (!new_cmd->cmd_arg)
-			{
-				if(cmd_head)
-					free_cmd();
-				free(new_cmd);
-				return (NULL);
-			}
-			i = 0;
-			while (tmp) // while (tmp && (tmp->type == CMD || tmp->type == ARG)) 
-			{
-				if (tmp->type == INPUT || tmp->type == HEREDOC || tmp->type == APPEND || tmp->type == TRUNC)
-				{
-					if (tmp->next->type == ARG)
-						tmp = tmp->next;
-					tmp = tmp->next;
-					continue;
-				}
-				if (tmp->type == PIPE)
-				{
-					tmp = tmp->next;
-					break;
-				}
-				new_cmd->cmd_arg[i] = ft_strdup(tmp->token);
-				if (!new_cmd->cmd_arg[i])
-				{
-					while (i > 0)
-						free(new_cmd->cmd_arg[--i]);
-					free(new_cmd->cmd_arg);
-					free(new_cmd);
-					if(cmd_head)
-						free_cmd();
-					return (NULL);
-				}
-				tmp = tmp->next;
-				i++;
-			}
-			new_cmd->cmd_arg[i] = NULL;
-			new_cmd->infile = -2;
-			new_cmd->outfile = -2;
-			if (!cmd_head)
-				cmd_head = new_cmd;
-			else
-				cmd_tail->next = new_cmd;
-			cmd_tail = new_cmd;
-		}
-		else
-			tmp = tmp->next;
-		if (cmd_head)
-		    free_cmd();
-	}
-	return (cmd_head);
 }
 
 char	**lst_to_tabtab(t_env *envlist)
@@ -384,8 +309,8 @@ void	not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist,
 void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
 		t_path *pathlist, int *pipefd)
 {
-	int	check;
-	t_data *data;
+	int		check;
+	t_data	*data;
 
 	data = get_data();
 	check = double_check(pathlist, cmd->cmd_arg[0]);
@@ -406,67 +331,10 @@ void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
 	free_all_fork(pathlist, pipefd, envlist);
 }
 
-int	heredoc_handler(char *str, t_env *envlist, int fd)
+int	check_access_redir(char *str)
 {
-	char	*line;
+	t_data	*data;
 
-	while (1)
-	{
-		line = readline(">");
-		if (!line)
-		{
-			write(2,
-				"bash :warning: here-document delimited by end-of-file (wanted `",
-				64);
-			write(2, str, ft_strlen(str));
-			write(2, "`)\n", 3);
-			close(fd);
-			return (0);
-		}
-		if (ft_strcmp(line, str) == 0)
-			break ;
-		if (ft_strcmp(line, "") != 0)
-		{
-			if (line)
-			{
-				line = proccess_dollar_value(line, envlist);
-				if (line)
-					write(fd, line, ft_strlen(line));
-			}
-		}
-		write(fd, "\n", 1);
-		if (line)
-			free(line);
-	}
-	if (line)
-		free(line);
-	close(fd);
-	return (0);
-}
-
-int	here_doc(t_env *envlist, char *str)
-{
-	int	fd;
-
-	fd = open(".tmp.heredoc", O_CREAT | O_RDWR | O_TRUNC, 0644);
-	if (fd < 0)
-		return (-1);
-	if (heredoc_handler(str, envlist, fd))
-	{
-		printf("here_doc = %d\n", fd);
-		unlink(".tmp.heredoc");
-		return (-1);
-	}
-	fd = open(".tmp.heredoc", O_RDONLY);
-	if (fd > 0)
-		unlink(".tmp.heredoc");
-	return (fd);
-}
-
-int check_access_redir(char *str)
-{
-	t_data *data;
-	
 	data = get_data();
 	if (access(str, W_OK | R_OK) == -1)
 	{
@@ -486,96 +354,60 @@ int check_access_redir(char *str)
 			data->error = 1;
 			return (1);
 		}
-		
 	}
 	return (0);
 }
 
-int	ft_redir(t_token *list, t_cmd *cmd, t_env *envlist)
+void	handle_process_exit(int pid, int status, t_data *list)
 {
-	t_token	*tmp;
-	t_cmd	*cmdt;
-	char *tmp_path;
-	int err;
-
-	cmdt = cmd;
-	tmp = list;
-	tmp_path = NULL;
-	err = 0;
-	
-	while (tmp && cmdt)
+	if (pid == list->pid)
 	{
-		if (tmp->type == PIPE)
-			cmdt = cmdt->next;
-		if (tmp->type == INPUT)
-		{
-			tmp_path = tmp->next->token;
-			if (cmdt->infile >= 0)
-				close(cmdt->infile);
-			cmdt->infile = open(tmp->next->token, O_RDONLY);
-			err = check_access_redir(tmp_path);
-		}
-		if (tmp->type == HEREDOC)
-		{
-			tmp_path = tmp->next->token;
-			if (cmdt->infile >= 0)
-				close(cmdt->infile);
-			cmdt->infile = here_doc(envlist, tmp->next->token);
-		}
-		if (err == 1)
-			return (1);
-		if (tmp->type == TRUNC)
-		{
-			tmp_path = tmp->next->token;
-			if (cmdt->outfile >= 0)
-				close(cmdt->outfile);
-			cmdt->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_TRUNC,
-					0644);
-			err = check_access_redir(tmp_path);
-		}
-		if (tmp->type == APPEND)
-		{
-			tmp_path = tmp->next->token;
-			if (cmdt->outfile >= 0)
-				close(cmdt->outfile);
-			cmdt->outfile = open(tmp->next->token, O_CREAT | O_RDWR | O_APPEND,
-					0644);
-			err = check_access_redir(tmp_path);
-		}
+		if (WIFEXITED(status))
+			list->error = WEXITSTATUS(status);
+	}
+}
+
+void	close_files(t_cmd *cmd)
+{
+	if (cmd->infile >= 0)
+		close(cmd->infile);
+	if (cmd->outfile >= 0)
+		close(cmd->outfile);
+}
+
+void	wait_and_close(t_cmd *cmd, t_data *list, int len_cmd)
+{
+	t_cmd	*tmp;
+	int		status;
+	int		pid;
+
+	tmp = cmd;
+	while (len_cmd-- && tmp)
+	{
+		pid = waitpid(0, &status, 0);
+		handle_process_exit(pid, status, list);
+		close_files(tmp);
 		tmp = tmp->next;
 	}
-	if (err == 1)
-		return (1);
-	return (0);
+}
+
+void	cleanup_heredoc(void)
+{
+	if (access(".tmp.heredoc", F_OK) == 0)
+		unlink(".tmp.heredoc");
 }
 
 void	ft_wait(t_cmd *cmd, t_token *token)
 {
-	int		status;
-	int		len_cmd;
 	t_data	*list;
-	t_cmd	*tmp;
-	int		pid;
+	int		len_cmd;
 
+	if (!cmd)
+		return ;
 	list = get_data();
 	len_cmd = len_cmdblocks(token);
-	tmp = cmd;
-	while (len_cmd--)
-	{
-		pid = waitpid(0, &status, 0);
-		if (pid == list->pid)
-		{
-			if (WIFEXITED(status))
-				list->error = WEXITSTATUS(status);
-		}
-		if (tmp->infile >= 0)
-			close(tmp->infile);
-		if (tmp->outfile >= 0)
-			close(tmp->outfile);
-		tmp = tmp->next;
-	}
-	if (access(".tmp.heredoc", F_OK) == 0)
-		unlink(".tmp.heredoc");
+	wait_and_close(cmd, list, len_cmd);
+	cleanup_heredoc();
 }
 
 int	exec_cmd(t_cmd *cmd, t_env *envlist, t_path *pathlist, t_token *list,
@@ -600,47 +432,67 @@ int	exec_cmd(t_cmd *cmd, t_env *envlist, t_path *pathlist, t_token *list,
 	return (0);
 }
 
-int	ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
+int	handle_single_builtin(t_cmd *tmp, t_token *list, t_env *envlist,
+		t_path *pathlist)
 {
-	t_cmd	*tmp;
-	int		pipefd[2];
-	t_data	*data;
-
-	data = get_data();
-	pipefd[0] = -1;
-	pipefd[1] = -1;
-	data->cmd = token_to_cmd(list);
-	tmp = data->cmd;
-	if (!tmp)
-		return (1);
-	if (ft_redir(list, tmp, envlist) == 1)
-		return 1;
-	if (data->cmd && data->cmd->cmd_arg[0] && data->cmd->next == NULL
+	if (tmp && tmp->cmd_arg[0] && tmp->next == NULL
 		&& is_builtin(tmp->cmd_arg[0]) == true)
 		return (built(list, tmp, envlist, pathlist));
+	return (0);
+}
+
+int	initialize_pipe(int *pipefd)
+{
 	if (pipe(pipefd) == -1)
 	{
 		free_cmd();
 		return (1);
 	}
-	exec_cmd(tmp, envlist, pathlist, list, pipefd);
-	tmp = tmp->next;
+	return (0);
+}
+
+int	execute_commands(t_cmd *cmd, t_env *envlist, t_path *pathlist,
+		t_token *list, int *pipefd)
+{
+	t_cmd	*tmp;
+
+	tmp = cmd;
 	while (tmp)
 	{
-		if (pipe(pipefd) == -1)
-		{
-			free_cmd();
+		if (initialize_pipe(pipefd))
 			return (1);
-		}
 		exec_cmd(tmp, envlist, pathlist, list, pipefd);
 		tmp = tmp->next;
 	}
-	ft_wait(data->cmd, list);
-	if (data->cmd || tmp)
+	return (0);
+}
+
+void	cleanup_after_execution(t_cmd *cmd, t_token *list)
+{
+	t_data	*data;
+
+	data = get_data();
+	if (cmd) // Vérification ajoutée
+		ft_wait(data->cmd, list);
+	if (data->cmd || cmd)
 		free_cmd();
-	// if (pipefd[0] >= 0)
-	// 	close(pipefd[0]);
-	// if (pipefd[1] >= 0)
-	// 	close(pipefd[1]);
+}
+
+int	ft_exec(t_token *list, t_env *envlist, t_path *pathlist)
+{
+	t_data	*data;
+	int		pipefd[2] = {-1, -1};
+
+	data = get_data();
+	data->cmd = token_to_cmd(list);
+	if (!data->cmd)
+		return (1);
+	if (ft_redir(list, data->cmd, envlist) == 1)
+		return (1);
+	if (handle_single_builtin(data->cmd, list, envlist, pathlist))
+		return (0);
+	if (execute_commands(data->cmd, envlist, pathlist, list, pipefd))
+		return (1);
+	cleanup_after_execution(data->cmd, list);
 	return (0);
 }

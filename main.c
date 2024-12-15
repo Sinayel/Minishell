@@ -6,13 +6,13 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:17 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/15 13:52:06 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/15 14:56:24 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minishell.h"
 
-//! ◦ PIPEX									   |  (JULIO)  98%
+//! ◦ PIPEX										|  (JULIO)  98%
 //! ◦ UNSET with no options                    |  (JULIO) [V]
 //! ◦ EXPORT with no options                   |  (JULIO) [V]
 //! ◦ CD with only a relative or absolute path |  (JULIO) [V]
@@ -20,10 +20,10 @@
 //! ◦ ENV with no options or arguments         |  (JULIO) [V]
 //! ◦ EXIT                                     |  (YANS)  [V]
 //! ◦ ECHO                                     |  (YANS)  [V]
-//! ◦ PID									   |  (YANS)  [V]
+//! ◦ PID										|  (YANS)  [V]
 //! ◦ PARSING (99% du projet)                  |  (YANS)  [V]
 
-int g_signal = 0;
+int		g_signal = 0;
 
 t_data	*get_data(void)
 {
@@ -62,7 +62,7 @@ bool	exit_shell(t_data *data, t_env *env, t_token *list)
 		free_cmd();
 		ft_token_lstclear(&list);
 		ft_env_lstclear(&env);
-		exit(131);
+		exit(data->error);
 		return (false);
 	}
 	return (true);
@@ -78,7 +78,6 @@ int	main(int argc, char *argv[], char **env)
 	data = get_data();
 	env_list = env_import(env);
 	init_variable(argc, argv, env_list);
-	signal(SIGPIPE, SIG_IGN);
 	while (1)
 	{
 		data->pid = 4242;
@@ -91,7 +90,6 @@ int	main(int argc, char *argv[], char **env)
 			add_history(data->input);
 			parsing_exec(list, env_list, data);
 		}
-		// print_list(list);
 		ft_token_lstclear(&list);
 		if (data->input)
 			free(data->input);

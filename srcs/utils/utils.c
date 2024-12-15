@@ -6,11 +6,17 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/08 20:42:21 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/04 18:58:26 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/15 15:09:21 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+int	is_redirection_f(int type)
+{
+	return (type == INPUT || type == HEREDOC || type == APPEND
+		|| type == TRUNC);
+}
 
 void	free_tabtab(char **tab)
 {

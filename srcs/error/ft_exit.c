@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:12:34 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 22:00:16 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/15 14:18:42 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,24 +32,17 @@ static int	almost_atoi(char *str, int *err)
 		ret = ret * 10 + (str[i++] - 48);
 	while ((9 <= str[i] && str[i] <= 13) || str[i] == 32)
 		i++;
-	if (str[i] || i - j > 20 || ((pn == -1 && (ret - 1) > LONG_MAX) || \
-		(pn == 1 && (ret > LONG_MAX))))
+	if (str[i] || i - j > 20 || ((pn == -1 && (ret - 1) > LONG_MAX) || (pn == 1
+				&& (ret > LONG_MAX))))
 		*err = 1;
 	return ((int)((ret * pn) % 256));
 }
 
-bool	print_error(char *str)
-{
-	if (str)
-		write(2, str, ft_strlen(str));
-	return (true);
-}
-
 int	ft_exit(t_token *list, t_env *env, t_path *path, char **args)
 {
-	int	ret;
-	int	err;
-	t_data *data;
+	int		ret;
+	int		err;
+	t_data	*data;
 
 	data = get_data();
 	ret = 0;
@@ -64,55 +57,36 @@ int	ft_exit(t_token *list, t_env *env, t_path *path, char **args)
 	{
 		ret = almost_atoi(args[0], &err);
 		if (err)
-		{
-			print_error("exit: ");
-			print_error(args[0]);
-			print_error(": numeric argument required\n");
-			free_all(list, env, path);
-			free_tabtab(args);
-			exit(2);
-		}
+			exit(print_numeric(args, list, env, path));
 	}
 	else if (args[0] && args[1])
-	{
-		print_error("exit: too many arguments\n");
-		free_tabtab(args);
-		data->error = 1;
-		return 1;
-	}
+		return (print_too_many(data, args));
 	free_all(list, env, path);
 	free_tabtab(args);
 	exit(ret);
-	return 0;
+	return (0);
 }
 
-int error_free(char *str)
+char	*error_free(char *str)
 {
-	t_data *data;
+	t_data	*data;
+
 	data = get_data();
 	data->error = 1;
 	free(str);
 	ft_putstr_fd("bash: exit: too many arguments\n", 2);
-	return 0;
+	return (NULL);
 }
 
-int feat_arg_exit(t_token *list, t_env *env, t_path *path)
+char	*value_exit(t_token *tmp, char *value_for_exit)
 {
-	int		len;
-	t_token	*tmp;
-	char	*value_for_exit;
-	char 	**split_exit;
-	int		i;
-	int		j;
-	int		v;
-	v = 0;
+	int	v;
+	int	i;
+	int	j;
 
-	len = len_for_cd(list);
-	tmp = list->next;
-	if (len == 0)
-		return (ft_exit(list, env, path, NULL));
-	value_for_exit = (char *)malloc(sizeof(char) * (len + len));
-	init_var_i(&i, &j);
+	i = 0;
+	j = 0;
+	v = 0;
 	while (tmp && tmp->type > 5)
 	{
 		while (tmp->token[j])
@@ -121,11 +95,29 @@ int feat_arg_exit(t_token *list, t_env *env, t_path *path)
 			return (error_free(value_for_exit));
 		j = 0;
 		v++;
-		if(tmp->next)
+		if (tmp->next)
 			value_for_exit[i++] = ' ';
 		tmp = tmp->next;
 	}
 	value_for_exit[i] = '\0';
+	return (value_for_exit);
+}
+
+int	feat_arg_exit(t_token *list, t_env *env, t_path *path)
+{
+	int		len;
+	t_token	*tmp;
+	char	*value_for_exit;
+	char	**split_exit;
+
+	len = len_for_cd(list);
+	tmp = list->next;
+	if (len == 0)
+		return (ft_exit(list, env, path, NULL));
+	value_for_exit = (char *)malloc(sizeof(char) * (len + len));
+	value_for_exit = value_exit(tmp, value_for_exit);
+	if (value_for_exit == NULL)
+		return (0);
 	split_exit = ft_split(value_for_exit, ' ');
 	free(value_for_exit);
 	ft_exit(list, env, path, split_exit);

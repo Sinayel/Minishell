@@ -21,9 +21,14 @@ PARSING_SRC = srcs/parsing/token/id_token.c \
 			  srcs/parsing/token/tokenization.c \
 			  srcs/parsing/token/return_quoted_value.c \
 			  srcs/parsing/check.c \
+			  srcs/parsing/double_check.c \
 			  srcs/parsing/path.c \
 			  srcs/parsing/parsing.c \
-			  srcs/exec/exec.c \
+
+EXEC_SRC =	  srcs/exec/exec.c \
+			  srcs/exec/token_to_cmd.c \
+			  srcs/exec/heredoc_handler.c \
+			  srcs/exec/ft_redir.c \
 
 BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/env/create_env.c \
@@ -54,9 +59,11 @@ UTILS_SRC = srcs/utils/utils.c \
 			srcs/utils/signal.c \
 			srcs/utils/utils_token2.c \
 			srcs/utils/ft_split.c \
+			srcs/utils/ft_exit_utils.c \
+			srcs/utils/utils_token_to_cmd.c \
 			srcs/error/msg.c \
 
-MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC) $(DOLLAR_SRC)
+MINISHELL_SRC = main.c $(PARSING_SRC) $(UTILS_SRC) $(BUILTIN_SRC) $(DOLLAR_SRC) $(EXEC_SRC)
 
 ASCII_LOGO = -e "\
 	███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗     \n\

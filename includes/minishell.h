@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 19:34:20 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/15 16:15:15 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 #define INT_MIN -2147483648
 #define INT_MAX 2147483647
 
-#include <stdio.h>
 #include "../libft/libft.h"
 #include <errno.h>
 #include <fcntl.h>
@@ -29,6 +28,7 @@
 #include <readline/readline.h>
 #include <signal.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -104,6 +104,7 @@ typedef struct s_data
 	struct s_cmd	*cmd;
 }					t_data;
 
+
 // 5 -------------------  Tokenization  -------------------
 t_token				*tokenization(char *str, t_env *env);
 t_token				*id_token(t_token *list);
@@ -146,9 +147,17 @@ int					for_trunc_and_heredoc(t_token *tmp);
 int					return_next_next(t_token *tmp);
 
 //	Path
-int					double_check(t_path *path, char *input);
 t_path				*return_path(t_env *env);
 void				ft_free_path(t_path *path);
+
+// Double check
+int					double_check(t_path *path, char *input);
+int					handle_path_check(t_path *path, char *input, t_data *data);
+int					handle_access_check(char *input);
+int					handle_directory_case(char *input, t_data *data);
+int					handle_empty_input(char *input);
+int					check_access(char *path);
+int					is_directory(const char *path);
 
 //! ------------------------  CMD  -------------------------
 
@@ -183,7 +192,7 @@ int					check_if_exit(t_token *list, t_env *env);
 int					feat_arg_exit(t_token *list, t_env *env, t_path *path);
 
 //* -----------------------  Echo  ------------------------		// (YANS)
-int					echo(t_token *list, t_cmd *cmd);
+int					echo(t_cmd *cmd);
 
 //* -----------------------  Unset  -----------------------		// (JULIO)
 int					ft_arg_unset(t_env *env, t_token *list);
@@ -242,14 +251,42 @@ int					copy_string(char *dest, char *src, int v);
 int					ft_strlen_tabtab_gpt(char **split_arg);
 
 //* -------------------------- EXEC ------------------------
+// Token to cmd
 t_cmd				*token_to_cmd(t_token *list);
+int					populate_cmd_args(t_cmd *new_cmd, t_token **tmp,
+						t_cmd *cmd_head);
+int					fill_cmd_args(t_cmd *new_cmd, t_token **tmp,
+						t_cmd *cmd_head);
+int					duplicate_and_store_arg(t_cmd *new_cmd, t_token **tmp,
+						int *i, t_cmd *cmd_head);
+t_cmd				*create_new_cmd(void);
+
+// Heredoc
+int					here_doc(t_env *envlist, char *str);
+int					heredoc_handler(char *str, t_env *envlist, int fd);
+int					process_and_write_line(char *line, t_env *envlist, int fd);
+int					handle_end_of_line(char *line, char *str, int fd);
+int					handle_eof(char *line, char *str, int fd);
+
+// Redir
+int					handle_input_redirection(t_token *tmp, t_cmd *cmdt,
+						int *err);
+int					handle_heredoc_redirection(t_token *tmp, t_cmd *cmdt,
+						t_env *envlist);
+int					handle_trunc_redirection(t_token *tmp, t_cmd *cmdt,
+						int *err);
+int					handle_append_redirection(t_token *tmp, t_cmd *cmdt,
+						int *err);
+int					ft_redir(t_token *list, t_cmd *cmd, t_env *envlist);
+int					check_access_redir(char *str);
+
 void				print_cmd(t_cmd *list);
 int					ft_exec(t_token *list, t_env *envlist, t_path *pathlist);
-void	free_cmd(void);
+void				free_cmd(void);
 int					len_cmd(t_cmd *list);
 bool				is_builtin(char *str);
 
-void	free_export_exec(void);
+void				free_export_exec(void);
 
 //! --------------------------------------------------------
 
@@ -276,14 +313,6 @@ bool				is_redirection(char *c);
 bool				is_quote(char c);
 int					ft_isspace(int c);
 
-// Ft_strtol
-int					char_to_digit(char c);
-int					initialize_base(const char **nptr, int base);
-int					compute_sign_and_base(const char **nptr, int base,
-						int *sign);
-int					handle_sign(const char **nptr);
-int					base_for_strtol(const char **nptr, int base);
-
 // Dollar
 char				*free_dollar(t_dollar *var, char *tmp);
 void				return_quote(char *str, t_dollar *var);
@@ -293,7 +322,6 @@ void				env_return_value(char *str, t_dollar *var, t_env *env,
 void				init_dollar_var(t_dollar *var, t_env *env, char *str);
 void				free_tabtab(char **tab);
 char				**ft_split_for_path(char const *s, char c);
-long int			ft_strtol(const char *nptr, char **endptr, int base);
 
 // Cd
 int					ft_arg_cd(t_env *env, t_token *list);
@@ -308,3 +336,19 @@ void				signals2(void);
 void				handle_sigabrt(int code);
 void				handle_sigsegv(int code);
 void				signal_handler(int signum);
+
+// Exit
+int					print_too_many(t_data *data, char **args);
+int					print_numeric(char **args, t_token *list, t_env *env,
+						t_path *path);
+bool				print_error(char *str);
+
+// Token to Cmd
+void				append_cmd(t_cmd **cmd_head, t_cmd **cmd_tail,
+						t_cmd *new_cmd);
+void				initialize_cmd_files(t_cmd *cmd);
+t_cmd				*cleanup_and_return_null(t_cmd *cmd_head);
+void				free_args_and_cmd(t_cmd *cmd, int i);
+t_token				*skip_redirection(t_token *tmp);
+int					is_redirection_f(int type);
+int					len_in_block(t_token *list);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:14:05 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 19:34:45 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/15 14:23:01 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,23 +23,14 @@ int	cmd(t_cmd *cmd, t_token *list, t_env *env, t_path *path)
 	else if (ft_strcmp(cmd->cmd_arg[0], "env") == 0)
 		return (print_env(env));
 	else if (ft_strcmp(cmd->cmd_arg[0], "echo") == 0)
-		return (echo(list, cmd));
+		return (echo(cmd));
 	else if (ft_strcmp(cmd->cmd_arg[0], "exit") == 0)
-	{
-		// ft_token_lstclear(&list);
-		// free_all_fork(pathlist, pipefd, envlist);
-		//!  free cmd peut etre
-		// free(*str);
-		// *str = NULL;
 		return (feat_arg_exit(list, env, path));
-	}
 	else if (ft_strcmp(cmd->cmd_arg[0], "export") == 0)
 		return (ft_arg_export(env, list));
-	return 1;
+	return (1);
 }
 
-//! A MODIFIER APRES PIPEX SI BESOIN !!!
-// 6 Check si la premiere redirection n'est suivit de rien, et check les cas suivants
 int	check_redirection(t_token *list)
 {
 	t_token	*tmp;
@@ -51,45 +42,25 @@ int	check_redirection(t_token *list)
 	{
 		if (tmp->type < CMD)
 		{
-			if(tmp->next && tmp->next->next)
-				if(return_next_next(tmp) == 1)
-					return 1;
-			if(for_trunc_and_heredoc(tmp) == 1)
-				return 1;
+			if (tmp->next && tmp->next->next)
+				if (return_next_next(tmp) == 1)
+					return (1);
+			if (for_trunc_and_heredoc(tmp) == 1)
+				return (1);
 		}
 		tmp = tmp->next;
 	}
 	return (0);
 }
 
-// 6 Check si les commandes sont dans le path ou si elles ont deja etaient creer
 int	check_cmd(t_token *list, t_env *env)
 {
 	t_token	*tmp;
 	t_path	*path;
-	// (void)data;
 
 	path = return_path(env);
 	tmp = list;
-	// while (tmp)
-	// {
-		// if (tmp->type == CMD) //! && cmd(tmp->token, tmp, env, path) == 1
-		// {
-			// if (double_check(path, tmp, tmp->token) == 0)
-			// {
-			// 	if (path)
-			// 		ft_free_path(path);
-			// 	return (1);
-			// }
-			// Execute cmd path here
-				// printf("Ok\n");
-				ft_exec(tmp, env, path);
-			// }
-			// if (path)
-		 	// 	ft_free_path(path);
-		// }
-		// tmp = tmp->next;
-	// }
+	ft_exec(tmp, env, path);
 	if (path)
 		ft_free_path(path);
 	return (0);
@@ -104,8 +75,9 @@ int	check_pipe(t_token *list)
 	{
 		if (tmp->type == PIPE && tmp->first == 1 && !tmp->next)
 			return (msg_error(2));
-		if(tmp->prev)
-			if((tmp->prev->type == INPUT || tmp->prev->type == TRUNC) && tmp->type == PIPE)
+		if (tmp->prev)
+			if ((tmp->prev->type == INPUT || tmp->prev->type == TRUNC)
+				&& tmp->type == PIPE)
 				return (msg_error(1));
 		if (tmp->type == PIPE)
 		{
@@ -113,7 +85,7 @@ int	check_pipe(t_token *list)
 				return (msg_error(2));
 			if (tmp->next->type == PIPE)
 				return (msg_error(5));
-			if(!tmp->prev)
+			if (!tmp->prev)
 				return (msg_error(2));
 		}
 		tmp = tmp->next;

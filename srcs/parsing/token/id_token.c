@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 18:21:59 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/15 13:50:12 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/15 14:23:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,6 @@ char	*extract_token(char *str, int *i)
 	return (tmp);
 }
 
-// 5 Fonction pour verifier si c'est une cmd ou un argument
 void	cmd_token(t_token *list)
 {
 	t_token	*tmp;
@@ -90,7 +89,7 @@ void	cmd_token(t_token *list)
 	{
 		if (tmp->type < 5 && tmp->next != NULL && tmp->next->next != NULL)
 		{
-			if(last->type == PIPE)
+			if (last->type == PIPE)
 				tmp->next->type = ARG;
 			if (tmp->next->next->type == ARG)
 				tmp->next->next->type = CMD;
@@ -101,7 +100,6 @@ void	cmd_token(t_token *list)
 		tmp = tmp->next;
 	}
 }
-
 
 t_token	*id_token(t_token *list)
 {

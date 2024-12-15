@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 16:58:53 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 15:25:09 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/15 14:32:50 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool	is_valid_number(const char *str)
 void	free_all(t_token *list, t_env *env, t_path *path)
 {
 	t_export	*export;
-	t_data *data;
+	t_data		*data;
 
 	data = get_data();
 	export = get_export();
@@ -42,21 +42,21 @@ void	free_all(t_token *list, t_env *env, t_path *path)
 	free_cmd();
 	ft_token_lstclear(&list);
 	ft_env_lstclear(&env);
-	if(path)
+	if (path)
 		ft_free_path(path);
 	rl_clear_history();
 }
 
-void ft_free_path(t_path *path)
+void	ft_free_path(t_path *path)
 {
-    t_path *tmp;
+	t_path	*tmp;
 
-    while (path)
-    {
-        tmp = path;
-        path = path->next;
-        free(tmp->name);
-        free(tmp);
-    }
+	while (path)
+	{
+		tmp = path;
+		path = path->next;
+		free(tmp->name);
+		free(tmp);
+	}
 	path = NULL;
 }
