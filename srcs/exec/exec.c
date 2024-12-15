@@ -6,7 +6,7 @@
 /*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/14 21:47:42 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/15 12:38:54 by judenis          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -378,7 +378,7 @@ void	not_builtin_child(t_cmd *list, t_env *envlist, t_path *pathlist,
 		free(path);
 	if (tabtab)
 		free_tabtab(tabtab);
-	// signal(SIGINT, SIG_DFL);
+	signal(SIGINT, SIG_DFL);
 }
 
 void	ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
