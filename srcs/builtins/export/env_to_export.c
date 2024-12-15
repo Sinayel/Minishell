@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_to_export.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/27 18:47:37 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/13 23:27:48 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/15 14:00:31 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ char	**replace_export(char **env_export, char *split_arg)
 	char	**trouve_moi;
 
 	i = 0;
-	// printf("%s\n", split_arg);
 	trouve_moi = ft_split(split_arg, '=');
 	while (env_export[i])
 	{

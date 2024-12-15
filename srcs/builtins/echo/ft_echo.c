@@ -3,21 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/18 19:43:50 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/14 21:21:46 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/15 14:00:47 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/minishell.h"
 
-int	echo(t_token *list, t_cmd *cmd)
+int	echo(t_cmd *cmd)
 {
-	(void)list;
-	t_cmd *tmp;
+	t_cmd	*tmp;
 	t_data	*data;
-	int i;
+	int		i;
 
 	i = 1;
 	data = get_data();

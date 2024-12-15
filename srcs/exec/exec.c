@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: judenis <judenis@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/28 14:07:14 by judenis           #+#    #+#             */
-/*   Updated: 2024/12/15 12:38:54 by judenis          ###   ########.fr       */
+/*   Updated: 2024/12/15 13:54:42 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -503,7 +503,7 @@ int	ft_redir(t_token *list, t_cmd *cmd, t_env *envlist)
 	tmp_path = NULL;
 	err = 0;
 	
-	while (tmp)
+	while (tmp && cmdt)
 	{
 		if (tmp->type == PIPE)
 			cmdt = cmdt->next;
