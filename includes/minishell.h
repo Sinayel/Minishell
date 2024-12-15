@@ -6,7 +6,7 @@
 /*   By: ylouvel <ylouvel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/07 17:16:23 by ylouvel           #+#    #+#             */
-/*   Updated: 2024/12/15 16:15:15 by ylouvel          ###   ########.fr       */
+/*   Updated: 2024/12/15 17:47:04 by ylouvel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,17 @@ typedef struct s_data
 	char			*input;
 	int				pid;
 	int				error;
+	int				pipefd[2];
 	struct s_cmd	*cmd;
 }					t_data;
 
+typedef struct s_exec_context
+{
+	t_cmd			*cmd;
+	t_env			*envlist;
+	t_path			*pathlist;
+	t_token			*list;
+}					t_exec_context;
 
 // 5 -------------------  Tokenization  -------------------
 t_token				*tokenization(char *str, t_env *env);
@@ -251,6 +259,15 @@ int					copy_string(char *dest, char *src, int v);
 int					ft_strlen_tabtab_gpt(char **split_arg);
 
 //* -------------------------- EXEC ------------------------
+int					ft_exec(t_token *list, t_env *envlist, t_path *pathlist);
+int					exec_cmd(t_cmd *cmd, t_env *envlist, t_path *pathlist,
+						t_token *list);
+void				execute_child_process(t_exec_context *ctx, t_data *data,
+						int *pipefd);
+int					handle_single_builtin(t_cmd *tmp, t_token *list,
+						t_env *envlist, t_path *pathlist);
+int					execute_command(t_exec_context *ctx, int *pipefd);
+
 // Token to cmd
 t_cmd				*token_to_cmd(t_token *list);
 int					populate_cmd_args(t_cmd *new_cmd, t_token **tmp,
@@ -280,13 +297,48 @@ int					handle_append_redirection(t_token *tmp, t_cmd *cmdt,
 int					ft_redir(t_token *list, t_cmd *cmd, t_env *envlist);
 int					check_access_redir(char *str);
 
-void				print_cmd(t_cmd *list);
-int					ft_exec(t_token *list, t_env *envlist, t_path *pathlist);
+// Redirection
+int					initialize_pipe(int *pipefd);
+int					execute_commands(t_cmd *cmd, t_env *envlist,
+						t_path *pathlist, t_token *list);
+void				cleanup_after_execution(t_cmd *cmd, t_token *list);
+void				handle_redirection(t_cmd *cmd, int *pipefd);
+int					handle_parent_process(int *pipefd, t_cmd *cmd);
+
+// Wait close
+void				handle_process_exit(int pid, int status, t_data *list);
+void				close_files(t_cmd *cmd);
+void				wait_and_close(t_cmd *cmd, t_data *list, int len_cmd);
+void				cleanup_heredoc(void);
+void				ft_wait(t_cmd *cmd, t_token *token);
+
+// Embouchure
+int					parent_process(int *fd, t_cmd *cmd);
+void				redir_in_out(t_cmd *list, int *fd);
+void				not_builtin_child(t_cmd *list, t_env *envlist,
+						t_path *pathlist, t_data *data);
+void				ft_embouchure(t_cmd *cmd, t_token *list, t_env *envlist,
+						t_path *pathlist);
+int					check_access_redir(char *str);
+
+// Check path
+void				redir_builtin(t_cmd *cmd, int *pipefd);
+void				free_export_exec(void);
+char				**lst_to_tabtab(t_env *envlist);
+int					built(t_token *list, t_cmd *tcmd, t_env *envlist,
+						t_path *path);
+bool				checkpath(t_path *pathlist, char *cmd, char **path);
+
+// Cmd
 void				free_cmd(void);
 int					len_cmd(t_cmd *list);
+int					len_cmdblocks(t_token *list);
+int					len_in_block(t_token *list);
 bool				is_builtin(char *str);
 
-void				free_export_exec(void);
+// Free fork cmd
+void				free_all_fork(t_path *pathlist, t_data *data, t_env *env);
+void				free_cmd_vars(t_cmd *list);
 
 //! --------------------------------------------------------
 

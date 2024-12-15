@@ -29,6 +29,12 @@ EXEC_SRC =	  srcs/exec/exec.c \
 			  srcs/exec/token_to_cmd.c \
 			  srcs/exec/heredoc_handler.c \
 			  srcs/exec/ft_redir.c \
+			  srcs/exec/free_fork_cmd.c \
+			  srcs/exec/redirection.c \
+			  srcs/exec/wait_close.c \
+			  srcs/exec/embouchure.c \
+			  srcs/exec/check_path.c \
+			  srcs/exec/cmd.c \
 
 BUILTIN_SRC = srcs/builtins/env/env.c \
 			  srcs/builtins/env/create_env.c \
